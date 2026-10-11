@@ -241,7 +241,7 @@ public final class MindPowers {
             List<PowerClone> clones = new ArrayList<>();
             for (int i = 0; i < 3; i++) {
                 double a = Math.PI * 2 * i / 3;
-                PowerClone clone = clone(player, player.position().add(Math.cos(a) * 2.5, 0, Math.sin(a) * 2.5),
+                PowerClone clone = spawnClone(player, player.position().add(Math.cos(a) * 2.5, 0, Math.sin(a) * 2.5),
                         PowerClone.ILLUSION, 15);
                 if (clone != null) {
                     clones.add(clone);

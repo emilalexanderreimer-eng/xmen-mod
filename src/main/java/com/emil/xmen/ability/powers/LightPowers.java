@@ -235,7 +235,7 @@ public final class LightPowers {
                 } else {
                     at = player.position().add(player.getRandom().triangle(0, 2), 0, player.getRandom().triangle(0, 2));
                 }
-                PowerClone clone = clone(player, at, PowerClone.SHADOW, 20);
+                PowerClone clone = spawnClone(player, at, PowerClone.SHADOW, 20);
                 if (clone != null) {
                     if (target != null) {
                         clone.setTarget(target);
@@ -252,7 +252,7 @@ public final class LightPowers {
         reg("hologram", b().active(20, player -> {
             BlockPos spot = teleportSpot(player, 24);
             Vec3 at = spot == null ? player.position().add(player.getLookAngle().scale(3)) : Vec3.atBottomCenterOf(spot);
-            PowerClone image = clone(player, at, PowerClone.HOLOGRAM, 15);
+            PowerClone image = spawnClone(player, at, PowerClone.HOLOGRAM, 15);
             if (image == null) {
                 return false;
             }

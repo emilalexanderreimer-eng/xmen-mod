@@ -526,7 +526,7 @@ public final class Abilities {
     }
 
     /** Spawns a copy of the player that lasts seconds. */
-    public static PowerClone clone(ServerPlayer player, Vec3 at, int variant, double seconds) {
+    public static PowerClone spawnClone(ServerPlayer player, Vec3 at, int variant, double seconds) {
         PowerClone clone = com.emil.xmen.entity.ModEntities.CLONE.get().create(player.level());
         if (clone == null) {
             return null;

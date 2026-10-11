@@ -333,7 +333,7 @@ public final class RealityPowers {
             }
             for (int i = 0; i < make; i++) {
                 Vec3 side = new Vec3(-player.getLookAngle().z, 0, player.getLookAngle().x).normalize().scale(i == 0 ? 1.5 : -1.5);
-                PowerClone clone = clone(player, player.position().add(side), PowerClone.FIGHTER, 30);
+                PowerClone clone = spawnClone(player, player.position().add(side), PowerClone.FIGHTER, 30);
                 if (clone != null) {
                     particlesAround(player, clone, ParticleTypes.POOF, 10);
                 }
