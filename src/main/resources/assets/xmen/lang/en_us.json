@@ -1,4 +1,5 @@
 {
   "key.categories.xmen": "X-Men Mutants",
-  "key.xmen.use_power": "Use Power"
+  "key.xmen.use_power": "Use Power",
+  "entity.xmen.clone": "Clone"
 }

@@ -1,6 +1,7 @@
 package com.emil.xmen.client;
 
 import com.emil.xmen.XMenMod;
+import com.emil.xmen.entity.ModEntities;
 import com.emil.xmen.ability.PowerBehaviors;
 import com.emil.xmen.network.UsePowerPayload;
 import com.emil.xmen.power.Power;
@@ -12,7 +13,9 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -20,6 +23,9 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -32,11 +38,27 @@ public class XMenClient {
     public static final KeyMapping USE_POWER = new KeyMapping("key.xmen.use_power",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, "key.categories.xmen");
 
+    private int wallRunTicks;
+
     public XMenClient(IEventBus modEventBus) {
         modEventBus.addListener(this::registerKeys);
         modEventBus.addListener(this::registerGuiLayers);
+        modEventBus.addListener(this::registerRenderers);
         NeoForge.EVENT_BUS.addListener(this::onClientTick);
         NeoForge.EVENT_BUS.addListener(this::onLoggingOut);
+        NeoForge.EVENT_BUS.addListener(this::onFov);
+        NeoForge.EVENT_BUS.addListener(MorphRenderer::onRenderPlayer);
+    }
+
+    private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(ModEntities.CLONE.get(), CloneRenderer::new);
+    }
+
+    // Eagle Eyes zooms in like a spyglass.
+    private void onFov(ComputeFovModifierEvent event) {
+        if (ClientPowerState.zoomed()) {
+            event.setNewFovModifier(event.getFovModifier() * 0.2f);
+        }
     }
 
     private void registerKeys(RegisterKeyMappingsEvent event) {
@@ -57,18 +79,55 @@ public class XMenClient {
         while (USE_POWER.consumeClick()) {
             PacketDistributor.sendToServer(UsePowerPayload.INSTANCE);
         }
+        MorphRenderer.tick();
         Power power = ClientPowerState.get();
-        // Player movement is decided on the client, so wall climbing happens here.
-        if (power != null && power.id().equals("wall_crawling") && player.horizontalCollision
-                && !player.getAbilities().flying) {
-            Vec3 motion = player.getDeltaMovement();
+        if (power == null || player.getAbilities().flying || player.isSpectator()) {
+            return;
+        }
+        // Player movement is decided on the client, so climbing, gliding and running on water happen here.
+        String id = power.id();
+        String morph = ClientMorphs.get(player.getId());
+        boolean climber = id.equals("wall_crawling") || id.equals("beast_form") || id.equals("spider_powers")
+                || "minecraft:spider".equals(morph) || "minecraft:cave_spider".equals(morph);
+        Vec3 motion = player.getDeltaMovement();
+        if (climber && player.horizontalCollision) {
             player.setDeltaMovement(motion.x, player.isShiftKeyDown() ? 0 : 0.2, motion.z);
             player.resetFallDistance();
+        }
+        if ((id.equals("glider") || id.equals("metal_wings")) && !player.onGround() && !player.isInWater()
+                && player.input.jumping && motion.y < 0) {
+            Vec3 look = player.getLookAngle();
+            double speed = id.equals("metal_wings") ? 0.75 : 0.55;
+            player.setDeltaMovement(motion.x * 0.85 + look.x * speed * 0.15, Math.max(motion.y, -0.08),
+                    motion.z * 0.85 + look.z * speed * 0.15);
+            player.resetFallDistance();
+        }
+        if (id.equals("water_runner") && player.isSprinting()) {
+            BlockPos below = BlockPos.containing(player.getX(), player.getY() - 0.1, player.getZ());
+            boolean onWater = player.level().getFluidState(below).is(FluidTags.WATER);
+            if (player.isInWater() && !player.isUnderWater()) {
+                player.setDeltaMovement(motion.x, 0.25, motion.z);
+            } else if (onWater && motion.y < 0) {
+                player.setDeltaMovement(motion.x, 0, motion.z);
+                player.setOnGround(true);
+                player.resetFallDistance();
+            }
+        }
+        if (id.equals("wall_run")) {
+            if (player.onGround()) {
+                wallRunTicks = 0;
+            } else if (player.horizontalCollision && player.input.forwardImpulse > 0 && wallRunTicks < 30) {
+                wallRunTicks++;
+                player.setDeltaMovement(motion.x * 1.1, Math.max(0, motion.y), motion.z * 1.1);
+                player.resetFallDistance();
+            }
         }
     }
 
     private void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
         ClientPowerState.set("");
+        ClientMorphs.clear();
+        MorphRenderer.clear();
     }
 
     // Shows "Optic Blasts [Beta]" in the top-left corner.

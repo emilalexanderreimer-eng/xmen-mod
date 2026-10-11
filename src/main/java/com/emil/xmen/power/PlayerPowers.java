@@ -50,6 +50,7 @@ public final class PlayerPowers {
 
     /** Gives a new player their random power, or reminds a returning player of theirs. */
     public static void onLogin(ServerPlayer player) {
+        com.emil.xmen.ability.powers.MindPowers.onLogin(player);
         Power power = get(player);
         if (power == null) {
             power = Powers.roll(player.getRandom());

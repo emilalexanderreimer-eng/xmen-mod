@@ -7,6 +7,7 @@ import com.emil.xmen.power.Powers;
 public final class ClientPowerState {
     private static String powerId = "";
     private static int cooldownTicks;
+    private static boolean zoomed;
 
     private ClientPowerState() {
     }
@@ -14,6 +15,15 @@ public final class ClientPowerState {
     public static void set(String id) {
         powerId = id;
         cooldownTicks = 0;
+        zoomed = false;
+    }
+
+    public static void setZoomed(boolean on) {
+        zoomed = on;
+    }
+
+    public static boolean zoomed() {
+        return zoomed;
     }
 
     public static void setCooldown(int ticks) {
