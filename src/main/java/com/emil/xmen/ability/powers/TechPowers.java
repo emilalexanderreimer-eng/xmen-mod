@@ -430,8 +430,6 @@ public final class TechPowers {
                 }
             });
         });
-            Scheduler.later(60, () -> explode(owner, at, 2.5f, false));
-        });
         // Throw up to 3 sticky bombs. Sneak + R sets all of them off at once.
         reg("time_bombs", b().active(1, player -> {
             PowerState st = state(player);
