@@ -1,15 +1,20 @@
 package com.emil.xmen.client;
 
 import com.emil.xmen.XMenMod;
+import com.emil.xmen.ability.PowerBehaviors;
 import com.emil.xmen.network.UsePowerPayload;
 import com.emil.xmen.power.Power;
 import com.mojang.blaze3d.platform.InputConstants;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -44,10 +49,21 @@ public class XMenClient {
     }
 
     private void onClientTick(ClientTickEvent.Post event) {
+        ClientPowerState.tick();
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null) {
+            return;
+        }
         while (USE_POWER.consumeClick()) {
-            if (Minecraft.getInstance().player != null) {
-                PacketDistributor.sendToServer(UsePowerPayload.INSTANCE);
-            }
+            PacketDistributor.sendToServer(UsePowerPayload.INSTANCE);
+        }
+        Power power = ClientPowerState.get();
+        // Player movement is decided on the client, so wall climbing happens here.
+        if (power != null && power.id().equals("wall_crawling") && player.horizontalCollision
+                && !player.getAbilities().flying) {
+            Vec3 motion = player.getDeltaMovement();
+            player.setDeltaMovement(motion.x, player.isShiftKeyDown() ? 0 : 0.2, motion.z);
+            player.resetFallDistance();
         }
     }
 
@@ -63,5 +79,19 @@ public class XMenClient {
             return;
         }
         graphics.drawString(minecraft.font, power.title(), 4, 4, 0xFFFFFF, true);
+        Component status;
+        if (!PowerBehaviors.isImplemented(power.id())) {
+            status = Component.literal("coming in a later update").withStyle(ChatFormatting.DARK_GRAY);
+        } else if (!power.type().usesKey()) {
+            status = Component.literal("always on").withStyle(ChatFormatting.GRAY);
+        } else if (ClientPowerState.cooldownTicks() > 0) {
+            status = Component.literal("[").append(USE_POWER.getTranslatedKeyMessage())
+                    .append("] " + (int) Math.ceil(ClientPowerState.cooldownTicks() / 20.0) + "s")
+                    .withStyle(ChatFormatting.GRAY);
+        } else {
+            status = Component.literal("[").append(USE_POWER.getTranslatedKeyMessage()).append("] ready")
+                    .withStyle(ChatFormatting.GREEN);
+        }
+        graphics.drawString(minecraft.font, status, 4, 15, 0xFFFFFF, true);
     }
 }

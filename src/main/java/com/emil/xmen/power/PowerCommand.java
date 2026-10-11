@@ -1,5 +1,6 @@
 package com.emil.xmen.power;
 
+import com.emil.xmen.ability.PowerBehaviors;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -15,6 +16,7 @@ import net.minecraft.server.level.ServerPlayer;
 /**
  * /power             show your power
  * /power list [level] list powers
+ * /power list working list the powers that already work
  * /power set <power> change your power (creative only)
  * /power random      roll a new random power (creative only)
  */
@@ -27,6 +29,7 @@ public final class PowerCommand {
                 .executes(PowerCommand::info)
                 .then(Commands.literal("list")
                         .executes(ctx -> listLevels(ctx.getSource()))
+                        .then(Commands.literal("working").executes(ctx -> listWorking(ctx.getSource())))
                         .then(Commands.argument("level", StringArgumentType.word())
                                 .suggests((ctx, builder) -> SharedSuggestionProvider.suggest(
                                         java.util.Arrays.stream(PowerLevel.values())
@@ -53,6 +56,10 @@ public final class PowerCommand {
         ctx.getSource().sendSuccess(() -> Component.literal(power.description() + " ("
                 + power.type().displayName() + ", " + power.category().displayName() + ")")
                 .withStyle(ChatFormatting.GRAY), false);
+        if (!PowerBehaviors.isImplemented(power.id())) {
+            ctx.getSource().sendSuccess(() -> Component.literal("This power doesn't work yet. It comes in a later update.")
+                    .withStyle(ChatFormatting.DARK_GRAY), false);
+        }
         return 1;
     }
 
@@ -63,6 +70,24 @@ public final class PowerCommand {
             source.sendSuccess(() -> Component.literal(level.displayName() + ": " + Powers.ofLevel(level).size()
                     + " powers, " + level.chancePercent() + "% chance").withStyle(level.color()), false);
         }
+        return 1;
+    }
+
+    private static int listWorking(CommandSourceStack source) {
+        StringBuilder names = new StringBuilder();
+        int count = 0;
+        for (Power power : Powers.all()) {
+            if (PowerBehaviors.isImplemented(power.id())) {
+                if (!names.isEmpty()) {
+                    names.append(", ");
+                }
+                names.append(power.id());
+                count++;
+            }
+        }
+        int shown = count;
+        source.sendSuccess(() -> Component.literal(shown + " powers work so far: ").withStyle(ChatFormatting.YELLOW)
+                .append(Component.literal(names.toString()).withStyle(ChatFormatting.WHITE)), false);
         return 1;
     }
 

@@ -15,6 +15,8 @@ public final class ModNetwork {
         PayloadRegistrar registrar = event.registrar("1");
         registrar.playToClient(SyncPowerPayload.TYPE, SyncPowerPayload.STREAM_CODEC,
                 (payload, context) -> context.enqueueWork(() -> ClientPowerState.set(payload.powerId())));
+        registrar.playToClient(CooldownPayload.TYPE, CooldownPayload.STREAM_CODEC,
+                (payload, context) -> context.enqueueWork(() -> ClientPowerState.setCooldown(payload.ticks())));
         registrar.playToServer(UsePowerPayload.TYPE, UsePowerPayload.STREAM_CODEC,
                 (payload, context) -> context.enqueueWork(() -> {
                     if (context.player() instanceof ServerPlayer player) {

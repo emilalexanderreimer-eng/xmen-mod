@@ -3,6 +3,8 @@ package com.emil.xmen.power;
 import java.util.function.Supplier;
 
 import com.emil.xmen.XMenMod;
+import com.emil.xmen.ability.PowerBehaviors;
+import com.emil.xmen.ability.PowerRuntime;
 import com.emil.xmen.network.SyncPowerPayload;
 import com.mojang.serialization.Codec;
 
@@ -36,8 +38,10 @@ public final class PlayerPowers {
     }
 
     public static void set(ServerPlayer player, Power power) {
+        Power old = get(player);
         player.setData(POWER, power.id());
         sync(player);
+        PowerRuntime.onPowerChanged(player, old);
     }
 
     public static void sync(ServerPlayer player) {
@@ -55,6 +59,7 @@ public final class PlayerPowers {
             player.sendSystemMessage(Component.literal(power.description()).withStyle(ChatFormatting.GRAY));
         } else {
             sync(player);
+            PowerRuntime.refresh(player);
             player.sendSystemMessage(Component.literal("Your power: ").withStyle(ChatFormatting.YELLOW)
                     .append(power.title()));
         }
@@ -63,15 +68,15 @@ public final class PlayerPowers {
     /** Called when the player presses the power key. */
     public static void onUseKey(ServerPlayer player) {
         Power power = get(player);
-        if (power == null) {
+        if (power == null || PowerRuntime.use(player)) {
             return;
         }
-        Component message;
-        if (!power.type().usesKey()) {
-            message = Component.literal(power.name() + " is always on, no key needed.");
+        String message;
+        if (!PowerBehaviors.isImplemented(power.id())) {
+            message = power.name() + " doesn't work yet. It comes in a later update.";
         } else {
-            message = Component.literal(power.name() + " can't be used yet. It comes in a later update.");
+            message = power.name() + " is always on, no key needed.";
         }
-        player.displayClientMessage(message.copy().withStyle(ChatFormatting.GRAY), true);
+        player.displayClientMessage(Component.literal(message).withStyle(ChatFormatting.GRAY), true);
     }
 }
