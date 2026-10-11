@@ -1,0 +1,301 @@
+# section|power|level|type|what it does in Minecraft
+Energy & Blasts|Optic Blasts (Cyclops)|Beta|Active|Red eye beam that damages and knocks back everything in a line
+Energy & Blasts|Kinetic Charging (Gambit)|Beta|Active|Charge the item in your hand and throw it so it explodes
+Energy & Blasts|Energy Absorption (Bishop)|Alpha|Passive|Soak up part of all damage, then release it as a shockwave
+Energy & Blasts|Plasma Bolts|Gamma|Active|Slow, heavy plasma orbs that burst on impact
+Energy & Blasts|Sonic Scream (Banshee)|Gamma|Active|Scream in a cone that damages and stuns mobs
+Energy & Blasts|Chain Lightning|Gamma|Active|Electric shock that jumps between nearby mobs
+Energy & Blasts|Concussive Punch|Delta|Active|Punch the air to knock mobs far back
+Energy & Blasts|Hard-Light Constructs|Alpha|Active|Make temporary glowing blocks to stand on or hide behind
+Energy & Blasts|Photon Beam|Beta|Active|Long-range light beam that makes mobs glow
+Energy & Blasts|Radiation Aura|Alpha|Active|Aura that poisons and weakens everything near you
+Energy & Blasts|Microwave Pulse|Delta|Active|Cooks raw food in your inventory and heats nearby mobs
+Energy & Blasts|Bio-Electric Touch|Epsilon|Passive|Your punches deal a little extra shock damage
+Energy & Blasts|Energy Shield|Gamma|Active|Bubble that blocks arrows and fireballs for a few seconds
+Energy & Blasts|Explosive Touch|Beta|Active|A block or mob you touch explodes a few seconds later
+Energy & Blasts|Disintegration Ray|Alpha|Active|Beam that destroys the blocks in a line
+Energy & Blasts|Static Shock|Epsilon|Passive|Mobs you hit are slowed for a moment
+Energy & Blasts|Solar Beams (Sunfire)|Beta|Active|Beams that get stronger in sunlight
+Energy & Blasts|Cosmic Energy Control|Omega|Both|Huge energy blasts, flight and strong resistance
+Energy & Blasts|Palm Blasts|Delta|Active|Short-range energy bolts from your hands
+Energy & Blasts|Reactive Charge|Gamma|Passive|Getting hit charges your next attack to double damage
+Fire & Heat|Pyrokinesis (Pyro)|Beta|Active|Throw fireballs and shape nearby fire
+Fire & Heat|Fireproof|Epsilon|Passive|Immune to fire and lava damage
+Fire & Heat|Living Flame|Alpha|Both|Turn into fire: fly, burn what you touch, ignore heat
+Fire & Heat|Body Heat|Delta|Passive|Melt snow and ice around you; never freeze
+Fire & Heat|Lava Walker|Delta|Passive|Lava under your feet cools into basalt as you walk
+Fire & Heat|Fire Breath|Gamma|Active|Breathe a cone of fire
+Fire & Heat|Smoke Form|Beta|Active|Become smoke: invisible, no fall damage, mobs pass through you
+Fire & Heat|Ember Trail|Epsilon|Passive|Leave a short trail of fire while sprinting
+Fire & Heat|Blast Punch|Gamma|Active|Your next punch explodes in a small blast
+Fire & Heat|Molten Skin|Gamma|Passive|Mobs that hit you catch fire
+Fire & Heat|Heat Vision|Gamma|Active|Stare at a block to smelt it (sand to glass, ore to ingot)
+Fire & Heat|Wall of Fire|Beta|Active|Raise a wall of fire in front of you
+Fire & Heat|Phoenix Rebirth|Omega|Passive|When you die, rise again from flames at full health (once a day)
+Fire & Heat|Fire Healing|Delta|Passive|Standing in fire heals you instead of hurting
+Fire & Heat|Meteor Call|Alpha|Active|Call down a burning meteor where you look
+Fire & Heat|Heat Sense|Epsilon|Passive|See warm mobs through walls close to you
+Fire & Heat|Sun Battery|Delta|Passive|Sunlight gives you Strength and Regeneration
+Fire & Heat|Flame Dash|Gamma|Active|Rocket forward leaving fire behind
+Fire & Heat|Volcano|Alpha|Active|The ground around you erupts with lava and fire
+Fire & Heat|Blue Flame|Beta|Active|Hotter fire that burns longer and ignores fire resistance
+Ice & Water|Cryokinesis (Iceman)|Beta|Active|Shoot ice that freezes mobs in place
+Ice & Water|Ice Form|Alpha|Both|Become living ice: armor, freezing touch, immune to cold
+Ice & Water|Ice Slide|Gamma|Active|Build an ice ramp where you look and slide along it
+Ice & Water|Frost Walker|Epsilon|Passive|Water freezes under your feet
+Ice & Water|Cold Proof|Epsilon|Passive|Powder snow never freezes you
+Ice & Water|Snowball Barrage|Delta|Active|Throw a burst of hard-hitting snowballs
+Ice & Water|Hydrokinesis|Beta|Active|Water jets that push mobs and put out fire
+Ice & Water|Gills|Epsilon|Passive|Breathe underwater forever
+Ice & Water|Aquatic Body|Delta|Passive|Swim fast and see clearly underwater
+Ice & Water|Tidal Wave|Alpha|Active|Summon a wave that sweeps mobs away
+Ice & Water|Ice Armor|Gamma|Active|Coat yourself in ice for strong protection
+Ice & Water|Blizzard|Alpha|Active|Snowstorm around you that slows and freezes mobs
+Ice & Water|Water Form|Beta|Both|Become water: no fall damage, slip through gaps
+Ice & Water|Ice Spikes|Gamma|Active|Spikes of ice shoot up from the ground
+Ice & Water|Rain Healing|Delta|Passive|Regenerate in water or rain
+Ice & Water|Absolute Zero|Omega|Active|Freeze everything in a huge radius: water, lava and mobs
+Ice & Water|Mist|Delta|Active|Thick fog that hides you from mobs
+Ice & Water|Whirlpool|Gamma|Active|Pull mobs in water toward one point
+Ice & Water|Ice Wall|Delta|Active|Wall of ice blocks attacks in front of you
+Ice & Water|Boiling Touch|Gamma|Active|Boil the water around you, hurting mobs in it
+Weather & Air|Weather Control (Storm)|Omega|Active|Change the weather at will and call lightning anywhere
+Weather & Air|Lightning Strike|Beta|Active|Lightning strikes where you look
+Weather & Air|Wind Gust|Gamma|Active|Blast of wind pushes mobs and items away
+Weather & Air|Wind Flight|Beta|Both|Fly by riding the wind
+Weather & Air|Tornado|Alpha|Active|Spawn a tornado that throws mobs around
+Weather & Air|Rain Maker|Delta|Active|Start rain (good for crops and fishing)
+Weather & Air|Clear Skies|Delta|Active|Stop rain and thunder
+Weather & Air|Air Bubble|Epsilon|Active|Breathable bubble of air underwater
+Weather & Air|Lightning Proof|Epsilon|Passive|Immune to lightning
+Weather & Air|Cyclone Spin|Gamma|Active|Spin fast to deflect arrows
+Weather & Air|Vacuum|Alpha|Active|Pull the air away from mobs so they suffocate
+Weather & Air|Wind Jump|Delta|Active|A gust launches you high into the air
+Weather & Air|Storm Power|Beta|Passive|Faster and stronger during rain and thunder
+Weather & Air|Feather Fall|Epsilon|Passive|No fall damage
+Weather & Air|Hailstorm|Gamma|Active|Hail falls on an area and hurts mobs
+Weather & Air|Air Pressure|Beta|Active|Crush mobs to the ground or make them float
+Weather & Air|Thunderclap|Gamma|Active|Clap to stun all mobs near you
+Weather & Air|Wind Wall|Delta|Active|Wall of wind that stops arrows
+Weather & Air|Jet Stream|Alpha|Active|Fly extremely fast in a straight line
+Weather & Air|Static Field|Delta|Passive|Mobs touching you get zapped
+Earth, Stone & Metal|Magnetism (Magneto)|Omega|Active|Lift iron blocks, pull mobs in armor, fly on magnetic fields
+Earth, Stone & Metal|Steel Skin (Colossus)|Beta|Passive|Organic steel body: high armor and strength, sink in water
+Earth, Stone & Metal|Earth Shaping|Beta|Active|Raise and move dirt and stone
+Earth, Stone & Metal|Ground Stomp|Gamma|Active|Stomp to shake the ground and knock mobs down
+Earth, Stone & Metal|Stone Skin|Delta|Passive|Extra armor like stone
+Earth, Stone & Metal|Tunneling|Gamma|Active|Dig through stone extremely fast
+Earth, Stone & Metal|Sand Form|Beta|Both|Become sand: arrows and falls don't hurt you
+Earth, Stone & Metal|Crystal Growth|Gamma|Active|Grow crystal walls and spikes
+Earth, Stone & Metal|Ore Sense|Epsilon|Passive|Nearby ores glow through stone
+Earth, Stone & Metal|Earthquake|Alpha|Active|Big quake that breaks blocks around you
+Earth, Stone & Metal|Iron Pull|Delta|Active|Pull iron items and dropped items toward you
+Earth, Stone & Metal|Diamond Form (Emma Frost)|Alpha|Both|Turn to diamond: almost unbreakable and very strong
+Earth, Stone & Metal|Boulder Throw|Delta|Active|Rip out a chunk of ground and throw it
+Earth, Stone & Metal|Sinkhole|Epsilon|Active|The ground under a mob drops away
+Earth, Stone & Metal|Mountain Strength|Gamma|Passive|Stronger while standing on stone
+Earth, Stone & Metal|Quicksand|Gamma|Active|Ground turns soft so mobs sink and slow down
+Earth, Stone & Metal|Lucky Miner|Epsilon|Passive|Better chance of extra drops from ores
+Earth, Stone & Metal|Floating Rock|Alpha|Active|Fly standing on a floating rock platform
+Earth, Stone & Metal|Obsidian Shell|Beta|Active|Wrap yourself in obsidian: nearly invulnerable for a moment
+Earth, Stone & Metal|Tremor Sense|Delta|Passive|Feel mobs walking on the ground near you (they glow)
+Movement & Travel|Teleportation (Nightcrawler)|Beta|Active|Teleport to where you look, with a puff of smoke
+Movement & Travel|Super Speed (Quicksilver)|Beta|Passive|Run extremely fast
+Movement & Travel|Wall Crawling|Delta|Passive|Climb any wall
+Movement & Travel|Super Jump|Delta|Passive|Jump much higher
+Movement & Travel|Phasing (Shadowcat)|Alpha|Active|Walk through walls
+Movement & Travel|Flight|Gamma|Both|Fly freely
+Movement & Travel|Portals (Blink)|Alpha|Active|Open a portal between two places
+Movement & Travel|Dimension Hop|Alpha|Active|Teleport between the Overworld, Nether and End
+Movement & Travel|Blink Step|Delta|Active|Short instant dash forward
+Movement & Travel|Glider|Epsilon|Passive|Glide when falling, like with an elytra
+Movement & Travel|Water Runner|Epsilon|Passive|Run across water while sprinting
+Movement & Travel|Fast Swimmer|Epsilon|Passive|Swim very fast
+Movement & Travel|Home Recall|Gamma|Active|Teleport to your bed
+Movement & Travel|Group Teleport|Beta|Active|Teleport yourself and nearby friends together
+Movement & Travel|Rocket Launch (Cannonball)|Gamma|Active|Blast off into the air and fly forward
+Movement & Travel|Bounce|Delta|Passive|Bounce off the ground; no fall damage
+Movement & Travel|Grapple|Delta|Active|Pull yourself to the block you look at
+Movement & Travel|Wall Run|Epsilon|Passive|Run along walls for a short time
+Movement & Travel|Low Gravity|Epsilon|Passive|Jump higher and fall slower
+Movement & Travel|Instant Travel|Alpha|Active|Teleport to any coordinates you type
+Body & Strength|Super Strength|Beta|Passive|Hit much harder and break blocks faster
+Body & Strength|Invulnerability|Alpha|Passive|Take much less damage from everything
+Body & Strength|Giant Growth|Gamma|Active|Grow huge: more reach and strength, but slower
+Body & Strength|Shrinking|Gamma|Active|Become tiny: fit through 1-block gaps, harder to hit
+Body & Strength|Claws (Wolverine)|Gamma|Active|Pop out claws for strong melee damage
+Body & Strength|Bone Spikes (Marrow)|Delta|Passive|Mobs that hit you take spike damage
+Body & Strength|Density Control|Beta|Active|Become heavy (no knockback) or light (float)
+Body & Strength|Rubber Body|Gamma|Passive|No fall damage and longer reach
+Body & Strength|Extra Arms|Delta|Passive|Mine and attack faster
+Body & Strength|Endless Stamina|Epsilon|Passive|Sprinting never costs hunger
+Body & Strength|Thick Hide|Delta|Passive|Extra armor points
+Body & Strength|Acid Spit|Delta|Active|Spit acid that hurts mobs and wears down armor
+Body & Strength|Venom Strike|Gamma|Passive|Your hits poison
+Body & Strength|Tail|Epsilon|Passive|Extra reach and better climbing
+Body & Strength|Wings (Angel)|Beta|Both|Feathered wings let you fly
+Body & Strength|Quick Reflexes|Delta|Passive|Chance to dodge attacks
+Body & Strength|Berserker Rage|Gamma|Active|Huge strength for a while, but less defense
+Body & Strength|Tough Bones|Epsilon|Passive|Much less fall damage
+Body & Strength|Metal Skeleton|Alpha|Passive|Unbreakable bones: no knockback and extra damage
+Body & Strength|Iron Stomach|Epsilon|Passive|Eat rotten flesh and raw food with no bad effects
+Healing & Life|Healing Factor (Wolverine)|Beta|Passive|Heal fast from any wound
+Healing & Life|Extreme Regeneration|Alpha|Passive|Come back from almost dead; poison and wither barely work on you
+Healing & Life|Healing Touch|Gamma|Active|Heal friends and pets
+Healing & Life|Life Drain|Beta|Active|Steal health from mobs around you
+Healing & Life|Poison Proof|Epsilon|Passive|Immune to poison
+Healing & Life|Sickness Proof|Epsilon|Passive|Immune to hunger, nausea and wither effects
+Healing & Life|Slow Metabolism|Delta|Passive|Hunger drains much slower
+Healing & Life|Resurrection|Omega|Active|Bring a dead friend back to life where they fell
+Healing & Life|Biokinesis (Elixir)|Alpha|Active|Heal or badly hurt any living thing with a touch
+Healing & Life|Cure Touch|Delta|Active|Remove bad effects and cure zombie villagers
+Healing & Life|Second Life|Gamma|Passive|Survive a killing blow once a day
+Healing & Life|Healing Aura|Gamma|Passive|Friends near you regenerate
+Healing & Life|Grass Healing|Epsilon|Passive|Heal while standing on grass
+Healing & Life|Adrenaline|Delta|Passive|Low health gives you speed and strength
+Healing & Life|Toxic Cloud|Gamma|Active|Release a poison cloud
+Healing & Life|Plague|Beta|Active|Sickness that weakens mobs and spreads between them
+Healing & Life|Life Sense|Epsilon|Passive|See the health of mobs you look at
+Healing & Life|Pain Eater|Delta|Passive|Taking damage fills your hunger
+Healing & Life|Undying|Alpha|Passive|Damage drains your hunger instead of health while you have food
+Healing & Life|Vampire Bite|Gamma|Passive|Your melee hits heal you a little
+Senses & Detection|Night Vision|Epsilon|Passive|See in the dark
+Senses & Detection|X-Ray Vision|Gamma|Active|See through blocks for a few seconds
+Senses & Detection|Super Hearing|Epsilon|Passive|Mobs close to you glow, even behind walls
+Senses & Detection|Danger Sense|Delta|Passive|Warning when a mob starts targeting you
+Senses & Detection|Eagle Eyes|Epsilon|Active|Zoom in like a spyglass
+Senses & Detection|Tracker|Delta|Active|See a trail of a player's or mob's recent steps
+Senses & Detection|Mutant Detection (Cerebro)|Gamma|Active|See every player's power and where they are
+Senses & Detection|Super Smell|Epsilon|Passive|Animals and dropped items nearby glow
+Senses & Detection|Precognition (Blindfold)|Beta|Passive|See attacks coming and dodge some of them
+Senses & Detection|Radar Sense|Gamma|Passive|See all mobs around you, even when blinded
+Senses & Detection|Structure Sense|Delta|Active|Point toward the nearest village or structure
+Senses & Detection|Treasure Sense|Gamma|Active|Show nearby chests through walls
+Senses & Detection|Echolocation|Delta|Active|A ping that outlines mobs and caves around you
+Senses & Detection|Weak Spot Sight|Delta|Passive|Your critical hits do extra damage
+Senses & Detection|Time Sense|Epsilon|Passive|Always know the time and when night falls
+Senses & Detection|Cosmic Awareness|Omega|Passive|Sense everything near you: mobs, ores, chests and players
+Senses & Detection|Remote Viewing|Beta|Active|Look from a faraway spot for a few seconds
+Senses & Detection|Postcognition|Gamma|Active|See where you died and where players were recently
+Senses & Detection|Aura Reading|Delta|Active|Mobs glow in colors showing if they're hostile or friendly
+Senses & Detection|Perfect Aim|Gamma|Passive|Arrows and thrown items fly straight and hit harder
+Mind & Psychic|Telepathy (Professor X)|Beta|Active|See what mobs are targeting and talk privately to any player
+Mind & Psychic|Telekinesis (Jean Grey)|Beta|Active|Lift and throw mobs and blocks with your mind
+Mind & Psychic|Mind Control|Alpha|Active|Make a mob fight for you
+Mind & Psychic|Psychic Blast|Gamma|Active|Mental blast that hurts and confuses
+Mind & Psychic|Illusions (Mirage)|Gamma|Active|Create fake copies of yourself to distract mobs
+Mind & Psychic|Psychic Shield|Delta|Passive|Immune to nausea, blindness and darkness; resist mind control
+Mind & Psychic|Memory Wipe|Delta|Active|A mob forgets you and stops chasing
+Mind & Psychic|Fear|Gamma|Active|Mobs run away in panic
+Mind & Psychic|Calm|Epsilon|Active|Hostile mobs near you stop attacking for a while
+Mind & Psychic|Psychic Blade (Psylocke)|Beta|Active|Psychic blade that ignores armor
+Mind & Psychic|Astral Projection|Alpha|Active|Leave your body and fly around as a ghost
+Mind & Psychic|Phoenix Force|Omega|Both|Cosmic fire: flight, huge fire blasts and rebirth
+Mind & Psychic|Mind Link|Delta|Active|Share your location and health with friends
+Mind & Psychic|Hypnosis|Delta|Active|Put a mob to sleep for a while
+Mind & Psychic|Telekinetic Flight|Gamma|Both|Fly using your mind
+Mind & Psychic|Telekinetic Barrier|Gamma|Active|Psychic wall that pushes everything away
+Mind & Psychic|Possession|Alpha|Active|Take over a mob and walk around in its body
+Mind & Psychic|Psychic Weapons|Beta|Active|Create glowing psychic weapons that hit hard
+Mind & Psychic|Hive Mind|Omega|Active|Control many mobs at once and see through their eyes
+Mind & Psychic|Emotion Sense|Epsilon|Passive|See which mobs are angry at you
+Shapeshifting|Shapeshifting (Mystique)|Beta|Active|Look like any mob you've hit
+Shapeshifting|Wolf Form (Wolfsbane)|Delta|Active|Become a wolf: fast, strong bite
+Shapeshifting|Bird Form|Gamma|Active|Become a bird and fly
+Shapeshifting|Fish Form|Delta|Active|Become a fish-like form that swims very fast
+Shapeshifting|Beast Form (Beast)|Gamma|Passive|Blue furry body: strong, agile, climbs walls
+Shapeshifting|Ghost Form|Beta|Active|Become see-through and untouchable
+Shapeshifting|Statue Form|Delta|Active|Turn to stone: can't move but almost nothing hurts you
+Shapeshifting|Power Mimic (Synch)|Alpha|Passive|Copy the power of the last mutant player near you for a while
+Shapeshifting|Power Absorption (Rogue)|Alpha|Active|Touch a player or mob to steal their power or ability for a while
+Shapeshifting|Baby Form|Epsilon|Active|Become small like a baby mob
+Shapeshifting|Slime Body|Delta|Both|Bouncy body, no fall damage, split into small slimes when hurt
+Shapeshifting|Bee Swarm Form|Beta|Active|Become a swarm of bees
+Shapeshifting|Dragon Form|Alpha|Active|Become a dragon: fly and breathe fire
+Shapeshifting|Werewolf|Gamma|Passive|Stronger and faster at night
+Shapeshifting|Elemental Form|Alpha|Active|Switch between fire, water, earth and air bodies
+Shapeshifting|Enderman Form|Gamma|Active|Teleport away when hit and pick up blocks
+Shapeshifting|Undead Body|Delta|Passive|Zombies and skeletons ignore you; healing potions hurt you
+Shapeshifting|Golem Form|Beta|Active|Become an iron golem: huge strength and health, slow
+Shapeshifting|Liquid Metal Body|Alpha|Passive|Arrows pass through you and wounds close instantly
+Shapeshifting|Total Transformation|Omega|Active|Become any mob in the game with all its abilities
+Nature & Animals|Plant Growth|Delta|Active|Crops and trees around you grow instantly
+Nature & Animals|Vine Grab|Gamma|Active|Vines grab mobs and hold them still
+Nature & Animals|Animal Friend|Epsilon|Passive|Animals follow you and are easier to tame
+Nature & Animals|Animal Command|Gamma|Active|Animals and pets attack your target
+Nature & Animals|Sleep Pollen|Delta|Active|Pollen cloud that slows and blinds mobs
+Nature & Animals|Photosynthesis|Epsilon|Passive|Sunlight fills your hunger
+Nature & Animals|Thorn Skin|Delta|Passive|Thorns hurt mobs that hit you
+Nature & Animals|Leaf Camouflage|Epsilon|Passive|Invisible while crouching in leaves or tall grass
+Nature & Animals|Tree Form|Gamma|Active|Root in place: big armor and regeneration, can't move
+Nature & Animals|Bee Call|Delta|Active|Angry bees attack your target
+Nature & Animals|Mushroom Spores|Gamma|Active|Spores poison mobs and grow mushrooms
+Nature & Animals|Wolf Pack|Gamma|Active|Summon a pack of wolves that fight with you
+Nature & Animals|Bird Flock|Gamma|Active|A flock of birds blinds and pecks mobs
+Nature & Animals|Harvest Bounty|Epsilon|Passive|More drops from crops and animals
+Nature & Animals|Gaia Link|Alpha|Passive|Crops grow as you walk, animals obey you, trees sprout
+Nature & Animals|Insect Command|Beta|Active|Bees, spiders and silverfish nearby fight for you
+Nature & Animals|Spider Powers|Gamma|Passive|Climb walls and shoot webs that trap mobs
+Nature & Animals|Fish Caller|Epsilon|Active|Fish come to you; much better fishing luck
+Nature & Animals|Monster Tamer|Alpha|Active|Tame hostile mobs as pets
+Nature & Animals|Seed Bomb|Delta|Active|Throw seeds that burst into grabbing vines
+Light, Shadow & Stealth|Invisibility|Gamma|Active|Become invisible
+Light, Shadow & Stealth|Light Bending (Dazzler)|Beta|Active|Blinding light shows and invisibility
+Light, Shadow & Stealth|Darkness Control|Beta|Active|Cover an area in darkness that only you can see through
+Light, Shadow & Stealth|Shadow Walk|Alpha|Active|Teleport from one dark spot to another
+Light, Shadow & Stealth|Flash|Delta|Active|Blind all mobs around you
+Light, Shadow & Stealth|Glow|Epsilon|Active|Light up the area around you like a torch
+Light, Shadow & Stealth|Camouflage|Delta|Passive|Invisible while standing still
+Light, Shadow & Stealth|Silent Steps|Epsilon|Passive|Mobs don't hear you and sculk sensors don't trigger
+Light, Shadow & Stealth|Shadow Clones|Gamma|Active|Shadow copies of you fight for you
+Light, Shadow & Stealth|Hologram|Delta|Active|Project a fake image of yourself to distract mobs
+Light, Shadow & Stealth|Darkforce (Cloak)|Alpha|Active|Swallow mobs into a shadow dimension that hurts them
+Light, Shadow & Stealth|Laser|Gamma|Active|Thin focused laser beam
+Light, Shadow & Stealth|Starlight Power|Delta|Passive|Stronger at night
+Light, Shadow & Stealth|Shadow Cloak|Gamma|Active|Hostile mobs can't see you for a few seconds
+Light, Shadow & Stealth|Rainbow Beam|Beta|Active|Rainbow beam that gives mobs random effects
+Light, Shadow & Stealth|Light Speed|Alpha|Active|Turn into light and shoot far in a straight line
+Light, Shadow & Stealth|Blinding Touch|Epsilon|Active|Touching a mob blinds it
+Light, Shadow & Stealth|Eclipse|Omega|Active|Turn day into night or night into day
+Light, Shadow & Stealth|Light Eater|Delta|Passive|Heal while standing in bright light
+Light, Shadow & Stealth|Unnoticed|Gamma|Passive|Mobs only notice you once you attack
+Reality, Time & Space|Reality Warping (Legion)|Omega|Active|Rewrite the world: change blocks into other blocks and mobs into animals
+Reality, Time & Space|Time Stop|Omega|Active|Freeze all mobs and arrows for a few seconds
+Reality, Time & Space|Slow Motion|Alpha|Active|Everything around you moves in slow motion
+Reality, Time & Space|Rewind|Alpha|Active|Jump back to where and how you were 10 seconds ago
+Reality, Time & Space|Gravity Control (Polaris)|Alpha|Active|Make mobs float away or slam them to the ground
+Reality, Time & Space|Luck (Domino)|Beta|Passive|Better loot, more critical hits, mobs miss you more
+Reality, Time & Space|Transmutation|Alpha|Active|Turn blocks into other blocks (stone into iron)
+Reality, Time & Space|Pocket Space|Beta|Active|Open your ender chest anywhere
+Reality, Time & Space|Duplication (Multiple Man)|Beta|Active|Make copies of yourself that fight
+Reality, Time & Space|Molecular Breakdown|Alpha|Active|Break any block instantly, even obsidian
+Reality, Time & Space|Power Negation (Leech)|Beta|Passive|Mutants near you lose their powers
+Reality, Time & Space|Power Boost|Gamma|Active|Make nearby friends' powers stronger for a while
+Reality, Time & Space|Power Granting|Omega|Active|Give another player a second power for a while
+Reality, Time & Space|Aging Touch|Gamma|Active|Grow baby animals and crops instantly; weaken old mobs
+Reality, Time & Space|Wormhole|Alpha|Active|Swallow mobs or items and spit them out somewhere else
+Reality, Time & Space|Force Field|Gamma|Active|Bubble that protects you and friends
+Reality, Time & Space|Lucky Aura|Delta|Passive|Friends near you get Luck
+Reality, Time & Space|Hex Bolts (Scarlet Witch)|Gamma|Active|Bolts that cause random bad luck to mobs
+Reality, Time & Space|Black Hole|Omega|Active|Create a black hole that pulls everything in
+Reality, Time & Space|Decay|Beta|Active|Blocks crumble and mobs' armor breaks around you
+Tech, Matter & Special|Technopathy (Forge)|Beta|Active|Control redstone, doors and machines from far away
+Tech, Matter & Special|Techno-Organic Body (Warlock)|Alpha|Passive|Eat metal items to repair and boost your armor
+Tech, Matter & Special|Super Genius|Gamma|Passive|More XP from everything and cheaper enchanting
+Tech, Matter & Special|Redstone Pulse|Delta|Active|Power all redstone around you
+Tech, Matter & Special|Item Magnet|Epsilon|Passive|Items fly to you from far away
+Tech, Matter & Special|Repair Touch|Delta|Active|Repair your tools and armor
+Tech, Matter & Special|Weapon Summon|Gamma|Active|Create a glowing weapon from nothing
+Tech, Matter & Special|Blast Proof|Epsilon|Passive|Immune to explosions
+Tech, Matter & Special|Self-Detonation (Nitro)|Gamma|Active|Explode without dying (long cooldown)
+Tech, Matter & Special|Matter Absorption|Beta|Passive|Touch a material to take its traits (stone = armor, iron = strength)
+Tech, Matter & Special|Built-in Compass|Epsilon|Passive|Always see your coordinates and direction
+Tech, Matter & Special|Perfect Memory|Epsilon|Passive|Keep your XP when you die
+Tech, Matter & Special|Metal Wings|Gamma|Both|Fly with wings made of metal
+Tech, Matter & Special|Living Battery|Delta|Passive|Lightning and redstone charge you with Strength
+Tech, Matter & Special|Instant Crafting|Delta|Active|Craft anything without a crafting table
+Tech, Matter & Special|Psionic Armor (Armor)|Beta|Active|Energy armor that grows stronger the more you get hit
+Tech, Matter & Special|Sticky Goo|Epsilon|Active|Shoot goo that slows mobs
+Tech, Matter & Special|Time Bombs (Boom-Boom)|Gamma|Active|Throw glowing bombs made from nothing
+Tech, Matter & Special|Adaptation (Darwin)|Alpha|Passive|Become immune to whatever hurt you last
+Tech, Matter & Special|Evolution|Omega|Passive|Start weak and unlock new abilities as you gain XP levels

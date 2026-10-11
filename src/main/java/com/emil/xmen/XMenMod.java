@@ -1,11 +1,16 @@
 package com.emil.xmen;
 
+import com.emil.xmen.network.ModNetwork;
+import com.emil.xmen.power.PlayerPowers;
+import com.emil.xmen.power.PowerCommand;
+import com.emil.xmen.power.Powers;
 import com.mojang.logging.LogUtils;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
+
+import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import org.slf4j.Logger;
 
@@ -15,13 +20,20 @@ public class XMenMod {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public XMenMod(IEventBus modEventBus) {
+        PlayerPowers.register(modEventBus);
+        modEventBus.addListener(ModNetwork::register);
         NeoForge.EVENT_BUS.addListener(this::onPlayerLogin);
-        LOGGER.info("X-Men Mutants mod loaded");
+        NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
+        LOGGER.info("X-Men Mutants loaded with {} powers", Powers.count());
     }
 
-    // Shows a chat message on join so it's easy to see the mod is installed.
     private void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-        event.getEntity().sendSystemMessage(
-                Component.translatable("message.xmen.welcome").withStyle(ChatFormatting.GOLD));
+        if (event.getEntity() instanceof ServerPlayer player) {
+            PlayerPowers.onLogin(player);
+        }
+    }
+
+    private void onRegisterCommands(RegisterCommandsEvent event) {
+        PowerCommand.register(event.getDispatcher());
     }
 }
