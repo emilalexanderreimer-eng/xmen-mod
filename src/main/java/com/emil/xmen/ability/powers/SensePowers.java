@@ -191,19 +191,14 @@ public final class SensePowers {
             return true;
         }));
 
-        // You hear hidden monsters: you're told where the nearest one behind a wall is.
-        reg("super_hearing", b().every(40, player -> {
-            LivingEntity nearest = null;
-            double best = Double.MAX_VALUE;
-            for (LivingEntity e : enemiesAround(player, 20)) {
-                double d = e.distanceToSqr(player);
-                if (!player.hasLineOfSight(e) && d < best) {
-                    best = d;
-                    nearest = e;
+        // You hear what hides behind walls: hidden monsters and other players nearby show up as sound notes
+        // that only you can see.
+        reg("super_hearing", b().every(20, player -> {
+            for (LivingEntity e : livingAround(player, 24)) {
+                if (!player.hasLineOfSight(e) && (isEnemy(player, e) || e instanceof Player)) {
+                    privateParticles(player, e.position().add(0, e.getBbHeight() + 0.4, 0),
+                            e instanceof Player ? ParticleTypes.HEART : ParticleTypes.NOTE, 1, 0.1);
                 }
-            }
-            if (nearest != null) {
-                tell(player, "You hear a " + nearest.getName().getString() + ": " + direction(player, nearest.position()));
             }
         }));
 
@@ -357,10 +352,31 @@ public final class SensePowers {
             return true;
         }));
 
-        // Chests, barrels and spawners nearby glow through walls for 15 seconds.
+        // R: sense loot nobody has found yet. Unopened chests, barrels and pots with treasure inside glow gold
+        // through walls for 30 seconds, up to 48 blocks away.
         reg("treasure_sense", b().active(20, player -> {
-            int found = highlight(player, 24, false, true, 15, 40);
-            tell(player, found == 0 ? "No treasure nearby" : "Found " + found + " containers");
+            ServerLevel level = level(player);
+            int found = 0;
+            int cx = player.blockPosition().getX() >> 4;
+            int cz = player.blockPosition().getZ() >> 4;
+            for (int x = cx - 3; x <= cx + 3; x++) {
+                for (int z = cz - 3; z <= cz + 3; z++) {
+                    if (!level.hasChunk(x, z)) {
+                        continue;
+                    }
+                    for (net.minecraft.world.level.block.entity.BlockEntity be
+                            : level.getChunk(x, z).getBlockEntities().values()) {
+                        if (be instanceof net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity box
+                                && box.getLootTable() != null
+                                && be.getBlockPos().distSqr(player.blockPosition()) < 48 * 48) {
+                            Highlights.block(level, be.getBlockPos(), 0xFFD700, 30);
+                            found++;
+                        }
+                    }
+                }
+            }
+            tell(player, found == 0 ? "No hidden treasure nearby" : "You sense " + found + " treasure chests");
+            sound(player, SoundEvents.AMETHYST_BLOCK_CHIME, 1, 1.5f);
             return true;
         }));
 
@@ -383,13 +399,25 @@ public final class SensePowers {
             return true;
         }));
 
-        // Your critical hits (jumping hits) do extra damage.
-        reg("weak_spot_sight", b().onAttack((player, target, event) -> {
-            if (player.fallDistance > 0 && !player.onGround() && !player.isInWater()) {
-                event.setAmount(event.getAmount() * 1.5f);
-                particlesAround(player, target, ParticleTypes.ENCHANTED_HIT, 10);
-            }
-        }));
+        // You see where mobs are weak: a spark marks their back, and hitting a mob from behind
+        // does double damage.
+        reg("weak_spot_sight", b()
+                .every(20, player -> {
+                    for (LivingEntity e : enemiesAround(player, 12)) {
+                        Vec3 back = e.position().add(0, e.getBbHeight() * 0.6, 0)
+                                .subtract(e.getLookAngle().multiply(0.5, 0, 0.5));
+                        player.connection.send(new net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket(
+                                ParticleTypes.ENCHANTED_HIT, false, back.x, back.y, back.z, 0.05f, 0.05f, 0.05f, 0, 3));
+                    }
+                })
+                .onAttack((player, target, event) -> {
+                    Vec3 mine = new Vec3(player.getLookAngle().x, 0, player.getLookAngle().z).normalize();
+                    Vec3 theirs = new Vec3(target.getLookAngle().x, 0, target.getLookAngle().z).normalize();
+                    if (mine.dot(theirs) > 0.5) {
+                        event.setAmount(event.getAmount() * 2);
+                        particlesAround(player, target, ParticleTypes.ENCHANTED_HIT, 12);
+                    }
+                }));
 
         // Always know the time, and get a warning when night is coming.
         reg("time_sense", b().every(100, player -> {

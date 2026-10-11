@@ -1,6 +1,7 @@
 package com.emil.xmen.power;
 
 import com.emil.xmen.ability.PowerBehaviors;
+import com.emil.xmen.ability.powers.MovementPowers;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -10,6 +11,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -40,7 +42,9 @@ public final class PowerCommand {
                         .then(Commands.argument("power", StringArgumentType.word())
                                 .suggests((ctx, builder) -> SharedSuggestionProvider.suggest(Powers.ids(), builder))
                                 .executes(PowerCommand::set)))
-                .then(Commands.literal("random").executes(PowerCommand::random)));
+                .then(Commands.literal("random").executes(PowerCommand::random))
+                .then(Commands.literal("travel")
+                        .then(Commands.argument("pos", Vec3Argument.vec3()).executes(PowerCommand::travel))));
     }
 
     private static int info(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
@@ -150,5 +154,13 @@ public final class PowerCommand {
             return false;
         }
         return true;
+    }
+
+    private static int travel(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+        var pos = Vec3Argument.getVec3(ctx, "pos");
+        String result = MovementPowers.travelCommand(player, pos.x, pos.y, pos.z);
+        ctx.getSource().sendSuccess(() -> Component.literal(result), false);
+        return 1;
     }
 }

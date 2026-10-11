@@ -35,6 +35,8 @@ import org.lwjgl.glfw.GLFW;
 // Only loaded on the game client, never on a dedicated server.
 @Mod(value = XMenMod.MOD_ID, dist = Dist.CLIENT)
 public class XMenClient {
+    private static boolean gliding;
+
     public static final KeyMapping USE_POWER = new KeyMapping("key.xmen.use_power",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, "key.categories.xmen");
 
@@ -94,13 +96,35 @@ public class XMenClient {
             player.setDeltaMovement(motion.x, player.isShiftKeyDown() ? 0 : 0.2, motion.z);
             player.resetFallDistance();
         }
-        if ((id.equals("glider") || id.equals("metal_wings")) && !player.onGround() && !player.isInWater()
+        if (id.equals("metal_wings") && !player.onGround() && !player.isInWater()
                 && player.input.jumping && motion.y < 0) {
             Vec3 look = player.getLookAngle();
-            double speed = id.equals("metal_wings") ? 0.75 : 0.55;
-            player.setDeltaMovement(motion.x * 0.85 + look.x * speed * 0.15, Math.max(motion.y, -0.08),
-                    motion.z * 0.85 + look.z * speed * 0.15);
+            player.setDeltaMovement(motion.x * 0.85 + look.x * 0.75 * 0.15, Math.max(motion.y, -0.08),
+                    motion.z * 0.85 + look.z * 0.75 * 0.15);
             player.resetFallDistance();
+        }
+        // Glider works like a light elytra: look down to dive and pick up speed, look up to trade speed for height.
+        if (id.equals("glider")) {
+            boolean airborne = !player.onGround() && !player.isInWater() && player.input.jumping;
+            if (airborne && (gliding || motion.y < 0)) {
+                gliding = true;
+                Vec3 look = player.getLookAngle();
+                double speed = Math.sqrt(motion.x * motion.x + motion.z * motion.z);
+                double pitch = look.y;
+                if (pitch < 0) {
+                    speed = Math.min(1.4, speed - pitch * 0.06);
+                } else {
+                    speed = Math.max(0.15, speed - pitch * 0.04);
+                }
+                double flat = Math.sqrt(look.x * look.x + look.z * look.z);
+                double dx = flat < 1.0E-3 ? 0 : look.x / flat;
+                double dz = flat < 1.0E-3 ? 0 : look.z / flat;
+                double vy = pitch < 0 ? pitch * speed * 0.9 : pitch * speed * 0.6 - 0.04;
+                player.setDeltaMovement(dx * speed, Math.max(vy, -1.2), dz * speed);
+                player.resetFallDistance();
+            } else {
+                gliding = false;
+            }
         }
         if (id.equals("water_runner") && player.isSprinting()) {
             BlockPos below = BlockPos.containing(player.getX(), player.getY() - 0.1, player.getZ());

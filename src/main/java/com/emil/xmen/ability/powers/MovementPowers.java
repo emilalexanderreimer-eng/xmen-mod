@@ -348,33 +348,37 @@ public final class MovementPowers {
                     return true;
                 }));
 
-        // Teleport yourself and every friend near you to where you look.
-        reg("group_teleport", b().active(10, player -> {
-            BlockPos spot = teleportSpot(player, 64);
-            if (spot == null) {
-                tell(player, "No room to teleport there");
+        // R: call every player and every one of your pets in this world to your side, wherever they are.
+        reg("group_teleport", b().active(60, player -> {
+            ServerLevel level = level(player);
+            List<Entity> called = new ArrayList<>();
+            for (Entity e : level.getAllEntities()) {
+                if (e != player && e.isAlive() && (e instanceof ServerPlayer
+                        || e instanceof net.minecraft.world.entity.TamableAnimal pet && pet.isTame()
+                                && player.getUUID().equals(pet.getOwnerUUID()))) {
+                    called.add(e);
+                }
+            }
+            if (called.isEmpty()) {
+                tell(player, "Nobody to call");
                 return false;
             }
-            Vec3 to = Vec3.atBottomCenterOf(spot);
-            int taken = 0;
-            for (LivingEntity e : livingAround(player, 6)) {
-                if (isFriend(player, e)) {
-                    level(player).sendParticles(ParticleTypes.PORTAL, e.getX(), e.getY() + 1, e.getZ(), 20, 0.3, 0.5, 0.3, 0.3);
-                    e.teleportTo(to.x + player.getRandom().triangle(0, 1.5), to.y, to.z + player.getRandom().triangle(0, 1.5));
-                    e.resetFallDistance();
-                    taken++;
+            for (Entity e : called) {
+                level.sendParticles(ParticleTypes.PORTAL, e.getX(), e.getY() + 1, e.getZ(), 20, 0.3, 0.5, 0.3, 0.3);
+                e.teleportTo(player.getX() + player.getRandom().triangle(0, 2), player.getY(),
+                        player.getZ() + player.getRandom().triangle(0, 2));
+                e.resetFallDistance();
+                if (e instanceof ServerPlayer other) {
+                    chat(other, player.getName().getString() + " called you to their side");
                 }
             }
             puff(player);
-            teleport(player, to);
-            puff(player);
-            if (taken > 0) {
-                tell(player, "Took " + taken + " friends with you");
-            }
+            tell(player, "Called " + called.size() + " to you");
             return true;
         }));
 
-        // Blast off up and forward. That flight's landing doesn't hurt.
+        // R: blast off like a rocket. At the top of the flight you explode (without hurting yourself or blocks),
+        // knocking back mobs, and you land safely.
         reg("rocket_launch", b()
                 .onFall((player, distance) -> {
                     if (state(player).flag("rocket")) {
@@ -384,14 +388,27 @@ public final class MovementPowers {
                     return false;
                 })
                 .every(2, player -> {
-                    if (state(player).flag("rocket") && !player.onGround()) {
+                    PowerState st = state(player);
+                    if (st.flag("rocket") && !player.onGround()) {
                         particles(player, player.position(), ParticleTypes.FIREWORK, 3, 0.1);
+                        if (st.flag("rocket_up") && player.getDeltaMovement().y <= 0) {
+                            st.setFlag("rocket_up", false);
+                            particles(player, player.position(), ParticleTypes.EXPLOSION_EMITTER, 1, 0);
+                            soundAt(player, player.position(), SoundEvents.GENERIC_EXPLODE, 2, 1);
+                            for (LivingEntity e : livingAround(player, 6)) {
+                                if (!isFriend(player, e)) {
+                                    hurt(player, e, 6);
+                                    pushFrom(player.position(), e, 1.5, 0.3);
+                                }
+                            }
+                        }
                     }
                 })
                 .active(5, player -> {
                     Vec3 look = new Vec3(player.getLookAngle().x, 0, player.getLookAngle().z);
                     setVelocity(player, look.scale(1.4).add(0, 1.6, 0));
                     state(player).setFlag("rocket", true);
+                    state(player).setFlag("rocket_up", true);
                     particles(player, player.position(), ParticleTypes.EXPLOSION, 1, 0);
                     sound(player, SoundEvents.FIREWORK_ROCKET_LAUNCH, 1, 0.6f);
                     return true;

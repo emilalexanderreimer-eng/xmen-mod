@@ -93,15 +93,35 @@ public final class LightPowers {
     }
 
     public static void register() {
-        // Kept from 0.3.0: invisible for 10 seconds, and mobs lose track of you.
-        reg("invisibility", b().active(30, player -> {
-            player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 200, 0, false, false, true));
-            loseAll(player, 32);
-            particles(player, player.position().add(0, 1, 0), ParticleTypes.CLOUD, 20, 0.4);
-            sound(player, SoundEvents.ILLUSIONER_CAST_SPELL, 1, 1.2f);
-            tell(player, "You are invisible for 10 seconds");
-            return true;
-        }));
+        // R: turn invisible (or visible again). It lasts until you attack something, but it makes you hungry.
+        reg("invisibility", b()
+                .every(10, player -> {
+                    if (state(player).flag("invisible")) {
+                        player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 40, 0, false, false, true));
+                        player.causeFoodExhaustion(0.15f);
+                    }
+                })
+                .onAttack((player, target, event) -> {
+                    if (state(player).flag("invisible")) {
+                        state(player).setFlag("invisible", false);
+                        player.removeEffect(MobEffects.INVISIBILITY);
+                        tell(player, "You attacked and became visible");
+                    }
+                })
+                .active(1, player -> {
+                    boolean on = state(player).toggle("invisible");
+                    if (on) {
+                        for (LivingEntity e : livingAround(player, 32)) {
+                            forget(player, e);
+                        }
+                    } else {
+                        player.removeEffect(MobEffects.INVISIBILITY);
+                    }
+                    particles(player, player.position().add(0, 1, 0), ParticleTypes.CLOUD, 20, 0.4);
+                    sound(player, SoundEvents.ILLUSIONER_CAST_SPELL, 1, on ? 1.2f : 0.8f);
+                    tell(player, on ? "Invisible until you attack" : "Visible again");
+                    return true;
+                }));
 
         // A dazzling light show where you look, for 8 seconds: mobs inside are blinded, dizzy, and attack each other.
         reg("light_bending", b().active(20, player -> {
@@ -221,32 +241,58 @@ public final class LightPowers {
         reg("silent_steps", b().silent()
                 .ignoredBy((player, mob) -> mob instanceof net.minecraft.world.entity.monster.warden.Warden));
 
-        // Shadow copies of you appear behind the nearest monsters and fight for 20 seconds.
-        reg("shadow_clones", b().active(30, player -> {
-            List<LivingEntity> enemies = enemiesAround(player, 20);
-            enemies.sort((a, c) -> Double.compare(a.distanceToSqr(player), c.distanceToSqr(player)));
-            int made = 0;
-            for (int i = 0; i < 3; i++) {
-                Vec3 at;
-                LivingEntity target = i < enemies.size() ? enemies.get(i) : null;
-                if (target != null) {
-                    Vec3 behind = target.position().subtract(target.getLookAngle().scale(1.5));
-                    at = new Vec3(behind.x, target.getY(), behind.z);
-                } else {
-                    at = player.position().add(player.getRandom().triangle(0, 2), 0, player.getRandom().triangle(0, 2));
-                }
-                PowerClone clone = spawnClone(player, at, PowerClone.SHADOW, 20);
-                if (clone != null) {
-                    if (target != null) {
-                        clone.setTarget(target);
+        // Shadow copies of you rise behind the nearest monsters and fight, but only in the dark: light makes
+        // them fade. R again while they're out swaps your place with one of them.
+        reg("shadow_clones", b()
+                .every(20, player -> {
+                    for (PowerClone clone : level(player).getEntitiesOfClass(PowerClone.class,
+                            player.getBoundingBox().inflate(48), c -> player.getUUID().equals(c.getOwnerId())
+                                    && c.getVariant() == PowerClone.SHADOW)) {
+                        if (light(clone) > 7) {
+                            particlesAround(player, clone, ParticleTypes.SMOKE, 15);
+                            clone.discard();
+                        }
                     }
-                    particlesAround(player, clone, SHADOW, 15);
-                    made++;
-                }
-            }
-            sound(player, SoundEvents.WITHER_AMBIENT, 0.4f, 1.6f);
-            return made > 0;
-        }));
+                })
+                .active(2, player -> {
+                    List<PowerClone> mine = level(player).getEntitiesOfClass(PowerClone.class,
+                            player.getBoundingBox().inflate(48), c -> player.getUUID().equals(c.getOwnerId())
+                                    && c.getVariant() == PowerClone.SHADOW);
+                    if (!mine.isEmpty()) {
+                        PowerClone other = mine.get(player.getRandom().nextInt(mine.size()));
+                        Vec3 me = player.position();
+                        teleport(player, other.position());
+                        other.teleportTo(me.x, me.y, me.z);
+                        particlesAround(player, player, SHADOW, 15);
+                        return false;
+                    }
+                    if (state(player).active("shadow_rest", now(player))) {
+                        tell(player, "Ready in " + state(player).remaining("shadow_rest", now(player)) / 20 + "s");
+                        return false;
+                    }
+                    if (light(player) > 7) {
+                        tell(player, "Too bright. Shadow clones need darkness");
+                        return false;
+                    }
+                    List<LivingEntity> enemies = enemiesAround(player, 20);
+                    enemies.sort((a, c) -> Double.compare(a.distanceToSqr(player), c.distanceToSqr(player)));
+                    for (int i = 0; i < 3; i++) {
+                        LivingEntity target = i < enemies.size() ? enemies.get(i) : null;
+                        Vec3 at = target != null
+                                ? target.position().subtract(target.getLookAngle().multiply(1.5, 0, 1.5))
+                                : player.position().add(player.getRandom().triangle(0, 2), 0, player.getRandom().triangle(0, 2));
+                        PowerClone clone = spawnClone(player, at, PowerClone.SHADOW, 30);
+                        if (clone != null) {
+                            if (target != null) {
+                                clone.setTarget(target);
+                            }
+                            particlesAround(player, clone, SHADOW, 15);
+                        }
+                    }
+                    state(player).start("shadow_rest", now(player), 600);
+                    sound(player, SoundEvents.WITHER_AMBIENT, 0.4f, 1.6f);
+                    return false;
+                }));
 
         // A glowing image of you stands where you look for 15 seconds. Mobs go after it instead of you.
         reg("hologram", b().active(20, player -> {
@@ -401,13 +447,38 @@ public final class LightPowers {
             return true;
         }));
 
-        // Bright light (sun, torches, lava) heals you.
-        reg("light_eater", b().every(40, player -> {
-            if (light(player) >= 13) {
-                player.heal(1);
-                particles(player, player.position().add(0, 2.1, 0), ParticleTypes.WAX_ON, 2, 0.2);
-            }
-        }));
+        // You feed on light: bright light slowly heals you. R swallows the torches and lanterns around you,
+        // healing you more for each one and leaving the area dark.
+        reg("light_eater", b()
+                .every(40, player -> {
+                    if (light(player) >= 13) {
+                        player.heal(1);
+                        particles(player, player.position().add(0, 2.1, 0), ParticleTypes.WAX_ON, 2, 0.2);
+                    }
+                })
+                .active(20, player -> {
+                    ServerLevel level = level(player);
+                    BlockPos c = player.blockPosition();
+                    int eaten = 0;
+                    for (BlockPos pos : BlockPos.betweenClosed(c.offset(-8, -4, -8), c.offset(8, 4, 8))) {
+                        BlockState s = level.getBlockState(pos);
+                        if (s.is(Blocks.TORCH) || s.is(Blocks.WALL_TORCH) || s.is(Blocks.SOUL_TORCH)
+                                || s.is(Blocks.SOUL_WALL_TORCH) || s.is(Blocks.LANTERN) || s.is(Blocks.SOUL_LANTERN)) {
+                            particleLine(player, Vec3.atCenterOf(pos), player.getBoundingBox().getCenter(),
+                                    ParticleTypes.WAX_ON, 0.5);
+                            TempBlocks.replace(level, pos.immutable(), Blocks.AIR.defaultBlockState(), 600);
+                            eaten++;
+                        }
+                    }
+                    if (eaten == 0) {
+                        tell(player, "No torches or lanterns nearby");
+                        return false;
+                    }
+                    player.heal(eaten * 2);
+                    sound(player, SoundEvents.GENERIC_EAT, 1, 0.6f);
+                    tell(player, "You ate " + eaten + " lights");
+                    return true;
+                }));
 
         // Mobs don't notice you at all until you attack them.
         reg("unnoticed", b().ignoredBy((player, mob) -> {

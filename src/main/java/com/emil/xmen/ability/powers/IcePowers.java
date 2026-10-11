@@ -468,8 +468,16 @@ public final class IcePowers {
             return true;
         }));
 
-        // The water around you boils for 6 seconds, hurting every mob swimming in it.
-        reg("boiling_touch", b().active(10, player -> {
+        // Your hands are boiling hot: hits scald mobs, double if they're wet.
+        // R makes the water around you boil for 6 seconds, hurting everything swimming in it.
+        reg("boiling_touch", b()
+                .onAttack((player, target, event) -> {
+                    float extra = target.isInWaterOrRain() ? 4 : 2;
+                    event.setAmount(event.getAmount() + extra);
+                    particlesAround(player, target, ParticleTypes.CLOUD, 6);
+                    soundAt(player, target.position(), SoundEvents.FIRE_EXTINGUISH, 0.6f, 1.4f);
+                })
+                .active(10, player -> {
             Zones.following(player, 8, 6, 10, null, (zone, inside) -> {
                 for (LivingEntity e : inside) {
                     if (!isFriend(player, e) && e.isInWater()) {

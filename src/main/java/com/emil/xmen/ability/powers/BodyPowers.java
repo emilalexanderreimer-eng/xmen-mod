@@ -162,14 +162,27 @@ public final class BodyPowers {
             return true;
         }));
 
-        // Mobs that hit you with their body take spike damage.
-        reg("bone_spikes", b().onHurt((player, event) -> {
-            if (isMelee(event.getSource()) && event.getSource().getEntity() instanceof LivingEntity attacker
-                    && attacker != player) {
-                hurt(player, attacker, 3, player.damageSources().thorns(player));
-                particlesAround(player, attacker, ParticleTypes.CRIT, 6);
+        // Bone spikes stick out of your skin and hurt whoever hits you. R shoots a volley of spikes.
+        reg("bone_spikes", b()
+                .onHurt((player, event) -> {
+                    if (isMelee(event.getSource()) && event.getSource().getEntity() instanceof LivingEntity attacker
+                            && attacker != player) {
+                        hurt(player, attacker, 3, player.damageSources().thorns(player));
+                        particlesAround(player, attacker, ParticleTypes.CRIT, 6);
+                    }
+                })
+                .active(6, player -> {
+                    for (int i = 0; i < 5; i++) {
+                        PowerProjectiles.shoot(player, "bone_spike", new ItemStack(Items.BONE), 2.0f, 6, true);
+                    }
+                    sound(player, SoundEvents.SKELETON_SHOOT, 1, 0.7f);
+                    return true;
+                }));
+        PowerProjectiles.register("bone_spike", (owner, projectile, hit) -> {
+            if (owner != null && hit instanceof EntityHitResult e && e.getEntity() instanceof LivingEntity target) {
+                hurt(owner, target, 3);
             }
-        }));
+        });
 
         // R switches between heavy (nothing moves you, extra armor, slow), light (you float) and normal.
         reg("density_control", b().active(1, player -> {
@@ -306,11 +319,22 @@ public final class BodyPowers {
 
         reg("tough_bones", b().attribute(Attributes.FALL_DAMAGE_MULTIPLIER, -0.6, TOTAL));
 
-        // Unbreakable metal bones: nothing knocks you back and your punches hurt more.
+        // Unbreakable metal bones: nothing knocks you back and no single hit can take more than 6 hearts,
+        // but you sink in water.
         reg("metal_skeleton", b()
                 .attribute(Attributes.KNOCKBACK_RESISTANCE, 1, ADD)
                 .attribute(Attributes.EXPLOSION_KNOCKBACK_RESISTANCE, 1, ADD)
-                .attribute(Attributes.ATTACK_DAMAGE, 4, ADD));
+                .onHurt((player, event) -> {
+                    if (event.getAmount() > 12 && !event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+                        event.setAmount(12);
+                    }
+                })
+                .tick(player -> {
+                    if (player.isInWater() && !player.onGround()) {
+                        player.setDeltaMovement(player.getDeltaMovement().add(0, -0.03, 0));
+                        player.hurtMarked = true;
+                    }
+                }));
 
         // Rotten flesh, spider eyes and raw meat don't make you sick.
         reg("iron_stomach", b().onEat((player, food) -> Scheduler.later(1, () -> {

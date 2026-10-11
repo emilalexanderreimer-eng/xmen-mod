@@ -412,22 +412,52 @@ public final class TechPowers {
             return true;
         }));
 
-        // Throw a glowing bomb. It sticks where it lands and goes off three seconds later.
+        // A planted bomb blinks until its owner sets it off.
         PowerProjectiles.register("time_bomb", (owner, projectile, hit) -> {
             if (owner == null) {
                 return;
             }
             Vec3 at = hit.getLocation();
-            Scheduler.repeat(10, 5, () -> {
-                level(owner).sendParticles(ParticleTypes.FLAME, at.x, at.y + 0.2, at.z, 3, 0.1, 0.1, 0.1, 0.01);
-                soundAt(owner, at, SoundEvents.NOTE_BLOCK_HAT.value(), 1, 2);
+            List<Vec3> bombs = state(owner).get("bombs");
+            if (bombs == null) {
+                return;
+            }
+            bombs.add(at);
+            tell(owner, bombs.size() + " bombs planted. Sneak + R to set them off");
+            Scheduler.repeat(20, 60, () -> {
+                if (bombs.contains(at)) {
+                    level(owner).sendParticles(ParticleTypes.FLAME, at.x, at.y + 0.2, at.z, 2, 0.1, 0.1, 0.1, 0.01);
+                }
             });
+        });
             Scheduler.later(60, () -> explode(owner, at, 2.5f, false));
         });
-        reg("time_bombs", b().active(5, player -> {
+        // Throw up to 3 sticky bombs. Sneak + R sets all of them off at once.
+        reg("time_bombs", b().active(1, player -> {
+            PowerState st = state(player);
+            List<Vec3> bombs = st.get("bombs");
+            if (bombs == null) {
+                bombs = new ArrayList<>();
+                st.put("bombs", bombs);
+            }
+            if (player.isShiftKeyDown()) {
+                if (bombs.isEmpty()) {
+                    tell(player, "No bombs planted");
+                    return false;
+                }
+                for (Vec3 at : bombs) {
+                    explode(player, at, 2.5f, false);
+                }
+                bombs.clear();
+                return true;
+            }
+            if (bombs.size() >= 3) {
+                tell(player, "3 bombs planted. Sneak + R to set them off");
+                return false;
+            }
             PowerProjectiles.shoot(player, "time_bomb", new ItemStack(Items.FIRE_CHARGE), 1.2f, 0, true);
             sound(player, SoundEvents.TNT_PRIMED, 0.6f, 1.6f);
-            return true;
+            return false;
         }));
 
         // After something hurts you, your body adapts: that kind of damage can't hurt you for 30 seconds.

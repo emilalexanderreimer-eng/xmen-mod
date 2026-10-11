@@ -249,7 +249,7 @@ public final class NaturePowers {
             }
         }));
 
-        // While you crouch in leaves or tall grass, you're invisible and mobs lose you.
+        // Sneak in leaves, tall grass or flowers to vanish. Mobs that walk into your bush get tangled.
         reg("leaf_camouflage", b().every(10, player -> {
             if (!player.isShiftKeyDown()) {
                 return;
@@ -269,6 +269,12 @@ public final class NaturePowers {
                 player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 15, 0, false, false, true));
                 for (LivingEntity e : livingAround(player, 24)) {
                     forget(player, e);
+                }
+                for (LivingEntity e : livingAround(player, 2.5)) {
+                    if (!isFriend(player, e)) {
+                        effect(e, MobEffects.MOVEMENT_SLOWDOWN, 2, 4);
+                        particlesAround(player, e, ParticleTypes.SPORE_BLOSSOM_AIR, 4);
+                    }
                 }
             }
         }));
@@ -362,15 +368,26 @@ public final class NaturePowers {
             return true;
         }));
 
-        // A flock of birds swarms the spot you look at for 8 seconds, pecking and blinding mobs.
+        // A flock of birds swarms the spot you look at for 8 seconds: they snatch what mobs are holding,
+        // carry small mobs up into the air and drop them.
         reg("bird_flock", b().active(15, player -> {
             Vec3 at = lookTarget(player, 32);
             ItemParticleOption feather = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.FEATHER));
             Zones.add(player, at.add(0, 1, 0), 4, 8, 10, feather, (zone, inside) -> {
                 for (LivingEntity e : inside) {
-                    if (!isFriend(player, e)) {
+                    if (isFriend(player, e)) {
+                        continue;
+                    }
+                    ItemStack held = e.getMainHandItem();
+                    if (!held.isEmpty() && !(e instanceof Player)) {
+                        e.spawnAtLocation(held.copy());
+                        e.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+                    }
+                    if (e.getBbHeight() < 1.2 && zone.age % 40 == 0) {
+                        setVelocity(e, new Vec3(0, 1.4, 0));
+                    }
+                    if (zone.age % 20 == 0) {
                         hurt(player, e, 1);
-                        effect(e, MobEffects.BLINDNESS, 2, 0);
                     }
                 }
                 if (zone.age % 20 == 0) {

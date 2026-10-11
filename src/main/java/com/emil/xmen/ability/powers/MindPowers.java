@@ -203,20 +203,51 @@ public final class MindPowers {
                     return false;
                 }));
 
-        // Make the mob you look at fight for you for a minute.
-        reg("mind_control", b().active(20, player -> {
-            LivingEntity target = target(player, 24);
-            if (!(target instanceof Mob mob) || isFriend(player, target)) {
-                if (target != null) {
-                    tell(player, "You can't control that");
+        // Take over the mob you look at for 60 seconds (any mob, even villagers). While you control it,
+        // R sends it at the mob you look at, or walks it to the spot you look at. Sneak + R lets it go.
+        reg("mind_control", b().active(1, player -> {
+            PowerState st = state(player);
+            Mob puppet = st.get("puppet");
+            if (puppet != null && (!puppet.isAlive() || !st.active("puppet_time", now(player)))) {
+                st.remove("puppet");
+                puppet = null;
+            }
+            if (puppet != null) {
+                if (player.isShiftKeyDown()) {
+                    st.remove("puppet");
+                    st.stop("puppet_time");
+                    tell(player, "You let go of its mind");
+                    return true;
                 }
+                LivingEntity victim = lookedAtLiving(player, 32);
+                if (victim != null && victim != puppet) {
+                    puppet.setTarget(victim);
+                    tell(player, "Attack!");
+                } else {
+                    Vec3 spot = lookTarget(player, 48);
+                    puppet.setTarget(null);
+                    puppet.getNavigation().moveTo(spot.x, spot.y, spot.z, 1.3);
+                    tell(player, "Go there!");
+                }
+                particleLine(player, player.getEyePosition(), puppet.getEyePosition(), PSY, 0.6);
+                return false;
+            }
+            if (st.active("puppet_rest", now(player))) {
+                tell(player, "Ready in " + st.remaining("puppet_rest", now(player)) / 20 + "s");
+                return false;
+            }
+            LivingEntity target = target(player, 24);
+            if (!(target instanceof Mob mob)) {
                 return false;
             }
             Allies.control(player, mob, 60);
+            st.put("puppet", mob);
+            st.start("puppet_time", now(player), 1200);
+            st.start("puppet_rest", now(player), 600);
             particlesAround(player, mob, PSY, 20);
-            tell(player, mob.getName().getString() + " fights for you for 60 seconds");
+            tell(player, "You control the " + mob.getName().getString() + ". R: give orders, sneak + R: let go");
             sound(player, SoundEvents.EVOKER_PREPARE_WOLOLO, 1, 1);
-            return true;
+            return false;
         }));
 
         // A mental blast: hurts, makes the mob dizzy and confused.
@@ -236,26 +267,30 @@ public final class MindPowers {
             return true;
         }));
 
-        // Three fake copies of you appear and draw the mobs' attention.
+        // You vanish for 3 seconds while three copies of you run off in different directions.
+        // Mobs chasing you go after the copies instead.
         reg("illusions", b().active(20, player -> {
             List<PowerClone> clones = new ArrayList<>();
             for (int i = 0; i < 3; i++) {
-                double a = Math.PI * 2 * i / 3;
-                PowerClone clone = spawnClone(player, player.position().add(Math.cos(a) * 2.5, 0, Math.sin(a) * 2.5),
-                        PowerClone.ILLUSION, 15);
+                double a = Math.PI * 2 * i / 3 + player.getRandom().nextDouble();
+                PowerClone clone = spawnClone(player, player.position(), PowerClone.ILLUSION, 15);
                 if (clone != null) {
+                    clone.getNavigation().moveTo(player.getX() + Math.cos(a) * 14, player.getY(),
+                            player.getZ() + Math.sin(a) * 14, 1.4);
                     clones.add(clone);
                 }
             }
             if (clones.isEmpty()) {
                 return false;
             }
+            player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 60, 0, false, false, true));
             int i = 0;
             for (LivingEntity e : livingAround(player, 24)) {
-                if (e instanceof Mob mob && mob.getTarget() == player) {
+                if (e instanceof Mob mob && (mob.getTarget() == player || isEnemy(player, mob))) {
                     mob.setTarget(clones.get(i++ % clones.size()));
                 }
             }
+            particles(player, player.position().add(0, 1, 0), ParticleTypes.POOF, 20, 0.5);
             sound(player, SoundEvents.ILLUSIONER_MIRROR_MOVE, 1, 1);
             return true;
         }));
@@ -317,24 +352,30 @@ public final class MindPowers {
             return true;
         }));
 
-        // Hostile mobs around you calm down and won't attack for 20 seconds, unless you hit them.
-        reg("calm", b()
-                .ignoredBy((player, mob) -> {
-                    if (!state(player).active("calm", now(player))) {
-                        return false;
+        // A calming aura for 20 seconds: monsters around you stop hunting you, your friends and villagers,
+        // creepers stop fizzing, and angry wolves, bees and golems cool down.
+        reg("calm", b().active(30, player -> {
+            Zones.following(player, 12, 20, 10, ParticleTypes.HEART, (zone, inside) -> {
+                ServerPlayer owner = zone.ownerPlayer();
+                if (owner == null) {
+                    return;
+                }
+                for (LivingEntity e : inside) {
+                    if (e instanceof Mob mob && mob.getTarget() != null && isFriend(owner, mob.getTarget())) {
+                        mob.setTarget(null);
                     }
-                    return mob.getLastHurtByMob() != player;
-                })
-                .active(30, player -> {
-                    state(player).start("calm", now(player), 400);
-                    for (LivingEntity e : livingAround(player, 12)) {
-                        forget(player, e);
-                        particlesAround(player, e, ParticleTypes.HEART, 2);
+                    if (e instanceof net.minecraft.world.entity.monster.Creeper creeper) {
+                        creeper.setSwellDir(-1);
                     }
-                    sound(player, SoundEvents.AMETHYST_BLOCK_RESONATE, 1, 0.8f);
-                    tell(player, "Mobs are calm for 20 seconds");
-                    return true;
-                }));
+                    if (e instanceof net.minecraft.world.entity.NeutralMob neutral) {
+                        neutral.stopBeingAngry();
+                    }
+                }
+            });
+            sound(player, SoundEvents.AMETHYST_BLOCK_RESONATE, 1, 0.8f);
+            tell(player, "Everything around you calms down for 20 seconds");
+            return true;
+        }));
 
         // R: form a psychic blade (or let it go). Its hits cut straight through armor.
         reg("psychic_blade", b()
@@ -457,7 +498,8 @@ public final class MindPowers {
             return true;
         }));
 
-        // R: float with your mind (or land). You drift where you look; sneak to hover in place.
+        // R: float with your mind (or land). Look where you want to go, sneak to hover.
+        // Friends and pets standing close to you are carried along.
         reg("telekinetic_flight", b()
                 .tick(player -> {
                     if (!state(player).flag("tk_fly")) {
@@ -469,12 +511,18 @@ public final class MindPowers {
                     Vec3 v = player.isShiftKeyDown() ? Vec3.ZERO : player.getLookAngle().scale(0.45);
                     setVelocity(player, v);
                     player.resetFallDistance();
+                    for (LivingEntity e : livingAround(player, 3)) {
+                        if (isFriend(player, e) && !(e instanceof net.minecraft.world.entity.npc.AbstractVillager)) {
+                            setVelocity(e, v.add(player.position().subtract(e.position()).scale(0.1)));
+                            e.resetFallDistance();
+                        }
+                    }
                     if (player.tickCount % 6 == 0) {
                         particles(player, player.position(), PSY, 2, 0.2);
                     }
                 })
                 .active(1, player -> {
-                    tell(player, state(player).toggle("tk_fly") ? "Floating. Look where you want to go"
+                    tell(player, state(player).toggle("tk_fly") ? "Floating. Friends next to you come along"
                             : "Landing");
                     return true;
                 }));

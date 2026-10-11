@@ -27,7 +27,7 @@ public final class Zones {
     public static final class Zone {
         public final ServerLevel level;
         public final UUID owner;
-        public final double radius;
+        public double radius;
         public final int period;
         public final ParticleOptions particle;
         public final ZoneEffect effect;

@@ -336,18 +336,22 @@ public final class HealingPowers {
             }
         }));
 
-        // Release a poison cloud around you for 8 seconds.
+        // Breathe out a poison cloud that drifts slowly where you look and keeps growing.
         reg("toxic_cloud", b().active(15, player -> {
-            Vec3 at = player.position().add(0, 1, 0);
-            Zones.add(player, at, 4, 8, 10, ParticleTypes.SPORE_BLOSSOM_AIR, (zone, inside) -> {
-                for (LivingEntity e : inside) {
-                    if (!isFriend(player, e)) {
-                        effect(e, MobEffects.POISON, 3, 1);
-                    }
-                }
-                level(player).sendParticles(new DustParticleOptions(new Vector3f(0.4f, 0.8f, 0.1f), 2),
-                        zone.center.x, zone.center.y, zone.center.z, 15, 3, 1, 3, 0);
-            });
+            Vec3 look = player.getLookAngle();
+            Zones.Zone cloud = Zones.add(player, player.getEyePosition().add(look.scale(2)), 2, 10, 10, null,
+                    (zone, inside) -> {
+                        zone.radius = Math.min(7, zone.radius + 0.25);
+                        for (LivingEntity e : inside) {
+                            if (!isFriend(player, e)) {
+                                effect(e, MobEffects.POISON, 3, 1);
+                            }
+                        }
+                        level(player).sendParticles(new DustParticleOptions(new Vector3f(0.4f, 0.8f, 0.1f), 2),
+                                zone.center.x, zone.center.y, zone.center.z, (int) (zone.radius * 6), zone.radius * 0.7,
+                                zone.radius * 0.4, zone.radius * 0.7, 0);
+                    });
+            cloud.velocity = new Vec3(look.x, 0, look.z).normalize().scale(0.05);
             sound(player, SoundEvents.PUFFER_FISH_BLOW_UP, 1, 0.6f);
             return true;
         }));

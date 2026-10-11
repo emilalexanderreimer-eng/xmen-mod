@@ -139,7 +139,7 @@ public final class WeatherPowers {
             return true;
         }));
 
-        // R: ride the wind for 10 seconds, carried wherever you look. You drift down gently afterwards.
+        // R: ride a gust of wind for 10 seconds, going where you look. Mobs in your path are blown aside.
         reg("wind_flight", b()
                 .tick(player -> {
                     if (state(player).active("wind_ride", now(player))) {
@@ -147,6 +147,11 @@ public final class WeatherPowers {
                         player.resetFallDistance();
                         if (player.tickCount % 3 == 0) {
                             particles(player, player.position(), ParticleTypes.CLOUD, 2, 0.3);
+                        }
+                        for (LivingEntity e : livingAround(player, 3)) {
+                            if (!isFriend(player, e)) {
+                                pushFrom(player.position(), e, 1.0, 0.4);
+                            }
                         }
                     }
                 })
@@ -247,8 +252,28 @@ public final class WeatherPowers {
             return true;
         }));
 
-        // Lightning can't hurt you.
-        reg("lightning_proof", b().immuneTo((player, source) -> isLightning(source)));
+        // Lightning can't hurt you. Being struck charges you up (Strength and Speed for 30 seconds),
+        // and in a thunderstorm you are always a bit faster and tougher.
+        reg("lightning_proof", b()
+                .immuneTo((player, source) -> {
+                    if (!isLightning(source)) {
+                        return false;
+                    }
+                    if (!state(player).active("charged", now(player))) {
+                        state(player).start("charged", now(player), 600);
+                        effect(player, MobEffects.DAMAGE_BOOST, 30, 1);
+                        effect(player, MobEffects.MOVEMENT_SPEED, 30, 1);
+                        tell(player, "Charged up!");
+                    }
+                    return true;
+                })
+                .every(20, player -> {
+                    if (level(player).isThundering() && level(player).canSeeSky(player.blockPosition())) {
+                        buff(player, MobEffects.MOVEMENT_SPEED, 0);
+                        buff(player, MobEffects.DAMAGE_RESISTANCE, 0);
+                        particlesAround(player, player, ParticleTypes.ELECTRIC_SPARK, 4);
+                    }
+                }));
 
         // Spin like a cyclone for 4 seconds: arrows bounce back and mobs next to you are flung away.
         reg("cyclone_spin", b()
@@ -352,22 +377,31 @@ public final class WeatherPowers {
             return true;
         }));
 
-        // Crush a mob into the ground. Sneak: make it float away instead.
-        reg("air_pressure", b().active(4, player -> {
+        // Squeeze the air around one mob for 3 seconds: it can't jump, the damage keeps rising,
+        // and at the end it pops up into the air.
+        reg("air_pressure", b().active(8, player -> {
             LivingEntity target = target(player, 32);
             if (target == null) {
                 return false;
             }
-            if (player.isShiftKeyDown()) {
-                effect(target, MobEffects.LEVITATION, 4, 1);
-                particlesAround(player, target, ParticleTypes.CLOUD, 15);
-            } else {
-                setVelocity(target, new Vec3(0, -2.5, 0));
-                hurt(player, target, 6);
-                effect(target, MobEffects.MOVEMENT_SLOWDOWN, 3, 3);
-                particles(player, target.position(), ParticleTypes.EXPLOSION, 1, 0);
+            effect(target, MobEffects.JUMP, 3, 128);
+            effect(target, MobEffects.MOVEMENT_SLOWDOWN, 3, 3);
+            for (int i = 1; i <= 3; i++) {
+                int step = i;
+                Scheduler.later(i * 20, () -> {
+                    if (!target.isAlive()) {
+                        return;
+                    }
+                    hurt(player, target, step * 2);
+                    particlesAround(player, target, ParticleTypes.CLOUD, 10 * step);
+                    if (step == 3) {
+                        setVelocity(target, new Vec3(0, 1.2, 0));
+                        particles(player, target.position(), ParticleTypes.EXPLOSION, 1, 0);
+                        soundAt(player, target.position(), SoundEvents.BREEZE_WIND_CHARGE_BURST, 1, 1.4f);
+                    }
+                });
             }
-            sound(player, SoundEvents.BREEZE_DEFLECT, 1, 0.6f);
+            sound(player, SoundEvents.BREEZE_INHALE, 1, 0.6f);
             return true;
         }));
 

@@ -439,8 +439,9 @@ public final class EarthPowers {
             return true;
         }));
 
-        // The ground under a mob falls away for 10 seconds.
-        reg("sinkhole", b().active(8, player -> {
+        // The ground swallows the mob you look at: it drops into a pit and the earth closes over its head
+        // for 10 seconds.
+        reg("sinkhole", b().active(10, player -> {
             LivingEntity target = target(player, 24);
             if (target == null) {
                 return false;
@@ -448,25 +449,45 @@ public final class EarthPowers {
             ServerLevel level = level(player);
             BlockPos base = target.blockPosition();
             int removed = 0;
-            for (BlockPos pos : BlockPos.betweenClosed(base.offset(-1, -3, -1), base.offset(1, -1, 1))) {
+            for (BlockPos pos : BlockPos.betweenClosed(base.offset(0, -3, 0), base.offset(0, -1, 0))) {
                 if (isNatural(level, pos, level.getBlockState(pos))) {
                     TempBlocks.replace(level, pos.immutable(), Blocks.AIR.defaultBlockState(), 200);
                     removed++;
                 }
             }
-            if (removed == 0) {
+            if (removed < 2) {
                 tell(player, "The ground there is too hard");
                 return false;
             }
+            target.teleportTo(base.getX() + 0.5, base.getY() - 3, base.getZ() + 0.5);
+            Scheduler.later(5, () -> {
+                for (int y = -1; y <= 0; y++) {
+                    BlockPos pos = base.offset(0, y, 0);
+                    if (level.getBlockState(pos).isAir()) {
+                        TempBlocks.replace(level, pos, Blocks.DIRT.defaultBlockState(), 195);
+                    }
+                }
+            });
             sound(player, SoundEvents.GRAVEL_BREAK, 1, 0.5f);
             return true;
         }));
 
-        // Standing on stone makes you strong and tough.
+        // The more stone around you, the stronger you get: in a cave or a mountain you're very strong,
+        // out in the open you're normal.
         reg("mountain_strength", b().every(20, player -> {
-            if (onStone(player)) {
-                buff(player, MobEffects.DAMAGE_BOOST, 0);
-                buff(player, MobEffects.DAMAGE_RESISTANCE, 0);
+            ServerLevel level = level(player);
+            BlockPos c = player.blockPosition();
+            int stone = 0;
+            for (BlockPos pos : BlockPos.betweenClosed(c.offset(-3, -2, -3), c.offset(3, 3, 3))) {
+                BlockState s = level.getBlockState(pos);
+                if (s.is(BlockTags.BASE_STONE_OVERWORLD) || s.is(BlockTags.BASE_STONE_NETHER)
+                        || s.is(Blocks.COBBLESTONE) || s.is(Blocks.COBBLED_DEEPSLATE)) {
+                    stone++;
+                }
+            }
+            if (stone >= 40) {
+                buff(player, MobEffects.DAMAGE_BOOST, stone >= 150 ? 2 : stone >= 90 ? 1 : 0);
+                buff(player, MobEffects.DAMAGE_RESISTANCE, stone >= 150 ? 1 : 0);
             }
         }));
 

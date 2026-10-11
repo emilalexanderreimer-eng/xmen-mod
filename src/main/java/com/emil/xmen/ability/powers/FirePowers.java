@@ -375,10 +375,12 @@ public final class FirePowers {
             return true;
         }));
 
-        // Warm-blooded mobs close to you glow, even behind walls. Undead are cold and stay hidden.
+        // You see heat: burning mobs and fire creatures glow from far away, warm-blooded mobs close by.
+        // Undead are cold and stay hidden.
         reg("heat_sense", b().every(20, player -> {
-            for (LivingEntity e : livingAround(player, 10)) {
-                if (!e.isInvertedHealAndHarm()) {
+            for (LivingEntity e : livingAround(player, 32)) {
+                boolean hot = e.isOnFire() || e.fireImmune();
+                if (hot || (!e.isInvertedHealAndHarm() && e.distanceTo(player) <= 10)) {
                     glow(e, 1.5);
                 }
             }

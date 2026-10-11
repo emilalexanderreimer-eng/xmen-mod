@@ -197,9 +197,9 @@ public final class ShapeshiftPowers {
                 new Mod(Attributes.SCALE, -0.6, TOTAL),
                 new Mod(Attributes.MAX_HEALTH, -8, ADD)), b(), 2));
 
-        // R: become a dolphin (or back): super fast and breathing in water, slow on land.
-        reg("fish_form", form("fish", EntityType.DOLPHIN, false, List.of(
-                new Mod(Attributes.SCALE, -0.4, TOTAL)), b()
+        // R: turn into a small tropical fish (or back). Super fast and breathes underwater, but slow on land.
+        reg("fish_form", form("fish", EntityType.TROPICAL_FISH, false, List.of(
+                new Mod(Attributes.SCALE, -0.6, TOTAL)), b()
                         .every(10, player -> {
                             if (inForm(player, "fish")) {
                                 if (player.isInWater()) {
@@ -307,45 +307,51 @@ public final class ShapeshiftPowers {
         }));
 
         // Touch a player to steal their power for 60 seconds (they lose it meanwhile).
-        // Touch a mob to take its body and abilities for 60 seconds.
-        reg("power_absorption", b()
-                .every(10, player -> {
-                    EntityType<?> type = state(player).get("absorbed_mob");
-                    if (type == null) {
-                        return;
-                    }
-                    if (!state(player).active("absorbed", now(player))) {
-                        stopMob(player, "absorbed_mob");
-                        tell(player, "The absorbed power fades");
-                    } else {
-                        MobTraits.apply(player, type);
-                    }
-                })
-                .active(60, player -> {
-                    LivingEntity target = target(player, 4);
-                    if (target == null) {
-                        return false;
-                    }
-                    if (target instanceof ServerPlayer other) {
-                        String id = PowerRuntime.activePowerId(other);
-                        if (id == null || PowerBehaviors.get(id) == null) {
-                            tell(player, other.getName().getString() + " has nothing to steal");
-                            return false;
-                        }
-                        PowerRuntime.suppress(other, 1200);
-                        PowerRuntime.borrow(player, id, 1200);
-                        chat(other, player.getName().getString() + " absorbed your power for 60 seconds!");
-                        chat(player, "You absorbed " + com.emil.xmen.power.Powers.get(id).name() + " for 60 seconds");
-                    } else {
-                        state(player).start("absorbed", now(player), 1200);
-                        becomeMob(player, target.getType(), "absorbed_mob");
-                        hurtMagic(player, target, 4);
-                        chat(player, "You absorbed the " + target.getName().getString() + " for 60 seconds");
-                    }
-                    particleLine(player, target.getBoundingBox().getCenter(), player.getBoundingBox().getCenter(),
-                            ParticleTypes.ENCHANT, 0.3);
-                    return true;
-                }));
+        // Touch a mob to drain it: you take part of its life and its special move (R) for 60 seconds,
+        // and the mob is left weak and slow.
+        reg("power_absorption", b().active(3, player -> {
+            PowerState st = state(player);
+            EntityType<?> stolen = st.get("stolen_move");
+            if (stolen != null && st.active("stolen", now(player)) && !player.isShiftKeyDown()) {
+                if (!MobTraits.special(player, stolen)) {
+                    tell(player, "That mob had no special move. Sneak + R to absorb something else");
+                    return false;
+                }
+                return true;
+            }
+            if (st.active("absorb_rest", now(player))) {
+                tell(player, "Ready in " + st.remaining("absorb_rest", now(player)) / 20 + "s");
+                return false;
+            }
+            LivingEntity target = target(player, 4);
+            if (target == null) {
+                return false;
+            }
+            if (target instanceof ServerPlayer other) {
+                String id = PowerRuntime.activePowerId(other);
+                if (id == null || PowerBehaviors.get(id) == null) {
+                    tell(player, other.getName().getString() + " has nothing to steal");
+                    return false;
+                }
+                PowerRuntime.suppress(other, 1200);
+                PowerRuntime.borrow(player, id, 1200);
+                chat(other, player.getName().getString() + " absorbed your power for 60 seconds!");
+                chat(player, "You absorbed " + com.emil.xmen.power.Powers.get(id).name() + " for 60 seconds");
+            } else {
+                st.put("stolen_move", target.getType());
+                st.start("stolen", now(player), 1200);
+                int hearts = (int) Math.min(8, target.getMaxHealth() / 4);
+                player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 1200, Math.max(0, hearts / 2 - 1)));
+                effect(target, MobEffects.WEAKNESS, 60, 2);
+                effect(target, MobEffects.MOVEMENT_SLOWDOWN, 60, 2);
+                hurtMagic(player, target, 4);
+                chat(player, "You drained the " + target.getName().getString() + ". R uses its special move for 60 seconds");
+            }
+            st.start("absorb_rest", now(player), 1200);
+            particleLine(player, target.getBoundingBox().getCenter(), player.getBoundingBox().getCenter(),
+                    ParticleTypes.ENCHANT, 0.3);
+            return false;
+        }));
 
         // R: become small like a baby mob (or back): quick, but a bit weaker.
         reg("baby_form", form("baby", null, false, List.of(
