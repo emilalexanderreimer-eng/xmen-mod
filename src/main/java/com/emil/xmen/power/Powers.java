@@ -52,8 +52,8 @@ public final class Powers {
                 "Mobs you hit are slowed for a moment");
         add("solar_beams", "Solar Beams", "Sunfire", PowerLevel.BETA, PowerCategory.ENERGY_AND_BLASTS, PowerType.ACTIVE,
                 "Beams that get stronger in sunlight");
-        add("cosmic_energy_control", "Cosmic Energy Control", "", PowerLevel.OMEGA, PowerCategory.ENERGY_AND_BLASTS, PowerType.BOTH,
-                "Huge energy blasts, flight and strong resistance");
+        add("cosmic_energy_control", "Cosmic Energy Control", "", PowerLevel.OMEGA, PowerCategory.ENERGY_AND_BLASTS, PowerType.ACTIVE,
+                "One huge energy beam, or sneak for a cosmic shield of extra hearts");
         add("palm_blasts", "Palm Blasts", "", PowerLevel.DELTA, PowerCategory.ENERGY_AND_BLASTS, PowerType.ACTIVE,
                 "Short-range energy bolts from your hands");
         add("reactive_charge", "Reactive Charge", "", PowerLevel.GAMMA, PowerCategory.ENERGY_AND_BLASTS, PowerType.PASSIVE,
@@ -71,7 +71,7 @@ public final class Powers {
         add("fire_breath", "Fire Breath", "", PowerLevel.GAMMA, PowerCategory.FIRE_AND_HEAT, PowerType.ACTIVE,
                 "Breathe a cone of fire");
         add("smoke_form", "Smoke Form", "", PowerLevel.BETA, PowerCategory.FIRE_AND_HEAT, PowerType.ACTIVE,
-                "Become smoke: invisible, no fall damage, mobs pass through you");
+                "Vanish in smoke: mobs nearby are blinded and you are invisible and fast for 6 seconds");
         add("ember_trail", "Ember Trail", "", PowerLevel.EPSILON, PowerCategory.FIRE_AND_HEAT, PowerType.PASSIVE,
                 "Leave a short trail of fire while sprinting");
         add("blast_punch", "Blast Punch", "", PowerLevel.GAMMA, PowerCategory.FIRE_AND_HEAT, PowerType.ACTIVE,
@@ -89,7 +89,7 @@ public final class Powers {
         add("meteor_call", "Meteor Call", "", PowerLevel.ALPHA, PowerCategory.FIRE_AND_HEAT, PowerType.ACTIVE,
                 "Call down a burning meteor where you look");
         add("heat_sense", "Heat Sense", "", PowerLevel.EPSILON, PowerCategory.FIRE_AND_HEAT, PowerType.PASSIVE,
-                "See warm mobs through walls close to you");
+                "See heat: burning and fire mobs glow from far away, warm mobs close by");
         add("sun_battery", "Sun Battery", "", PowerLevel.DELTA, PowerCategory.FIRE_AND_HEAT, PowerType.PASSIVE,
                 "Sunlight gives you Strength and Regeneration");
         add("flame_dash", "Flame Dash", "", PowerLevel.GAMMA, PowerCategory.FIRE_AND_HEAT, PowerType.ACTIVE,
@@ -136,16 +136,16 @@ public final class Powers {
                 "Pull mobs in water toward one point");
         add("ice_wall", "Ice Wall", "", PowerLevel.DELTA, PowerCategory.ICE_AND_WATER, PowerType.ACTIVE,
                 "Wall of ice blocks attacks in front of you");
-        add("boiling_touch", "Boiling Touch", "", PowerLevel.GAMMA, PowerCategory.ICE_AND_WATER, PowerType.ACTIVE,
-                "Boil the water around you, hurting mobs in it");
+        add("boiling_touch", "Boiling Touch", "", PowerLevel.GAMMA, PowerCategory.ICE_AND_WATER, PowerType.BOTH,
+                "Your hits scald mobs (double if wet), and R boils the water around you");
         add("weather_control", "Weather Control", "Storm", PowerLevel.OMEGA, PowerCategory.WEATHER_AND_AIR, PowerType.ACTIVE,
                 "Change the weather at will and call lightning anywhere");
         add("lightning_strike", "Lightning Strike", "", PowerLevel.BETA, PowerCategory.WEATHER_AND_AIR, PowerType.ACTIVE,
-                "Lightning strikes where you look");
+                "Lightning finds the three closest monsters by itself");
         add("wind_gust", "Wind Gust", "", PowerLevel.GAMMA, PowerCategory.WEATHER_AND_AIR, PowerType.ACTIVE,
                 "Blast of wind pushes mobs and items away");
         add("wind_flight", "Wind Flight", "", PowerLevel.BETA, PowerCategory.WEATHER_AND_AIR, PowerType.BOTH,
-                "Fly by riding the wind");
+                "Ride a gust of wind where you look and blow mobs out of your way");
         add("tornado", "Tornado", "", PowerLevel.ALPHA, PowerCategory.WEATHER_AND_AIR, PowerType.ACTIVE,
                 "Spawn a tornado that throws mobs around");
         add("rain_maker", "Rain Maker", "", PowerLevel.DELTA, PowerCategory.WEATHER_AND_AIR, PowerType.ACTIVE,
@@ -155,7 +155,7 @@ public final class Powers {
         add("air_bubble", "Air Bubble", "", PowerLevel.EPSILON, PowerCategory.WEATHER_AND_AIR, PowerType.ACTIVE,
                 "Breathable bubble of air underwater");
         add("lightning_proof", "Lightning Proof", "", PowerLevel.EPSILON, PowerCategory.WEATHER_AND_AIR, PowerType.PASSIVE,
-                "Immune to lightning");
+                "Immune to lightning; being struck charges you up, storms make you faster and tougher");
         add("cyclone_spin", "Cyclone Spin", "", PowerLevel.GAMMA, PowerCategory.WEATHER_AND_AIR, PowerType.ACTIVE,
                 "Spin fast to deflect arrows");
         add("vacuum", "Vacuum", "", PowerLevel.ALPHA, PowerCategory.WEATHER_AND_AIR, PowerType.ACTIVE,
@@ -165,11 +165,11 @@ public final class Powers {
         add("storm_power", "Storm Power", "", PowerLevel.BETA, PowerCategory.WEATHER_AND_AIR, PowerType.PASSIVE,
                 "Faster and stronger during rain and thunder");
         add("feather_fall", "Feather Fall", "", PowerLevel.EPSILON, PowerCategory.WEATHER_AND_AIR, PowerType.PASSIVE,
-                "No fall damage");
+                "You float down like a feather instead of falling");
         add("hailstorm", "Hailstorm", "", PowerLevel.GAMMA, PowerCategory.WEATHER_AND_AIR, PowerType.ACTIVE,
                 "Hail falls on an area and hurts mobs");
         add("air_pressure", "Air Pressure", "", PowerLevel.BETA, PowerCategory.WEATHER_AND_AIR, PowerType.ACTIVE,
-                "Crush mobs to the ground or make them float");
+                "Squeeze the air around one mob: rising damage for 3 seconds, then it pops into the air");
         add("thunderclap", "Thunderclap", "", PowerLevel.GAMMA, PowerCategory.WEATHER_AND_AIR, PowerType.ACTIVE,
                 "Clap to stun all mobs near you");
         add("wind_wall", "Wind Wall", "", PowerLevel.DELTA, PowerCategory.WEATHER_AND_AIR, PowerType.ACTIVE,
@@ -179,7 +179,7 @@ public final class Powers {
         add("static_field", "Static Field", "", PowerLevel.DELTA, PowerCategory.WEATHER_AND_AIR, PowerType.PASSIVE,
                 "Mobs touching you get zapped");
         add("magnetism", "Magnetism", "Magneto", PowerLevel.OMEGA, PowerCategory.EARTH_STONE_AND_METAL, PowerType.ACTIVE,
-                "Lift iron blocks, pull mobs in armor, fly on magnetic fields");
+                "Throw metal mobs and items away, rip out metal blocks and hurl them, arrows stop before they hit you");
         add("steel_skin", "Steel Skin", "Colossus", PowerLevel.BETA, PowerCategory.EARTH_STONE_AND_METAL, PowerType.PASSIVE,
                 "Organic steel body: high armor and strength, sink in water");
         add("earth_shaping", "Earth Shaping", "", PowerLevel.BETA, PowerCategory.EARTH_STONE_AND_METAL, PowerType.ACTIVE,
@@ -205,9 +205,9 @@ public final class Powers {
         add("boulder_throw", "Boulder Throw", "", PowerLevel.DELTA, PowerCategory.EARTH_STONE_AND_METAL, PowerType.ACTIVE,
                 "Rip out a chunk of ground and throw it");
         add("sinkhole", "Sinkhole", "", PowerLevel.EPSILON, PowerCategory.EARTH_STONE_AND_METAL, PowerType.ACTIVE,
-                "The ground under a mob drops away");
+                "The ground swallows a mob and closes over its head for 10 seconds");
         add("mountain_strength", "Mountain Strength", "", PowerLevel.GAMMA, PowerCategory.EARTH_STONE_AND_METAL, PowerType.PASSIVE,
-                "Stronger while standing on stone");
+                "The more stone around you, the stronger and tougher you get");
         add("quicksand", "Quicksand", "", PowerLevel.GAMMA, PowerCategory.EARTH_STONE_AND_METAL, PowerType.ACTIVE,
                 "Ground turns soft so mobs sink and slow down");
         add("lucky_miner", "Lucky Miner", "", PowerLevel.EPSILON, PowerCategory.EARTH_STONE_AND_METAL, PowerType.PASSIVE,
@@ -229,7 +229,7 @@ public final class Powers {
         add("phasing", "Phasing", "Shadowcat", PowerLevel.ALPHA, PowerCategory.MOVEMENT_AND_TRAVEL, PowerType.ACTIVE,
                 "Walk through walls");
         add("flight", "Flight", "", PowerLevel.GAMMA, PowerCategory.MOVEMENT_AND_TRAVEL, PowerType.BOTH,
-                "Fly freely");
+                "Fly freely; R makes you fly three times faster for 5 seconds");
         add("portals", "Portals", "Blink", PowerLevel.ALPHA, PowerCategory.MOVEMENT_AND_TRAVEL, PowerType.ACTIVE,
                 "Open a portal between two places");
         add("dimension_hop", "Dimension Hop", "", PowerLevel.ALPHA, PowerCategory.MOVEMENT_AND_TRAVEL, PowerType.ACTIVE,
@@ -237,7 +237,7 @@ public final class Powers {
         add("blink_step", "Blink Step", "", PowerLevel.DELTA, PowerCategory.MOVEMENT_AND_TRAVEL, PowerType.ACTIVE,
                 "Short instant dash forward");
         add("glider", "Glider", "", PowerLevel.EPSILON, PowerCategory.MOVEMENT_AND_TRAVEL, PowerType.PASSIVE,
-                "Glide when falling, like with an elytra");
+                "Hold jump in the air to glide: look down to dive and speed up, look up to climb");
         add("water_runner", "Water Runner", "", PowerLevel.EPSILON, PowerCategory.MOVEMENT_AND_TRAVEL, PowerType.PASSIVE,
                 "Run across water while sprinting");
         add("fast_swimmer", "Fast Swimmer", "", PowerLevel.EPSILON, PowerCategory.MOVEMENT_AND_TRAVEL, PowerType.PASSIVE,
@@ -245,9 +245,9 @@ public final class Powers {
         add("home_recall", "Home Recall", "", PowerLevel.GAMMA, PowerCategory.MOVEMENT_AND_TRAVEL, PowerType.ACTIVE,
                 "Teleport to your bed");
         add("group_teleport", "Group Teleport", "", PowerLevel.BETA, PowerCategory.MOVEMENT_AND_TRAVEL, PowerType.ACTIVE,
-                "Teleport yourself and nearby friends together");
+                "Call every player and every pet of yours in this world to your side");
         add("rocket_launch", "Rocket Launch", "Cannonball", PowerLevel.GAMMA, PowerCategory.MOVEMENT_AND_TRAVEL, PowerType.ACTIVE,
-                "Blast off into the air and fly forward");
+                "Blast off and explode at the top of the flight, knocking mobs away");
         add("bounce", "Bounce", "", PowerLevel.DELTA, PowerCategory.MOVEMENT_AND_TRAVEL, PowerType.PASSIVE,
                 "Bounce off the ground; no fall damage");
         add("grapple", "Grapple", "", PowerLevel.DELTA, PowerCategory.MOVEMENT_AND_TRAVEL, PowerType.ACTIVE,
@@ -257,7 +257,7 @@ public final class Powers {
         add("low_gravity", "Low Gravity", "", PowerLevel.EPSILON, PowerCategory.MOVEMENT_AND_TRAVEL, PowerType.PASSIVE,
                 "Jump higher and fall slower");
         add("instant_travel", "Instant Travel", "", PowerLevel.ALPHA, PowerCategory.MOVEMENT_AND_TRAVEL, PowerType.ACTIVE,
-                "Teleport to any coordinates you type");
+                "Sneak + R saves a spot, R takes you back to it, or type /power travel x y z");
         add("super_strength", "Super Strength", "", PowerLevel.BETA, PowerCategory.BODY_AND_STRENGTH, PowerType.PASSIVE,
                 "Hit much harder and break blocks faster");
         add("invulnerability", "Invulnerability", "", PowerLevel.ALPHA, PowerCategory.BODY_AND_STRENGTH, PowerType.PASSIVE,
@@ -268,8 +268,8 @@ public final class Powers {
                 "Become tiny: fit through 1-block gaps, harder to hit");
         add("claws", "Claws", "Wolverine", PowerLevel.GAMMA, PowerCategory.BODY_AND_STRENGTH, PowerType.ACTIVE,
                 "Pop out claws for strong melee damage");
-        add("bone_spikes", "Bone Spikes", "Marrow", PowerLevel.DELTA, PowerCategory.BODY_AND_STRENGTH, PowerType.PASSIVE,
-                "Mobs that hit you take spike damage");
+        add("bone_spikes", "Bone Spikes", "Marrow", PowerLevel.DELTA, PowerCategory.BODY_AND_STRENGTH, PowerType.BOTH,
+                "Mobs that hit you take spike damage, and R shoots a volley of bone spikes");
         add("density_control", "Density Control", "", PowerLevel.BETA, PowerCategory.BODY_AND_STRENGTH, PowerType.ACTIVE,
                 "Become heavy (no knockback) or light (float)");
         add("rubber_body", "Rubber Body", "", PowerLevel.GAMMA, PowerCategory.BODY_AND_STRENGTH, PowerType.PASSIVE,
@@ -279,7 +279,7 @@ public final class Powers {
         add("endless_stamina", "Endless Stamina", "", PowerLevel.EPSILON, PowerCategory.BODY_AND_STRENGTH, PowerType.PASSIVE,
                 "Sprinting never costs hunger");
         add("thick_hide", "Thick Hide", "", PowerLevel.DELTA, PowerCategory.BODY_AND_STRENGTH, PowerType.PASSIVE,
-                "Extra armor points");
+                "Arrows and other projectiles only do half damage");
         add("acid_spit", "Acid Spit", "", PowerLevel.DELTA, PowerCategory.BODY_AND_STRENGTH, PowerType.ACTIVE,
                 "Spit acid that hurts mobs and wears down armor");
         add("venom_strike", "Venom Strike", "", PowerLevel.GAMMA, PowerCategory.BODY_AND_STRENGTH, PowerType.PASSIVE,
@@ -295,7 +295,7 @@ public final class Powers {
         add("tough_bones", "Tough Bones", "", PowerLevel.EPSILON, PowerCategory.BODY_AND_STRENGTH, PowerType.PASSIVE,
                 "Much less fall damage");
         add("metal_skeleton", "Metal Skeleton", "", PowerLevel.ALPHA, PowerCategory.BODY_AND_STRENGTH, PowerType.PASSIVE,
-                "Unbreakable bones: no knockback and extra damage");
+                "No knockback and no single hit can do more than 6 hearts, but you sink in water");
         add("iron_stomach", "Iron Stomach", "", PowerLevel.EPSILON, PowerCategory.BODY_AND_STRENGTH, PowerType.PASSIVE,
                 "Eat rotten flesh and raw food with no bad effects");
         add("healing_factor", "Healing Factor", "Wolverine", PowerLevel.BETA, PowerCategory.HEALING_AND_LIFE, PowerType.PASSIVE,
@@ -327,7 +327,7 @@ public final class Powers {
         add("adrenaline", "Adrenaline", "", PowerLevel.DELTA, PowerCategory.HEALING_AND_LIFE, PowerType.PASSIVE,
                 "Low health gives you speed and strength");
         add("toxic_cloud", "Toxic Cloud", "", PowerLevel.GAMMA, PowerCategory.HEALING_AND_LIFE, PowerType.ACTIVE,
-                "Release a poison cloud");
+                "A poison cloud that drifts where you look and keeps growing");
         add("plague", "Plague", "", PowerLevel.BETA, PowerCategory.HEALING_AND_LIFE, PowerType.ACTIVE,
                 "Sickness that weakens mobs and spreads between them");
         add("life_sense", "Life Sense", "", PowerLevel.EPSILON, PowerCategory.HEALING_AND_LIFE, PowerType.PASSIVE,
@@ -343,7 +343,7 @@ public final class Powers {
         add("x_ray_vision", "X-Ray Vision", "", PowerLevel.GAMMA, PowerCategory.SENSES_AND_DETECTION, PowerType.ACTIVE,
                 "See through blocks for a few seconds");
         add("super_hearing", "Super Hearing", "", PowerLevel.EPSILON, PowerCategory.SENSES_AND_DETECTION, PowerType.PASSIVE,
-                "Mobs close to you glow, even behind walls");
+                "You hear hidden mobs and players: sound markers show where they are, only you see them");
         add("danger_sense", "Danger Sense", "", PowerLevel.DELTA, PowerCategory.SENSES_AND_DETECTION, PowerType.PASSIVE,
                 "Warning when a mob starts targeting you");
         add("eagle_eyes", "Eagle Eyes", "", PowerLevel.EPSILON, PowerCategory.SENSES_AND_DETECTION, PowerType.ACTIVE,
@@ -361,11 +361,11 @@ public final class Powers {
         add("structure_sense", "Structure Sense", "", PowerLevel.DELTA, PowerCategory.SENSES_AND_DETECTION, PowerType.ACTIVE,
                 "Point toward the nearest village or structure");
         add("treasure_sense", "Treasure Sense", "", PowerLevel.GAMMA, PowerCategory.SENSES_AND_DETECTION, PowerType.ACTIVE,
-                "Show nearby chests through walls");
+                "Unopened loot chests glow gold through walls for 30 seconds");
         add("echolocation", "Echolocation", "", PowerLevel.DELTA, PowerCategory.SENSES_AND_DETECTION, PowerType.ACTIVE,
                 "A ping that outlines mobs and caves around you");
         add("weak_spot_sight", "Weak Spot Sight", "", PowerLevel.DELTA, PowerCategory.SENSES_AND_DETECTION, PowerType.PASSIVE,
-                "Your critical hits do extra damage");
+                "See where mobs are weak: hits from behind do double damage");
         add("time_sense", "Time Sense", "", PowerLevel.EPSILON, PowerCategory.SENSES_AND_DETECTION, PowerType.PASSIVE,
                 "Always know the time and when night falls");
         add("cosmic_awareness", "Cosmic Awareness", "", PowerLevel.OMEGA, PowerCategory.SENSES_AND_DETECTION, PowerType.PASSIVE,
@@ -383,11 +383,11 @@ public final class Powers {
         add("telekinesis", "Telekinesis", "Jean Grey", PowerLevel.BETA, PowerCategory.MIND_AND_PSYCHIC, PowerType.ACTIVE,
                 "Lift and throw mobs and blocks with your mind");
         add("mind_control", "Mind Control", "", PowerLevel.ALPHA, PowerCategory.MIND_AND_PSYCHIC, PowerType.ACTIVE,
-                "Make a mob fight for you");
+                "Take control of a mob and give it orders: R makes it attack what you look at");
         add("psychic_blast", "Psychic Blast", "", PowerLevel.GAMMA, PowerCategory.MIND_AND_PSYCHIC, PowerType.ACTIVE,
                 "Mental blast that hurts and confuses");
         add("illusions", "Illusions", "Mirage", PowerLevel.GAMMA, PowerCategory.MIND_AND_PSYCHIC, PowerType.ACTIVE,
-                "Create fake copies of yourself to distract mobs");
+                "You vanish while three copies of you run off, and mobs chase the copies");
         add("psychic_shield", "Psychic Shield", "", PowerLevel.DELTA, PowerCategory.MIND_AND_PSYCHIC, PowerType.PASSIVE,
                 "Immune to nausea, blindness and darkness; resist mind control");
         add("memory_wipe", "Memory Wipe", "", PowerLevel.DELTA, PowerCategory.MIND_AND_PSYCHIC, PowerType.ACTIVE,
@@ -395,7 +395,7 @@ public final class Powers {
         add("fear", "Fear", "", PowerLevel.GAMMA, PowerCategory.MIND_AND_PSYCHIC, PowerType.ACTIVE,
                 "Mobs run away in panic");
         add("calm", "Calm", "", PowerLevel.EPSILON, PowerCategory.MIND_AND_PSYCHIC, PowerType.ACTIVE,
-                "Hostile mobs near you stop attacking for a while");
+                "Calming aura: mobs stop attacking you, friends and villagers, creepers stop fizzing");
         add("psychic_blade", "Psychic Blade", "Psylocke", PowerLevel.BETA, PowerCategory.MIND_AND_PSYCHIC, PowerType.ACTIVE,
                 "Psychic blade that ignores armor");
         add("astral_projection", "Astral Projection", "", PowerLevel.ALPHA, PowerCategory.MIND_AND_PSYCHIC, PowerType.ACTIVE,
@@ -407,7 +407,7 @@ public final class Powers {
         add("hypnosis", "Hypnosis", "", PowerLevel.DELTA, PowerCategory.MIND_AND_PSYCHIC, PowerType.ACTIVE,
                 "Put a mob to sleep for a while");
         add("telekinetic_flight", "Telekinetic Flight", "", PowerLevel.GAMMA, PowerCategory.MIND_AND_PSYCHIC, PowerType.BOTH,
-                "Fly using your mind");
+                "Float with your mind and carry friends and pets next to you along");
         add("telekinetic_barrier", "Telekinetic Barrier", "", PowerLevel.GAMMA, PowerCategory.MIND_AND_PSYCHIC, PowerType.ACTIVE,
                 "Psychic wall that pushes everything away");
         add("possession", "Possession", "", PowerLevel.ALPHA, PowerCategory.MIND_AND_PSYCHIC, PowerType.ACTIVE,
@@ -425,7 +425,7 @@ public final class Powers {
         add("bird_form", "Bird Form", "", PowerLevel.GAMMA, PowerCategory.SHAPESHIFTING, PowerType.ACTIVE,
                 "Become a bird and fly");
         add("fish_form", "Fish Form", "", PowerLevel.DELTA, PowerCategory.SHAPESHIFTING, PowerType.ACTIVE,
-                "Become a fish-like form that swims very fast");
+                "Turn into a small tropical fish: super fast underwater, slow on land");
         add("beast_form", "Beast Form", "Beast", PowerLevel.GAMMA, PowerCategory.SHAPESHIFTING, PowerType.PASSIVE,
                 "Blue furry body: strong, agile, climbs walls");
         add("ghost_form", "Ghost Form", "", PowerLevel.BETA, PowerCategory.SHAPESHIFTING, PowerType.ACTIVE,
@@ -435,7 +435,7 @@ public final class Powers {
         add("power_mimic", "Power Mimic", "Synch", PowerLevel.ALPHA, PowerCategory.SHAPESHIFTING, PowerType.PASSIVE,
                 "Copy the power of the last mutant player near you for a while");
         add("power_absorption", "Power Absorption", "Rogue", PowerLevel.ALPHA, PowerCategory.SHAPESHIFTING, PowerType.ACTIVE,
-                "Touch a player or mob to steal their power or ability for a while");
+                "Steal a player's power for 60 seconds, or drain a mob to use its special move");
         add("baby_form", "Baby Form", "", PowerLevel.EPSILON, PowerCategory.SHAPESHIFTING, PowerType.ACTIVE,
                 "Become small like a baby mob");
         add("slime_body", "Slime Body", "", PowerLevel.DELTA, PowerCategory.SHAPESHIFTING, PowerType.BOTH,
@@ -473,7 +473,7 @@ public final class Powers {
         add("thorn_skin", "Thorn Skin", "", PowerLevel.DELTA, PowerCategory.NATURE_AND_ANIMALS, PowerType.PASSIVE,
                 "Thorns hurt mobs that hit you");
         add("leaf_camouflage", "Leaf Camouflage", "", PowerLevel.EPSILON, PowerCategory.NATURE_AND_ANIMALS, PowerType.PASSIVE,
-                "Invisible while crouching in leaves or tall grass");
+                "Invisible while crouching in leaves or tall grass, mobs that come close get tangled");
         add("tree_form", "Tree Form", "", PowerLevel.GAMMA, PowerCategory.NATURE_AND_ANIMALS, PowerType.ACTIVE,
                 "Root in place: big armor and regeneration, can't move");
         add("bee_call", "Bee Call", "", PowerLevel.DELTA, PowerCategory.NATURE_AND_ANIMALS, PowerType.ACTIVE,
@@ -483,15 +483,15 @@ public final class Powers {
         add("wolf_pack", "Wolf Pack", "", PowerLevel.GAMMA, PowerCategory.NATURE_AND_ANIMALS, PowerType.ACTIVE,
                 "Summon a pack of wolves that fight with you");
         add("bird_flock", "Bird Flock", "", PowerLevel.GAMMA, PowerCategory.NATURE_AND_ANIMALS, PowerType.ACTIVE,
-                "A flock of birds blinds and pecks mobs");
+                "A flock of birds snatches what mobs hold and carries small mobs into the air");
         add("harvest_bounty", "Harvest Bounty", "", PowerLevel.EPSILON, PowerCategory.NATURE_AND_ANIMALS, PowerType.PASSIVE,
                 "More drops from crops and animals");
         add("gaia_link", "Gaia Link", "", PowerLevel.ALPHA, PowerCategory.NATURE_AND_ANIMALS, PowerType.PASSIVE,
                 "Crops grow as you walk, animals obey you, trees sprout");
         add("insect_command", "Insect Command", "", PowerLevel.BETA, PowerCategory.NATURE_AND_ANIMALS, PowerType.ACTIVE,
                 "Bees, spiders and silverfish nearby fight for you");
-        add("spider_powers", "Spider Powers", "", PowerLevel.GAMMA, PowerCategory.NATURE_AND_ANIMALS, PowerType.PASSIVE,
-                "Climb walls and shoot webs that trap mobs");
+        add("spider_powers", "Spider Powers", "", PowerLevel.GAMMA, PowerCategory.NATURE_AND_ANIMALS, PowerType.BOTH,
+                "Climb walls, R shoots webs, spiders leave you alone and your hits sometimes trap mobs");
         add("fish_caller", "Fish Caller", "", PowerLevel.EPSILON, PowerCategory.NATURE_AND_ANIMALS, PowerType.ACTIVE,
                 "Fish come to you; much better fishing luck");
         add("monster_tamer", "Monster Tamer", "", PowerLevel.ALPHA, PowerCategory.NATURE_AND_ANIMALS, PowerType.ACTIVE,
@@ -499,9 +499,9 @@ public final class Powers {
         add("seed_bomb", "Seed Bomb", "", PowerLevel.DELTA, PowerCategory.NATURE_AND_ANIMALS, PowerType.ACTIVE,
                 "Throw seeds that burst into grabbing vines");
         add("invisibility", "Invisibility", "", PowerLevel.GAMMA, PowerCategory.LIGHT_SHADOW_AND_STEALTH, PowerType.ACTIVE,
-                "Become invisible");
+                "Turn invisible until you attack something, but it makes you hungry");
         add("light_bending", "Light Bending", "Dazzler", PowerLevel.BETA, PowerCategory.LIGHT_SHADOW_AND_STEALTH, PowerType.ACTIVE,
-                "Blinding light shows and invisibility");
+                "A dazzling light show: mobs inside are blinded, dizzy and attack each other");
         add("darkness_control", "Darkness Control", "", PowerLevel.BETA, PowerCategory.LIGHT_SHADOW_AND_STEALTH, PowerType.ACTIVE,
                 "Cover an area in darkness that only you can see through");
         add("shadow_walk", "Shadow Walk", "", PowerLevel.ALPHA, PowerCategory.LIGHT_SHADOW_AND_STEALTH, PowerType.ACTIVE,
@@ -515,7 +515,7 @@ public final class Powers {
         add("silent_steps", "Silent Steps", "", PowerLevel.EPSILON, PowerCategory.LIGHT_SHADOW_AND_STEALTH, PowerType.PASSIVE,
                 "Mobs don't hear you and sculk sensors don't trigger");
         add("shadow_clones", "Shadow Clones", "", PowerLevel.GAMMA, PowerCategory.LIGHT_SHADOW_AND_STEALTH, PowerType.ACTIVE,
-                "Shadow copies of you fight for you");
+                "In the dark, shadow copies rise behind monsters and fight; R again swaps you with one");
         add("hologram", "Hologram", "", PowerLevel.DELTA, PowerCategory.LIGHT_SHADOW_AND_STEALTH, PowerType.ACTIVE,
                 "Project a fake image of yourself to distract mobs");
         add("darkforce", "Darkforce", "Cloak", PowerLevel.ALPHA, PowerCategory.LIGHT_SHADOW_AND_STEALTH, PowerType.ACTIVE,
@@ -525,7 +525,7 @@ public final class Powers {
         add("starlight_power", "Starlight Power", "", PowerLevel.DELTA, PowerCategory.LIGHT_SHADOW_AND_STEALTH, PowerType.PASSIVE,
                 "Stronger at night");
         add("shadow_cloak", "Shadow Cloak", "", PowerLevel.GAMMA, PowerCategory.LIGHT_SHADOW_AND_STEALTH, PowerType.ACTIVE,
-                "Hostile mobs can't see you for a few seconds");
+                "Monsters can't see you for 10 seconds and your first hit does triple damage");
         add("rainbow_beam", "Rainbow Beam", "", PowerLevel.BETA, PowerCategory.LIGHT_SHADOW_AND_STEALTH, PowerType.ACTIVE,
                 "Rainbow beam that gives mobs random effects");
         add("light_speed", "Light Speed", "", PowerLevel.ALPHA, PowerCategory.LIGHT_SHADOW_AND_STEALTH, PowerType.ACTIVE,
@@ -534,8 +534,8 @@ public final class Powers {
                 "Touching a mob blinds it");
         add("eclipse", "Eclipse", "", PowerLevel.OMEGA, PowerCategory.LIGHT_SHADOW_AND_STEALTH, PowerType.ACTIVE,
                 "Turn day into night or night into day");
-        add("light_eater", "Light Eater", "", PowerLevel.DELTA, PowerCategory.LIGHT_SHADOW_AND_STEALTH, PowerType.PASSIVE,
-                "Heal while standing in bright light");
+        add("light_eater", "Light Eater", "", PowerLevel.DELTA, PowerCategory.LIGHT_SHADOW_AND_STEALTH, PowerType.BOTH,
+                "Bright light heals you, and R eats the torches around you for a big heal");
         add("unnoticed", "Unnoticed", "", PowerLevel.GAMMA, PowerCategory.LIGHT_SHADOW_AND_STEALTH, PowerType.PASSIVE,
                 "Mobs only notice you once you attack");
         add("reality_warping", "Reality Warping", "Legion", PowerLevel.OMEGA, PowerCategory.REALITY_TIME_AND_SPACE, PowerType.ACTIVE,
@@ -580,8 +580,8 @@ public final class Powers {
                 "Blocks crumble and mobs' armor breaks around you");
         add("technopathy", "Technopathy", "Forge", PowerLevel.BETA, PowerCategory.TECH_MATTER_AND_SPECIAL, PowerType.ACTIVE,
                 "Control redstone, doors and machines from far away");
-        add("techno_organic_body", "Techno-Organic Body", "Warlock", PowerLevel.ALPHA, PowerCategory.TECH_MATTER_AND_SPECIAL, PowerType.PASSIVE,
-                "Eat metal items to repair and boost your armor");
+        add("techno_organic_body", "Techno-Organic Body", "Warlock", PowerLevel.ALPHA, PowerCategory.TECH_MATTER_AND_SPECIAL, PowerType.ACTIVE,
+                "Hold iron, gold or copper and press R to eat it: repairs your armor and gives extra armor");
         add("super_genius", "Super Genius", "", PowerLevel.GAMMA, PowerCategory.TECH_MATTER_AND_SPECIAL, PowerType.PASSIVE,
                 "More XP from everything and cheaper enchanting");
         add("redstone_pulse", "Redstone Pulse", "", PowerLevel.DELTA, PowerCategory.TECH_MATTER_AND_SPECIAL, PowerType.ACTIVE,
@@ -613,7 +613,7 @@ public final class Powers {
         add("sticky_goo", "Sticky Goo", "", PowerLevel.EPSILON, PowerCategory.TECH_MATTER_AND_SPECIAL, PowerType.ACTIVE,
                 "Shoot goo that slows mobs");
         add("time_bombs", "Time Bombs", "Boom-Boom", PowerLevel.GAMMA, PowerCategory.TECH_MATTER_AND_SPECIAL, PowerType.ACTIVE,
-                "Throw glowing bombs made from nothing");
+                "Throw up to 3 sticky bombs and set them all off with Sneak + R");
         add("adaptation", "Adaptation", "Darwin", PowerLevel.ALPHA, PowerCategory.TECH_MATTER_AND_SPECIAL, PowerType.PASSIVE,
                 "Become immune to whatever hurt you last");
         add("evolution", "Evolution", "", PowerLevel.OMEGA, PowerCategory.TECH_MATTER_AND_SPECIAL, PowerType.PASSIVE,
