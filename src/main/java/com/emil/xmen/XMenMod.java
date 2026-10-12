@@ -2,6 +2,7 @@ package com.emil.xmen;
 
 import com.emil.xmen.ability.PowerBehaviors;
 import com.emil.xmen.ability.PowerEvents;
+import com.emil.xmen.apocalypse.ApocalypseContent;
 import com.emil.xmen.entity.MagnetoEntities;
 import com.emil.xmen.entity.ModEntities;
 import com.emil.xmen.entity.SinisterEntities;
@@ -30,6 +31,7 @@ public class XMenMod {
         ModEntities.register(modEventBus);
         MagnetoEntities.register(modEventBus);
         SinisterEntities.register(modEventBus);
+        ApocalypseContent.register(modEventBus);
         XMenWorld.register(modEventBus);
         modEventBus.addListener(ModNetwork::register);
         PowerEvents.register();

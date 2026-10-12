@@ -7,111 +7,245 @@ LIGHT = "sea_lantern"
 
 
 # ======================================================================= Apocalypse Pyramid
+def _colossus(t, x, y, z, facing="north", pedestal=2):
+    """A standing stone statue of Apocalypse: crested helmet with fins, shoulder plates, cape. About 15 tall."""
+    f = -1 if facing == "north" else 1          # which z side is his front
+    t.fill(x - 3, y, z - 3, x + 3, y + pedestal - 1, z + 3, "chiseled_sandstone")
+    t.fill(x - 3, y + pedestal - 1, z - 3, x + 3, y + pedestal - 1, z + 3, "cut_sandstone")
+    y0 = y + pedestal
+    stone, armor, skin = "smooth_sandstone", "cut_sandstone", "sandstone"
+    for lx in (x - 2, x - 1, x + 1, x + 2):     # legs
+        t.fill(lx, y0, z - 1, lx, y0 + 4, z + 1, armor)
+    t.fill(x - 1, y0 + 1, z + f * 2, x + 1, y0 + 4, z + f * 2, "chiseled_sandstone")  # tabard
+    t.fill(x - 2, y0 + 5, z - 1, x + 2, y0 + 9, z + 1, armor)   # chest
+    t.fill(x - 2, y0 + 5, z - 1, x + 2, y0 + 5, z + 1, "gold_block")   # belt
+    t.set(x, y0 + 7, z + f * 2, "gold_block")                  # chest emblem
+    for ax in (x - 3, x + 3):                                    # arms
+        t.fill(ax, y0 + 4, z, ax, y0 + 8, z, stone)
+    for ax in (x - 4, x - 3, x + 3, x + 4):                     # shoulder plates
+        t.fill(ax, y0 + 9, z - 1, ax, y0 + 9, z + 1, "chiseled_sandstone")
+    t.fill(x - 1, y0 + 10, z - 1, x + 1, y0 + 12, z + 1, skin)  # head
+    t.set(x - 1, y0 + 11, z + f * 2, "blue_terracotta")         # eyes
+    t.set(x + 1, y0 + 11, z + f * 2, "blue_terracotta")
+    t.set(x, y0 + 10, z + f * 2, skin)
+    t.fill(x - 1, y0 + 13, z - 1, x + 1, y0 + 13, z + 1, "gold_block")   # helmet
+    t.fill(x, y0 + 14, z - 2, x, y0 + 14, z + 2, "gold_block")           # crest
+    t.set(x, y0 + 15, z, "gold_block")
+    for sx in (x - 2, x + 2):                                            # fins
+        t.fill(sx, y0 + 11, z, sx, y0 + 13, z - f, "gold_block")
+    t.fill(x - 2, y0 + 1, z - f * 2, x + 2, y0 + 9, z - f * 2, "blue_terracotta")   # cape
+
+
+def _obelisk(t, x, y, z, height=11):
+    for h in range(height):
+        state = "chiseled_sandstone" if h % 4 == 2 else "cut_sandstone"
+        t.fill(x, y + h, z, x + 1, y + h, z + 1, state)
+    t.fill(x, y + height, z, x + 1, y + height, z + 1, "gold_block")
+
+
+def _stairs_ring(t, a, b, za, zb, y, mat):
+    """The outer ring of one pyramid layer as stairs, so the sides look smooth like the real thing."""
+    for x in range(a + 1, b):
+        t.set(x, y, za, f"{mat}[facing=south,half=bottom,shape=straight]")
+        t.set(x, y, zb, f"{mat}[facing=north,half=bottom,shape=straight]")
+    for z in range(za + 1, zb):
+        t.set(a, y, z, f"{mat}[facing=east,half=bottom,shape=straight]")
+        t.set(b, y, z, f"{mat}[facing=west,half=bottom,shape=straight]")
+    t.set(a, y, za, f"{mat}[facing=south,half=bottom,shape=outer_left]")
+    t.set(b, y, za, f"{mat}[facing=south,half=bottom,shape=outer_right]")
+    t.set(a, y, zb, f"{mat}[facing=north,half=bottom,shape=outer_right]")
+    t.set(b, y, zb, f"{mat}[facing=north,half=bottom,shape=outer_left]")
+
+
 def apocalypse_pyramid():
-    G = 12
-    N = 55
-    t = Template("apocalypse_pyramid", N, G + 30, N, seed=2)
-    t.fill(0, G - 3, 0, N - 1, G - 1, N - 1, "sandstone")
-    t.fill(0, G, 0, N - 1, G, N - 1, "sand")
-    t.clear(0, G + 1, 0, N - 1, G + 29, N - 1)
+    """Modeled on the pyramid from the opening of X-Men: Apocalypse (2016): a huge smooth limestone pyramid with a
+    gold capstone and a crystal tip that catches the sun. Inside, a long hall leads to the transference chamber
+    where Apocalypse sleeps on his altar between gold veins and statues of himself. Under the floor is the empty
+    upside-down pyramid that the altar falls into at the end of the movie's opening, with the treasure at the
+    bottom. Four Horsemen (Storm, Psylocke, Archangel, Magneto) guard the corners."""
+    G = 26
+    SX, SY, SZ = 69, G + 36, 101
+    CX, CZ = 34, 66
+    TOP = 33
+    t = Template("apocalypse_pyramid", SX, SY, SZ, seed=2)
+    t.fill(0, G - 3, 0, SX - 1, G - 1, SZ - 1, "sandstone")
+    t.fill(0, G, 0, SX - 1, G, SZ - 1, "sand")
+    t.clear(0, G + 1, 0, SX - 1, SY - 1, SZ - 1)
 
-    # the pyramid itself: 51 wide, one block smaller every layer
-    lo, hi = 2, 52
-    for i in range(26):
-        a, b = lo + i, hi - i
-        if a > b:
-            break
+    # ------------------------------------------------------------ the pyramid: 67 wide, smooth sides, gold top
+    for i in range(TOP + 1):
+        a, b, za, zb = CX - TOP + i, CX + TOP - i, CZ - TOP + i, CZ + TOP - i
         y = G + i
-        mat = "smooth_sandstone" if i % 4 else "cut_sandstone"
-        t.fill(a, y, a, b, y, b, mat)
-        if i >= 23:
-            t.fill(a, y, a, b, y, b, "gold_block")
-        if 4 <= i <= 20 and i % 4 == 2:   # blue bands, Apocalypse's colors
-            t.walls(a, y, a, b, y, b, "blue_terracotta")
-    t.fill(26, G + 26, 26, 28, G + 26, 28, "gold_block")
-    t.set(27, G + 26, 27, "lightning_rod")
+        if i >= TOP - 5:
+            t.fill(a, y, za, b, y, zb, "gold_block")
+        elif i == 0:
+            t.fill(a, y, za, b, y, zb, "sandstone")
+            t.walls(a, y, za, b, y, zb, "cut_sandstone")
+        else:
+            t.fill(a + 1, y, za + 1, b - 1, y, zb - 1, "sandstone")
+            _stairs_ring(t, a, b, za, zb, y, "smooth_sandstone_stairs")
+    # the crystal capstone: the sun shines through it straight down onto the altar
+    for i in range(TOP - 5, TOP - 1):
+        t.fill(CX - 1, G + i, CZ - 1, CX + 1, G + i, CZ + 1, "glass")
+    t.fill(CX - 1, G + TOP - 1, CZ - 1, CX + 1, G + TOP - 1, CZ + 1, "light_blue_stained_glass")
+    t.set(CX, G + TOP, CZ, "light_blue_stained_glass")
+    t.clear(CX - 1, G + 17, CZ - 1, CX + 1, G + TOP - 6, CZ + 1)   # light shaft
 
-    # entrance on the north side with two statues
-    t.clear(26, G + 1, 2, 28, G + 4, 13)
-    t.fill(25, G, 2, 29, G, 13, "chiseled_sandstone")
-    for x in (23, 31):
-        t.fill(x, G + 1, 1, x, G + 6, 1, "smooth_quartz")
-        t.set(x, G + 7, 1, "carved_pumpkin[facing=north]")
-    t.fill(25, G + 5, 2, 29, G + 5, 2, "blue_terracotta")
-    for z in range(3, 13, 3):
-        t.set(26, G + 4, z, "soul_lantern[hanging=true]")
-        t.set(28, G + 4, z, "soul_lantern[hanging=true]")
+    # ------------------------------------------------------------ the gate: an Egyptian pylon on the north face
+    for h in range(16):
+        s = h // 4
+        t.fill(24 + s, G + h, 28, 44 - s, G + h, 46, "cut_sandstone" if h % 5 else "smooth_sandstone")
+    t.fill(27, G + 15, 28, 41, G + 15, 46, "gold_block")
+    t.clear(31, G + 1, 28, 37, G + 10, 49)
+    t.fill(31, G, 28, 37, G, 49, "cut_sandstone")
+    t.fill(30, G + 11, 28, 38, G + 11, 28, "chiseled_sandstone")
+    # winged sun disc over the gate
+    t.fill(33, G + 12, 28, 35, G + 14, 28, "gold_block")
+    t.fill(28, G + 13, 28, 32, G + 13, 28, "blue_terracotta")
+    t.fill(36, G + 13, 28, 40, G + 13, 28, "blue_terracotta")
+    t.fill(29, G + 12, 28, 32, G + 12, 28, "light_blue_terracotta")
+    t.fill(36, G + 12, 28, 39, G + 12, 28, "light_blue_terracotta")
+    # hieroglyph walls and gold veins along the gate hall
+    for z in range(29, 50):
+        for x in (30, 38):
+            for y in range(G + 1, G + 10):
+                t.set(x, y, z, "chiseled_sandstone" if (y + z) % 3 == 0 else "cut_sandstone")
+            if z % 4 == 1:
+                t.fill(x, G + 1, z, x, G + 9, z, "xmen:celestial_vein[lit=false]")
+    t.fill(34, G, 30, 34, G, 49, "xmen:celestial_vein[lit=false]")
 
-    # ring corridor around the throne room
-    t.fill(13, G, 13, 41, G, 41, "chiseled_sandstone")
-    t.clear(13, G + 1, 13, 41, G + 4, 41)
-    t.fill(16, G + 1, 16, 38, G + 4, 38, "smooth_sandstone")
-    for p in range(14, 41, 4):
-        for (x, z) in ((p, 14), (p, 40), (14, p), (40, p)):
-            t.set(x, G + 4, z, "soul_lantern[hanging=true]")
-    t.spawner(14, G + 1, 27, "minecraft:husk")
-    t.spawner(40, G + 1, 27, "minecraft:husk")
+    # ------------------------------------------------------------ avenue of obelisks and the two colossi
+    t.fill(29, G, 0, 39, G, 27, "cut_sandstone")
+    t.fill(31, G, 0, 37, G, 27, "smooth_sandstone")
+    for z in range(1, 27, 4):
+        t.fill(31, G, z, 37, G, z, "chiseled_sandstone")
+    for z in (2, 9, 16):
+        _obelisk(t, 25, G + 1, z)
+        _obelisk(t, 42, G + 1, z)
+    _colossus(t, 26, G + 1, 23, "north")
+    _colossus(t, 42, G + 1, 23, "north")
 
-    # four horsemen in the four corners
-    horsemen = ["war", "famine", "pestilence", "death"]
-    corners = [(8, 8), (40, 8), (8, 40), (40, 40)]
-    for kind, (cx, cz) in zip(horsemen, corners):
-        t.fill(cx, G, cz, cx + 6, G, cz + 6, "red_terracotta" if kind == "war" else "black_terracotta"
-               if kind == "death" else "green_terracotta" if kind == "pestilence" else "yellow_terracotta")
-        t.clear(cx, G + 1, cz, cx + 6, G + 5, cz + 6)
-        t.mob(cx + 3, G + 1, cz + 3, "wither_skeleton", "horseman_" + kind)
-        t.chest(cx + 3, G + 1, cz + (6 if cz < 27 else 0), "south" if cz > 27 else "north", "pyramid")
-        t.set(cx + 3, G + 5, cz + 3, "soul_lantern[hanging=true]")
+    # ------------------------------------------------------------ ring hall around the chamber
+    t.clear(19, G + 1, 50, 49, G + 6, 82)
+    t.fill(22, G + 1, 53, 46, G + 6, 79, "sandstone")
+    t.fill(19, G, 50, 49, G, 82, "cut_sandstone")
+    for p in range(20, 49, 4):
+        for (x, z) in ((p, 49), (p, 83)):
+            if z == 49 and 30 <= x <= 38:
+                continue
+            t.fill(x, G + 1, z, x, G + 6, z, "xmen:celestial_vein[lit=false]")
+    for p in range(52, 82, 4):
+        for (x, z) in ((18, p), (50, p)):
+            t.fill(x, G + 1, z, x, G + 6, z, "xmen:celestial_vein[lit=false]")
 
-    # throne room: tall hall in the middle, doors on all four sides
-    t.room(17, G, 17, 37, G + 15, 37, "chiseled_sandstone", "blue_terracotta", "smooth_sandstone")
-    t.clear(18, G + 1, 18, 36, G + 14, 36)
-    t.clear(26, G + 1, 16, 28, G + 3, 17)
-    t.clear(26, G + 1, 37, 28, G + 3, 38)
-    t.clear(16, G + 1, 26, 17, G + 3, 28)
-    t.clear(37, G + 1, 26, 38, G + 3, 28)
-    for x in (20, 34):
-        for z in (20, 34):
-            t.fill(x, G + 1, z, x, G + 14, z, "quartz_pillar")
-            t.set(x, G + 14, z, "gold_block")
-    t.fill(26, G + 1, 18, 28, G + 1, 30, "light_blue_carpet")
-    # raised throne platform at the south end
-    t.fill(22, G + 1, 30, 32, G + 1, 36, "gold_block")
-    t.fill(23, G + 2, 31, 31, G + 2, 36, "smooth_quartz")
-    t.fill(26, G + 3, 35, 28, G + 7, 36, "blue_terracotta")
-    t.fill(27, G + 3, 34, 27, G + 3, 34, "quartz_stairs[facing=north]")
-    t.fill(25, G + 8, 36, 29, G + 9, 36, "gold_block")
-    for x in range(22, 33):
-        t.set(x, G + 1, 29, "gold_block")
-    t.npc(27, G + 3, 32, "apocalypse", yaw=180.0)
-    for x, z in ((19, 19), (35, 19), (19, 35), (35, 35)):
-        t.set(x, G + 1, z, "soul_campfire")
-    for x in range(19, 36, 4):
-        t.set(x, G + 14, 27, "soul_lantern[hanging=true]")
+    # ------------------------------------------------------------ the transference chamber
+    t.room(24, G, 56, 44, G + 17, 76, "chiseled_sandstone", "cut_sandstone", "smooth_sandstone")
+    t.clear(CX - 1, G + 17, CZ - 1, CX + 1, G + 17, CZ + 1)
+    for x in range(25, 44):
+        for z in range(57, 76):
+            if (x + z) % 2 == 0:
+                t.set(x, G, z, "smooth_sandstone")
+    for z in range(57, 76):
+        for y in range(G + 1, G + 17):
+            for x in (24, 44):
+                t.set(x, y, z, "chiseled_sandstone" if (y + z) % 4 else "cut_sandstone")
+    for x in range(25, 44):
+        for y in range(G + 1, G + 17):
+            for z in (56, 76):
+                t.set(x, y, z, "chiseled_sandstone" if (y + x) % 4 else "cut_sandstone")
+    for p in range(26, 44, 3):      # gold veins running up the walls
+        t.fill(p, G + 1, 56, p, G + 16, 56, "xmen:celestial_vein[lit=false]")
+        t.fill(p, G + 1, 76, p, G + 16, 76, "xmen:celestial_vein[lit=false]")
+    for p in range(58, 76, 3):
+        t.fill(24, G + 1, p, 24, G + 16, p, "xmen:celestial_vein[lit=false]")
+        t.fill(44, G + 1, p, 44, G + 16, p, "xmen:celestial_vein[lit=false]")
+    t.fill(25, G + 16, 57, 43, G + 16, 57, "blue_terracotta")
+    t.fill(25, G + 16, 75, 43, G + 16, 75, "blue_terracotta")
+    t.fill(25, G + 16, 57, 25, G + 16, 75, "blue_terracotta")
+    t.fill(43, G + 16, 57, 43, G + 16, 75, "blue_terracotta")
+    # doors from the ring hall
+    t.clear(32, G + 1, 53, 36, G + 7, 56)
+    t.clear(33, G + 1, 76, 35, G + 4, 79)
+    t.clear(22, G + 1, 65, 24, G + 4, 67)
+    t.clear(44, G + 1, 65, 46, G + 4, 67)
+    # gold veins in the floor, all running to the altar
+    t.fill(CX, G, 50, CX, G, 75, "xmen:celestial_vein[lit=false]")
+    t.fill(25, G, CZ, 43, G, CZ, "xmen:celestial_vein[lit=false]")
+    for d in range(4, 9):
+        for sx in (-1, 1):
+            for sz in (-1, 1):
+                t.set(CX + sx * d, G, CZ + sz * d, "xmen:celestial_vein[lit=false]")
+    # the dais with its two altars; its middle is made of veins (it gives way when he dies)
+    t.fill(CX - 3, G + 1, CZ - 3, CX + 3, G + 1, CZ + 3, "cut_sandstone")
+    _stairs_ring(t, CX - 4, CX + 4, CZ - 4, CZ + 4, G + 1, "smooth_sandstone_stairs")
+    t.fill(CX - 2, G + 1, CZ - 2, CX + 2, G + 1, CZ + 2, "xmen:celestial_vein[lit=false]")
+    for ax in (CX - 3, CX + 3):
+        t.fill(ax, G + 2, CZ - 1, ax, G + 2, CZ + 1, "smooth_quartz")
+        t.fill(ax, G + 3, CZ - 1, ax, G + 3, CZ + 1, "smooth_quartz_slab[type=bottom]")
+    # four statues of him watching over the altar
+    _colossus(t, 28, G + 1, 60, "south", pedestal=1)
+    _colossus(t, 40, G + 1, 60, "south", pedestal=1)
+    _colossus(t, 28, G + 1, 72, "north", pedestal=1)
+    _colossus(t, 40, G + 1, 72, "north", pedestal=1)
+    t.mob(CX, G + 2, CZ, "xmen:apocalypse", extra={"BeamHeight": TOP - 2}, yaw=180.0)
 
-    # secret vault under the throne: a lava pit to jump across, the treasure on an island
-    t.room(19, 1, 19, 35, G - 1, 35, "chiseled_sandstone", "sandstone", "sandstone")
-    t.fill(20, 2, 20, 34, 3, 34, "lava")
-    t.clear(20, 4, 20, 34, G - 2, 34)
-    t.disc(27, 3, 27, 3, "gold_block")
-    t.disc(27, 2, 27, 3, "gold_block")
-    t.chest(27, 4, 27, "north", "pyramid_treasure")
-    t.chest(26, 4, 28, "north", "pyramid_treasure")
-    t.chest(28, 4, 28, "north", "pyramid")
-    t.set(27, 4, 26, "soul_lantern[hanging=false]")
-    t.set(31, 3, 26, "chiseled_sandstone")
-    for x in range(20, 35, 3):
-        t.set(x, G - 2, 20, "soul_lantern[hanging=true]")
-        t.set(x, G - 2, 34, "soul_lantern[hanging=true]")
-    # hidden stairs behind the throne down to the vault
-    for i in range(G - 3):
-        t.clear(33, G - i, 33 - i, 33, G + 2 - i, 33 - i)
-        t.set(33, G - 1 - i, 33 - i, "sandstone")
-    # cultists guarding the entrance hall
-    for z in (6, 10):
-        t.mob(27, G + 1, z, "husk", "cultist")
-    for x, z in ((15, 20), (39, 33), (15, 36), (39, 18)):
-        t.mob(x, G + 1, z, "husk", "cultist")
+    # ------------------------------------------------------------ the Four Horsemen's rooms
+    rooms = [("xmen:storm", 10, 46, 18, 50, ("white_terracotta", "light_blue_terracotta")),
+             ("xmen:psylocke", 50, 46, 50, 50, ("purple_terracotta", "black_terracotta")),
+             ("xmen:archangel", 10, 77, 18, 79, ("blue_terracotta", "light_gray_terracotta")),
+             ("xmen:horseman_magneto", 50, 77, 50, 79, ("gray_terracotta", "red_terracotta"))]
+    for mob, x1, z1, door_x, door_z, (floor_a, floor_b) in rooms:
+        x2, z2 = x1 + 8, z1 + 10
+        t.room(x1, G, z1, x2, G + 9, z2, "chiseled_sandstone", "cut_sandstone", "smooth_sandstone")
+        for x in range(x1 + 1, x2):
+            for z in range(z1 + 1, z2):
+                t.set(x, G, z, floor_a if (x + z) % 2 else floor_b)
+        t.clear(door_x, G + 1, door_z, door_x, G + 3, door_z + 2)
+        for (vx, vz) in ((x1 + 1, z1 + 1), (x2 - 1, z1 + 1), (x1 + 1, z2 - 1), (x2 - 1, z2 - 1)):
+            t.fill(vx, G + 1, vz, vx, G + 8, vz, "xmen:celestial_vein[lit=false]")
+        far_x = x1 + 1 if x1 < CX else x2 - 1
+        t.chest(far_x, G + 1, (z1 + z2) // 2, "east" if x1 < CX else "west", "pyramid")
+        t.mob((x1 + x2) // 2, G + 1, (z1 + z2) // 2, mob, yaw=90.0 if x1 < CX else 270.0)
+    # Storm's thunderclouds, Psylocke's crystals, Archangel's blades, Magneto's metal
+    t.fill(11, G + 8, 47, 17, G + 8, 55, "white_wool")
+    t.scatter(51, G + 1, 47, 57, G + 1, 55, "amethyst_cluster[facing=up,waterlogged=false]", 0.08,
+              lambda s: s is None or s == "minecraft:air")
+    t.fill(11, G + 8, 78, 17, G + 8, 86, "iron_bars")
+    t.fill(52, G + 1, 78, 57, G + 3, 78, "iron_block")
+    t.fill(52, G + 1, 86, 57, G + 3, 86, "iron_block")
+
+    # ------------------------------------------------------------ Clan Akkaba, his worshippers
+    for (x, z) in ((32, 36), (36, 42), (20, 66), (48, 66), (30, 81), (38, 51)):
+        t.mob(x, G + 1, z, "xmen:akkaba_cultist", yaw=180.0)
+
+    # ------------------------------------------------------------ the upside-down pyramid under the chamber
+    for k in range(16):
+        y = G - 3 - k
+        hw = 18 - k
+        t.fill(CX - hw - 2, y, CZ - hw - 2, CX + hw + 2, y, CZ + hw + 2, "smooth_sandstone")
+        t.clear(CX - hw, y, CZ - hw, CX + hw, y, CZ + hw)
+        e = hw + 1
+        q = e // 2
+        for sx in (-e, -q, 0, q, e):
+            for sz in (-e, -q, 0, q, e):
+                if abs(sx) == e or abs(sz) == e:
+                    t.set(CX + sx, y, CZ + sz, "xmen:celestial_vein[lit=false]")
+    bottom = G - 3 - 15
+    t.fill(CX - 5, bottom - 3, CZ - 5, CX + 5, bottom - 1, CZ + 5, "smooth_sandstone")
+    t.fill(CX - 2, bottom - 2, CZ - 2, CX + 2, bottom, CZ + 2, "water")   # breaks your fall
+    for (x, z) in ((CX - 3, CZ - 3), (CX + 3, CZ - 3), (CX - 3, CZ + 3)):
+        t.chest(x, bottom, z, "north", "pyramid_treasure")
+    t.chest(CX + 3, bottom, CZ + 3, "north", "pyramid")
+    # the way out: up the south steps, a stair tunnel, and a door you can only open from inside
+    for y in range(G - 3, G + 2):
+        z = CZ + y - (G - 3) + 18
+        t.clear(CX - 1, y, z, CX + 1, y + 2, z)
+        t.fill(CX - 1, y - 1, z, CX + 1, y - 1, z, "smooth_sandstone_stairs[facing=south,half=bottom,"
+                                                   "shape=straight]")
+    t.clear(CX - 1, G + 1, 83, CX + 1, G + 3, CZ + 23)
+    t.fill(CX - 1, G + 1, 83, CX + 1, G + 3, 83, "chiseled_sandstone")
+    t.door(CX, G + 1, 83, "north", wood="iron")
+    t.set(CX + 1, G + 2, 84, "stone_button[face=wall,facing=south,powered=false]")
     return t
 
 

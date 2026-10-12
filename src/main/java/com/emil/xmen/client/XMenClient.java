@@ -54,6 +54,7 @@ public class XMenClient {
         modEventBus.addListener(this::registerLayers);
         MagnetoClient.register(modEventBus);
         SinisterClient.register(modEventBus);
+        com.emil.xmen.apocalypse.client.ApocalypseRenderers.register(modEventBus);
         NeoForge.EVENT_BUS.addListener(this::onClientTick);
         NeoForge.EVENT_BUS.addListener(this::onLoggingOut);
         NeoForge.EVENT_BUS.addListener(this::onFov);

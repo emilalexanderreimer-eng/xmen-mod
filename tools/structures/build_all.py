@@ -46,7 +46,7 @@ STRUCTURES = {
     "x_mansion": (["minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow", "minecraft:forest",
                    "minecraft:birch_forest", "minecraft:flower_forest"], "surface_structures",
                   -mansion.G, "WORLD_SURFACE_WG", 64, 32, True),
-    "apocalypse_pyramid": (["minecraft:desert"], "surface_structures", -12, "WORLD_SURFACE_WG", 64, 32, False),
+    "apocalypse_pyramid": (["minecraft:desert"], "surface_structures", -26, "WORLD_SURFACE_WG", 64, 32, False),
     "fallen_sentinel": (LAND, "surface_structures", -4, "WORLD_SURFACE_WG", 20, 8, False),
     "brotherhood_hideout": (FLAT + WOODS, "surface_structures", -3, "WORLD_SURFACE_WG", 34, 12, False),
     "asteroid_m": (ALL_OCEAN, "surface_structures", 170, None, 72, 36, False),

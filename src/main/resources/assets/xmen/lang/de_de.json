@@ -40,5 +40,18 @@
   "entity.xmen.sinister_clone": "Sinister-Klon",
   "entity.xmen.sinister_blast": "Sinisters Energiesto\u00df",
   "item.xmen.mister_sinister_spawn_egg": "Mister-Sinister-Spawn-Ei",
-  "item.xmen.sinister_clone_spawn_egg": "Sinister-Klon-Spawn-Ei"
+  "item.xmen.sinister_clone_spawn_egg": "Sinister-Klon-Spawn-Ei",
+  "entity.xmen.apocalypse": "Apocalypse",
+  "entity.xmen.storm": "Storm",
+  "entity.xmen.psylocke": "Psylocke",
+  "entity.xmen.archangel": "Archangel",
+  "entity.xmen.horseman_magneto": "Magneto",
+  "entity.xmen.akkaba_cultist": "Kultist von Clan Akkaba",
+  "item.xmen.apocalypse_spawn_egg": "Apocalypse-Spawn-Ei",
+  "item.xmen.storm_spawn_egg": "Storm-Spawn-Ei",
+  "item.xmen.psylocke_spawn_egg": "Psylocke-Spawn-Ei",
+  "item.xmen.archangel_spawn_egg": "Archangel-Spawn-Ei",
+  "item.xmen.horseman_magneto_spawn_egg": "Reiter-Magneto-Spawn-Ei",
+  "item.xmen.akkaba_cultist_spawn_egg": "Akkaba-Kultist-Spawn-Ei",
+  "block.xmen.celestial_vein": "Himmlische Ader"
 }

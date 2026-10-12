@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.emil.xmen.XMenMod;
+import com.emil.xmen.apocalypse.ApocalypseBoss;
+import com.emil.xmen.apocalypse.ApocalypseServant;
 import com.emil.xmen.entity.MagnetoBoss;
 import com.emil.xmen.entity.MutantNpc;
 import com.emil.xmen.entity.SinisterBoss;
@@ -100,6 +102,15 @@ public class StructureTests {
         }
         if (!level.getEntitiesOfClass(net.minecraft.world.entity.npc.Villager.class, area).isEmpty()) {
             helper.fail("There are still villagers in the structures");
+            return;
+        }
+        if (level.getEntitiesOfClass(ApocalypseBoss.class, area).isEmpty()) {
+            helper.fail("Apocalypse isn't in his pyramid");
+            return;
+        }
+        int horsemen = level.getEntitiesOfClass(ApocalypseServant.class, area, s -> s.kind().horseman()).size();
+        if (horsemen < 4) {
+            helper.fail("Only " + horsemen + " of Apocalypse's Four Horsemen are in the pyramid");
             return;
         }
         XMenMod.LOGGER.info("Test: {} structure mobs set up, {} X-Men", people.size(), xmen.size());

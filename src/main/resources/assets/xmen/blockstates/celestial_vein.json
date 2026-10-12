@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "xmen:block/celestial_vein"
+    },
+    "lit=true": {
+      "model": "xmen:block/celestial_vein_lit"
+    }
+  }
+}

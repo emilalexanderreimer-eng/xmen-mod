@@ -356,10 +356,6 @@ CHARACTERS = {
     "white_queen": dict(skin="f5d8c0", hair="f5e6a8", style="long", eyes="4aa3df", suit="f5f5f5",
                         panel="e0e0e8", sleeves="f5f5f5", gloves="f5f5f5", legs="f5f5f5", boots="f5f5f5",
                         belt="f5f5f5", emblem="none", lips="c06070", coat="f5f5f5"),
-    "apocalypse": dict(skin="6b7380", hair="6b7380", style="bald", glowing_eyes="4fc3f7", lips="2a3a8a",
-                       suit="2a3a8a", panel="8a8f99", sleeves="8a8f99", gloves="2a3a8a", legs="2a3a8a",
-                       boots="8a8f99", belt="8a8f99", emblem="none", helmet="8a8f99", helmet2="2a3a8a",
-                       helmet_crest=True, open_sides=True, shoulder="8a8f99", chest_v="8a8f99"),
 }
 
 # Characters with slim (Alex-style) arms
