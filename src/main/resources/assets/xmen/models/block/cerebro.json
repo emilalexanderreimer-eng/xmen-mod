@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "xmen:block/cerebro_top",
+    "bottom": "xmen:block/cerebro_side",
+    "side": "xmen:block/cerebro_side"
+  }
+}

@@ -3,7 +3,9 @@ package com.emil.xmen.client;
 import com.emil.xmen.XMenMod;
 import com.emil.xmen.entity.ModEntities;
 import com.emil.xmen.ability.PowerBehaviors;
+import com.emil.xmen.network.ElevatorPayload;
 import com.emil.xmen.network.UsePowerPayload;
+import com.emil.xmen.world.ModContent;
 import com.emil.xmen.power.Power;
 import com.mojang.blaze3d.platform.InputConstants;
 
@@ -41,6 +43,9 @@ public class XMenClient {
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, "key.categories.xmen");
 
     private int wallRunTicks;
+    private boolean lastJump;
+    private boolean lastSneak;
+    private int elevatorCooldown;
 
     public XMenClient(IEventBus modEventBus) {
         modEventBus.addListener(this::registerKeys);
@@ -81,6 +86,7 @@ public class XMenClient {
         while (USE_POWER.consumeClick()) {
             PacketDistributor.sendToServer(UsePowerPayload.INSTANCE);
         }
+        elevatorTick(player);
         MorphRenderer.tick();
         Power power = ClientPowerState.get();
         if (power == null || player.getAbilities().flying || player.isSpectator()) {
@@ -146,6 +152,30 @@ public class XMenClient {
                 player.resetFallDistance();
             }
         }
+    }
+
+    // Elevator blocks: jump to ride up, sneak to ride down. The keys are only known on the client.
+    private void elevatorTick(LocalPlayer player) {
+        Minecraft minecraft = Minecraft.getInstance();
+        boolean jump = minecraft.options.keyJump.isDown();
+        boolean sneak = minecraft.options.keyShift.isDown();
+        if (minecraft.screen == null && player.onGround() && elevatorCooldown <= 0) {
+            BlockPos below = BlockPos.containing(player.getX(), player.getY() - 0.2, player.getZ());
+            if (player.level().getBlockState(below).is(ModContent.ELEVATOR.get())) {
+                if (jump && !lastJump) {
+                    PacketDistributor.sendToServer(new ElevatorPayload(true));
+                    elevatorCooldown = 8;
+                } else if (sneak && !lastSneak) {
+                    PacketDistributor.sendToServer(new ElevatorPayload(false));
+                    elevatorCooldown = 8;
+                }
+            }
+        }
+        if (elevatorCooldown > 0) {
+            elevatorCooldown--;
+        }
+        lastJump = jump;
+        lastSneak = sneak;
     }
 
     private void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {

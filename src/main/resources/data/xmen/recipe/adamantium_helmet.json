@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "###",
+    "# #"
+  ],
+  "key": {
+    "#": {
+      "item": "xmen:adamantium_ingot"
+    }
+  },
+  "result": {
+    "id": "xmen:adamantium_helmet",
+    "count": 1
+  }
+}

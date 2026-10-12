@@ -3,6 +3,7 @@ package com.emil.xmen.network;
 import com.emil.xmen.client.ClientMorphs;
 import com.emil.xmen.client.ClientPowerState;
 import com.emil.xmen.power.PlayerPowers;
+import com.emil.xmen.world.ElevatorBlock;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -27,6 +28,12 @@ public final class ModNetwork {
                 (payload, context) -> context.enqueueWork(() -> {
                     if (context.player() instanceof ServerPlayer player) {
                         PlayerPowers.onUseKey(player);
+                    }
+                }));
+        registrar.playToServer(ElevatorPayload.TYPE, ElevatorPayload.STREAM_CODEC,
+                (payload, context) -> context.enqueueWork(() -> {
+                    if (context.player() instanceof ServerPlayer player) {
+                        ElevatorBlock.ride(player, payload.up());
                     }
                 }));
     }

@@ -1,5 +1,25 @@
 {
   "key.categories.xmen": "X-Men Mutants",
   "key.xmen.use_power": "Use Power",
-  "entity.xmen.clone": "Clone"
+  "entity.xmen.clone": "Clone",
+  "block.xmen.elevator": "Elevator",
+  "block.xmen.cerebro": "Cerebro",
+  "block.xmen.danger_room_console": "Danger Room Console",
+  "block.xmen.krakoa_gate": "Krakoa Gate",
+  "item.xmen.mutant_serum": "Mutant Serum",
+  "item.xmen.celestial_orb": "Celestial Orb",
+  "item.xmen.adamantium_ingot": "Adamantium Ingot",
+  "item.xmen.sentinel_part": "Sentinel Part",
+  "item.xmen.adamantium_sword": "Adamantium Sword",
+  "item.xmen.adamantium_pickaxe": "Adamantium Pickaxe",
+  "item.xmen.adamantium_helmet": "Adamantium Helmet",
+  "item.xmen.adamantium_chestplate": "Adamantium Chestplate",
+  "item.xmen.adamantium_leggings": "Adamantium Leggings",
+  "item.xmen.adamantium_boots": "Adamantium Boots",
+  "item.xmen.xmen_mask": "X-Men Mask",
+  "item.xmen.xmen_suit": "X-Men Suit",
+  "item.xmen.xmen_pants": "X-Men Pants",
+  "item.xmen.xmen_boots": "X-Men Boots",
+  "item.xmen.magneto_helmet": "Magneto's Helmet",
+  "itemGroup.xmen": "X-Men"
 }

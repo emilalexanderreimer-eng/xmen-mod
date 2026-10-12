@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "xmen:morlock_tunnels",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 32,
+    "separation": 12,
+    "salt": 19633058
+  }
+}

@@ -650,6 +650,30 @@ public final class Powers {
         return BY_ID.size();
     }
 
+    /** Like roll, but only from this level and stronger ones (still weighted by their chances). */
+    public static Power rollAtLeast(RandomSource random, PowerLevel minimum) {
+        int total = 0;
+        for (PowerLevel level : PowerLevel.values()) {
+            if (level.ordinal() >= minimum.ordinal()) {
+                total += level.chancePercent();
+            }
+        }
+        int pick = random.nextInt(total);
+        PowerLevel chosen = minimum;
+        for (PowerLevel level : PowerLevel.values()) {
+            if (level.ordinal() < minimum.ordinal()) {
+                continue;
+            }
+            pick -= level.chancePercent();
+            if (pick < 0) {
+                chosen = level;
+                break;
+            }
+        }
+        List<Power> pool = ofLevel(chosen);
+        return pool.get(random.nextInt(pool.size()));
+    }
+
     /** Picks a level by its roll chance first, then a random power within that level. */
     public static Power roll(RandomSource random) {
         PowerLevel level = PowerLevel.roll(random);

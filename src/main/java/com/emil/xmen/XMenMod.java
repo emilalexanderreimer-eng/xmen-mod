@@ -7,6 +7,7 @@ import com.emil.xmen.network.ModNetwork;
 import com.emil.xmen.power.PlayerPowers;
 import com.emil.xmen.power.PowerCommand;
 import com.emil.xmen.power.Powers;
+import com.emil.xmen.world.XMenWorld;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.server.level.ServerPlayer;
@@ -25,6 +26,7 @@ public class XMenMod {
     public XMenMod(IEventBus modEventBus) {
         PlayerPowers.register(modEventBus);
         ModEntities.register(modEventBus);
+        XMenWorld.register(modEventBus);
         modEventBus.addListener(ModNetwork::register);
         PowerEvents.register();
         NeoForge.EVENT_BUS.addListener(this::onPlayerLogin);

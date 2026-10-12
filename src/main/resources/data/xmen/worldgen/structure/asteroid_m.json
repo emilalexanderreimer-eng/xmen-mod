@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:jigsaw",
+  "biomes": "#xmen:has_structure/asteroid_m",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none",
+  "start_pool": "xmen:asteroid_m/start",
+  "size": 1,
+  "start_height": {
+    "absolute": 170
+  },
+  "max_distance_from_center": 80,
+  "use_expansion_hack": false
+}

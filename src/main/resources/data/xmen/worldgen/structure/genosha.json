@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:jigsaw",
+  "biomes": "#xmen:has_structure/genosha",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none",
+  "start_pool": "xmen:genosha/start",
+  "size": 1,
+  "start_height": {
+    "absolute": 43
+  },
+  "max_distance_from_center": 80,
+  "use_expansion_hack": false
+}

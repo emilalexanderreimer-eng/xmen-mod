@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "xmen:brotherhood_hideout",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 34,
+    "separation": 12,
+    "salt": 19630365
+  }
+}

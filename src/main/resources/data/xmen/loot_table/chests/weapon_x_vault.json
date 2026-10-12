@@ -1,0 +1,68 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 4
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "xmen:adamantium_ingot",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 5
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 2
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "xmen:adamantium_sword",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "xmen:adamantium_pickaxe",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "xmen:adamantium_helmet",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "xmen:adamantium_chestplate",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "xmen:adamantium_leggings",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "xmen:adamantium_boots",
+          "weight": 1
+        }
+      ]
+    }
+  ]
+}

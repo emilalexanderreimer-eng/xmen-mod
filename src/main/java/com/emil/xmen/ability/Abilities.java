@@ -291,6 +291,13 @@ public final class Abilities {
         if (isFriend(player, target) && !(target instanceof Player && player.server.isPvpAllowed())) {
             return;
         }
+        // Magneto's helmet blocks mind powers
+        if (target instanceof Player victim && com.emil.xmen.world.CerebroBlock.hiddenFromTelepaths(victim)) {
+            com.emil.xmen.power.Power power = com.emil.xmen.power.PlayerPowers.get(player);
+            if (power != null && power.category() == com.emil.xmen.power.PowerCategory.MIND_AND_PSYCHIC) {
+                return;
+            }
+        }
         boolean before = dealingPowerDamage;
         dealingPowerDamage = true;
         try {

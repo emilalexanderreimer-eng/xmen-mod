@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "xmen:block/danger_room_console_top",
+    "bottom": "xmen:block/danger_room_console_side",
+    "side": "xmen:block/danger_room_console_side"
+  }
+}

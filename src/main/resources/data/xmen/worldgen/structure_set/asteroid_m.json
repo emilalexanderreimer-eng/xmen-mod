@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "xmen:asteroid_m",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 72,
+    "separation": 36,
+    "salt": 19635795
+  }
+}

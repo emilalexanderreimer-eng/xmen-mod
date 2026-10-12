@@ -27,6 +27,10 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
+      # Starts a real Minecraft server, builds every structure once and checks its people get set up.
+      - name: Test structures in a real game
+        run: ./gradlew runGameTestServer
+
       - name: Upload jar
         uses: actions/upload-artifact@v4
         with:
