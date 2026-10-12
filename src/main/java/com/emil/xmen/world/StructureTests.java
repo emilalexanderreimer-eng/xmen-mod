@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import com.emil.xmen.XMenMod;
 import com.emil.xmen.entity.MagnetoBoss;
+import com.emil.xmen.entity.SinisterBoss;
+import com.emil.xmen.entity.SinisterClone;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
@@ -73,6 +75,15 @@ public class StructureTests {
                 2000 * 16 - 200, 2064 * 16 + 200, 320, 2064 * 16 + 200)).isEmpty();
         if (!magneto) {
             helper.fail("Magneto isn't on Asteroid M");
+            return;
+        }
+        AABB area = new AABB(2000 * 16 - 200, -64, 2000 * 16 - 200, 2064 * 16 + 200, 320, 2064 * 16 + 200);
+        if (level.getEntitiesOfClass(SinisterBoss.class, area).isEmpty()) {
+            helper.fail("Mister Sinister isn't in his lab");
+            return;
+        }
+        if (level.getEntitiesOfClass(SinisterClone.class, area, SinisterClone::isDormant).size() < 8) {
+            helper.fail("Sinister's clones aren't asleep in their tanks");
             return;
         }
         XMenMod.LOGGER.info("Test: {} structure mobs set up", people.size());

@@ -414,7 +414,7 @@ The full list of powers is in [tools/powers.psv](tools/powers.psv).
 | `fallen_sentinel` | almost anywhere (common) | A broken giant robot with loot inside. |
 | `brotherhood_hideout` | plains, forests | Pyro, Avalanche, the Blob, Toad, Mystique. Chance of a map to Asteroid M. |
 | `weapon_x` | snowy biomes | Underground lab with feral subjects and an adamantium vault. |
-| `sinister_lab` | deep underground | Mister Sinister (boss), his clones and Marauders. Drops a Mutant Serum. |
+| `sinister_lab` | deep underground | Mister Sinister (boss). He fires red energy blasts, freezes you in place with telepathy, throws you back with telekinesis, shapeshifts into a copy of you and appears behind you, wakes the clones sleeping in his tanks (they smash out of the glass), heals himself and steals a sample of your mutant genes when he hits you. His clones fall apart when he dies. Drops a Mutant Serum. Spawn him anywhere with the Mister Sinister Spawn Egg or `/summon xmen:mister_sinister`. |
 | `hellfire_club` | plains, forests | Hellfire guards and the White Queen (boss). |
 | `genosha` | ocean island | A ruined mutant city with scavengers and Sentinel wrecks. |
 | `krakoa` | warm ocean island | Peaceful mutants, no monsters, slow healing. The gate in the cave leads to the X-Mansion. |

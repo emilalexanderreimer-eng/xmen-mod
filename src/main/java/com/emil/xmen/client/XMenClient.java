@@ -52,6 +52,7 @@ public class XMenClient {
         modEventBus.addListener(this::registerGuiLayers);
         modEventBus.addListener(this::registerRenderers);
         MagnetoClient.register(modEventBus);
+        SinisterClient.register(modEventBus);
         NeoForge.EVENT_BUS.addListener(this::onClientTick);
         NeoForge.EVENT_BUS.addListener(this::onLoggingOut);
         NeoForge.EVENT_BUS.addListener(this::onFov);
