@@ -22,7 +22,7 @@ import net.minecraft.util.Mth;
  */
 public class SentinelModel extends HumanoidModel<SentinelMarkX> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(
-            ResourceLocation.fromNamespaceAndPath(XMenMod.MOD_ID, "sentinel"), "main");
+            ResourceLocation.fromNamespaceAndPath(XMenMod.MOD_ID, "sentinel_mark_x"), "main");
 
     public SentinelModel(ModelPart root) {
         super(root);

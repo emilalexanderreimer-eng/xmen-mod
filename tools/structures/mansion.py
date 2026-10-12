@@ -510,10 +510,13 @@ def porch(t):
     # steps and the big front doors
     for x in range(48, 57):
         stair(t, x, G, z1 - 1, "south", "stone_brick_stairs")
-    t.clear(51, G + 1, 30, 52, G + 2, 30)
-    double_door(t, 51, G + 1, 30, "south")
-    t.fill(53, G + 1, 30, 53, G + 2, 30, "stone_bricks")
-    t.fill(50, G + 3, 30, 53, G + 3, 30, "chiseled_stone_bricks")
+    t.clear(51, G + 1, 30, 53, G + 3, 30)
+    t.door(51, G + 1, 30, "south", "dark_oak", "left")
+    t.door(53, G + 1, 30, "south", "dark_oak", "right")
+    t.set(52, G + 1, 30, "dark_oak_planks")
+    t.set(52, G + 2, 30, "dark_oak_planks")
+    t.set(52, G + 3, 30, "chiseled_stone_bricks")
+    t.fill(51, G + 3, 30, 53, G + 3, 30, "chiseled_stone_bricks")
 
 
 def ivy(t, x1, z1, x2, z2):
@@ -536,17 +539,6 @@ def ivy(t, x1, z1, x2, z2):
                         t.set(x, y, z, f"vine[{side}=true]")
 
 
-def double_door(t, x, y, z, facing, wood="dark_oak"):
-    """Two doors next to each other (the second one at x + 1 or z + 1) with their hinges on the outside,
-    so they open away from each other like a real double door."""
-    second = (x + 1, z) if facing in ("north", "south") else (x, z + 1)
-    # the hinge side is seen from the way the door faces: "right" of south is west, of west is north, ...
-    first_hinge = "right" if facing in ("south", "west") else "left"
-    other = "left" if first_hinge == "right" else "right"
-    t.door(x, y, z, facing, wood, first_hinge)
-    t.door(second[0], y, second[1], facing, wood, other)
-
-
 def wall_x(t, z, x1, x2, y1, y2, block=PANEL):
     t.fill(x1, y1, z, x2, y2, z, block)
 
@@ -562,11 +554,14 @@ def inside_ground_floor(t):
     wall_x(t, 44, 23, 81, y1, y2)
     # doors
     for x, z, f in ((43, 37, "east"), (60, 37, "east"), (43, 50, "east"), (60, 50, "east")):
-        double_door(t, x, y1, z, f)
+        t.door(x, y1, z, f, "dark_oak", "left")
+        t.door(x, y1, z + 1, f, "dark_oak", "right")
     for x, z in ((30, 44), (70, 44), (51, 44)):
-        double_door(t, x, y1, z, "south")
+        t.door(x, y1, z, "south", "dark_oak", "left")
+        t.door(x + 1, y1, z, "south", "dark_oak", "right")
     # back door to the terrace
-    double_door(t, 51, y1, 56, "south")
+    t.door(51, y1, 56, "south", "dark_oak", "left")
+    t.door(52, y1, 56, "south", "dark_oak", "right")
 
     # ---- the entrance hall: two floors high with a grand staircase up to the gallery
     t.clear(46, F2, 31, 57, F2, 40)
@@ -785,7 +780,8 @@ def wings(t):
         gable_roof_z(t, z1, z2, x1, x2, F2 + 1)
     # doors from the house (library and rec room)
     for x in (28, 76):
-        double_door(t, x, F1 + 1, 56, "south")
+        t.door(x, F1 + 1, 56, "south", "dark_oak", "left")
+        t.door(x + 1, F1 + 1, 56, "south", "dark_oak", "right")
     # the doors out onto the terrace
     t.door(34, F1 + 1, 63, "east", "dark_oak")
     t.door(70, F1 + 1, 63, "west", "dark_oak")
