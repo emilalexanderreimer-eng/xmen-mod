@@ -9,14 +9,6 @@
       "required": false
     },
     {
-      "id": "minecraft:grove",
-      "required": false
-    },
-    {
-      "id": "minecraft:snowy_slopes",
-      "required": false
-    },
-    {
       "id": "minecraft:ice_spikes",
       "required": false
     }

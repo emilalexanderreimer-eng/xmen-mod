@@ -413,7 +413,7 @@ The full list of powers is in [tools/powers.psv](tools/powers.psv).
 | `sentinel_factory` | plains, savanna, desert | Trask guards, Sentinels that hunt mutants, and a giant Sentinel boss. |
 | `fallen_sentinel` | almost anywhere (common) | A broken giant robot with loot inside. |
 | `brotherhood_hideout` | plains, forests | Pyro, Avalanche, the Blob, Toad, Mystique. Chance of a map to Asteroid M. |
-| `weapon_x` | snowy biomes | Underground lab with feral subjects and an adamantium vault. |
+| `weapon_x` | snowy plains, snowy taiga, ice spikes | The Weapon X facility from the movies (X2, *Origins*, *Apocalypse*, *Logan*): a fenced base with guard towers, a helipad and trucks on top, and a freight elevator (or emergency stairs) 44 blocks down to three huge levels. Level 1: barracks, mess hall, Colonel Stryker's command center, armory, holding cells, infirmary, generators. Level 2: the adamantium bonding tank with Lady Deathstrike, Logan floating in his Weapon X tank (press the tank console to set him free: he goes berserk on the guards but leaves you alone), Stryker's fake Cerebro with Jason (Mutant 143) and his illusions, the genetics lab. Level 3: Weapon XI's chamber (teleports, eye beams, arm blades), the Transigen wing where X-24 waits in his growth tank, and the adamantium vault. Soldiers shoot rifles and call for backup, scientists raise the alarm and throw sedatives, Stryker calls in reinforcements and uses his control serum. Spawn eggs for all of them; `/summon xmen:weapon_xi`, `xmen:x24`, `xmen:lady_deathstrike`, `xmen:william_stryker`, `xmen:jason_stryker`, `xmen:weapon_x_logan`. |
 | `sinister_lab` | deep underground | Mister Sinister (boss). He fires red energy blasts, freezes you in place with telepathy, throws you back with telekinesis, shapeshifts into a copy of you and appears behind you, wakes the clones sleeping in his tanks (they smash out of the glass), heals himself and steals a sample of your mutant genes when he hits you. His clones fall apart when he dies. Drops a Mutant Serum. Spawn him anywhere with the Mister Sinister Spawn Egg or `/summon xmen:mister_sinister`. |
 | `hellfire_club` | plains, forests | Hellfire guards and the White Queen (boss). |
 | `genosha` | ocean island | A ruined mutant city with scavengers and Sentinel wrecks. |
@@ -426,7 +426,8 @@ The full list of powers is in [tools/powers.psv](tools/powers.psv).
 
 New blocks and items: Elevator (jump to go up, sneak to go down, craft 8 iron + 1 ender pearl), Cerebro,
 Danger Room Console, Krakoa Gate, Mutant Serum, Celestial Orb, Adamantium (ingot, sword, pickaxe, armor),
-X-Men suit (black movie suit; the full set gives Resistance, Speed and Jump Boost), Magneto's helmet and Sentinel parts
+X-Men suit (black movie suit; the full set gives Resistance, Speed and Jump Boost), Magneto's helmet, the Weapon X Rifle (right-click to shoot), the Weapon X Tank Console
+and Sentinel parts
 (4 parts + 4 iron + 1 diamond = 1 adamantium ingot). The X-Jet item (iron blocks, elytra, Sentinel parts, nether
 star, black dye, firework) places a jet: right-click to get in, look where you want to go, W faster, S slower,
 Shift to get out. Building blocks from the lower level: X-Door, Silver Wall Panel, Silver Floor, Silver Light.

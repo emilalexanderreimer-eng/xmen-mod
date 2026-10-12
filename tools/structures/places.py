@@ -485,64 +485,9 @@ def sentinel_factory():
 
 # ======================================================================= Weapon X
 def weapon_x():
-    G = 9
-    t = Template("weapon_x", 36, G + 12, 32, seed=7)
-    t.fill(0, G - 1, 0, 35, G, 31, "snow_block")
-    t.clear(0, G + 1, 0, 35, G + 11, 31)
-    for x in range(36):
-        for z in range(32):
-            t.set(x, G + 1, z, "snow[layers=1]")
-    # bunker on the surface
-    t.room(8, G, 8, 27, G + 6, 23, "gray_concrete", "polished_andesite", "gray_concrete")
-    t.fill(7, G + 6, 7, 28, G + 6, 24, "snow_block")
-    t.clear(16, G + 1, 8, 19, G + 3, 8)
-    t.fill(15, G + 4, 8, 20, G + 4, 8, "yellow_concrete")
-    for x in (10, 25):
-        t.fill(x, G + 1, 7, x, G + 3, 7, "iron_bars")
-    # "X" painted on the roof
-    for i in range(8):
-        t.set(14 + i, G + 7, 12 + i, "red_concrete")
-        t.set(21 - i, G + 7, 12 + i, "red_concrete")
-    for x in range(10, 26, 5):
-        t.set(x, G + 5, 15, "lantern[hanging=true]")
-    t.chest(9, G + 1, 22, "east", "weapon_x")
-    t.mob(12, G + 1, 12, "pillager", "weapon_x_guard")
-    t.mob(23, G + 1, 12, "pillager", "weapon_x_guard")
-    # stairs down to the lab
-    for i in range(8):
-        t.clear(24, G - i, 20 - i, 26, G + 2 - i, 20 - i)
-        t.fill(24, G - 1 - i, 20 - i, 26, G - 1 - i, 20 - i, "polished_andesite")
-    # the lab underground
-    t.room(4, 0, 2, 31, 7, 13, "polished_deepslate", "gray_concrete", "polished_deepslate")
-    t.clear(24, 1, 12, 26, 3, 13)
-    for x in range(6, 30, 4):
-        t.set(x, 7, 7, LIGHT)
-    # Wolverine's tank in the middle
-    t.fill(16, 1, 5, 19, 5, 8, "light_blue_stained_glass")
-    t.fill(17, 1, 6, 18, 4, 7, "water")
-    t.fill(16, 6, 5, 19, 6, 8, "iron_block")
-    t.fill(16, 0, 5, 19, 0, 8, "iron_block")
-    # cages along the north wall
-    for x in range(5, 15, 3):
-        t.fill(x, 1, 3, x + 2, 3, 3, "iron_bars")
-        t.fill(x, 1, 3, x, 3, 4, "iron_bars")
-    t.mob(6, 1, 3, "zombie", "feral_subject")
-    t.mob(12, 1, 3, "zombie", "feral_subject")
-    # workbenches and the adamantium vault
-    for x in range(22, 30, 2):
-        t.set(x, 1, 3, "brewing_stand")
-    t.set(29, 1, 9, "anvil[facing=west]")
-    t.fill(5, 1, 9, 9, 4, 12, "iron_block")
-    t.clear(6, 1, 10, 8, 3, 11)
-    t.clear(9, 1, 10, 9, 2, 10)
-    t.set(9, 1, 10, "iron_door[facing=east,half=lower,hinge=left,open=false]")
-    t.set(9, 2, 10, "iron_door[facing=east,half=upper,hinge=left,open=false]")
-    t.set(10, 1, 10, "stone_button[face=floor,facing=east]")
-    t.chest(7, 1, 11, "north", "weapon_x_vault")
-    t.mob(22, 1, 8, "witch", "weapon_x_scientist")
-    t.mob(27, 1, 6, "witch", "weapon_x_scientist")
-    t.mob(13, 1, 10, "pillager", "weapon_x_guard")
-    return t
+    """The big underground Weapon X facility lives in its own file."""
+    import weapon_x_lab
+    return weapon_x_lab.build()
 
 
 # ======================================================================= Mister Sinister's lab

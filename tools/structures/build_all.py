@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import mansion  # noqa: E402
 import nbt  # noqa: E402
 import places  # noqa: E402
+import weapon_x_lab  # noqa: E402
 from lib import Template  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -51,8 +52,8 @@ STRUCTURES = {
     "brotherhood_hideout": (FLAT + WOODS, "surface_structures", -3, "WORLD_SURFACE_WG", 34, 12, False),
     "asteroid_m": (ALL_OCEAN, "surface_structures", 170, None, 72, 36, False),
     "sentinel_factory": (FLAT, "surface_structures", -3, "WORLD_SURFACE_WG", 48, 20, False),
-    "weapon_x": (["minecraft:snowy_plains", "minecraft:snowy_taiga", "minecraft:grove", "minecraft:snowy_slopes",
-                  "minecraft:ice_spikes"], "surface_structures", -9, "WORLD_SURFACE_WG", 40, 16, False),
+    "weapon_x": (["minecraft:snowy_plains", "minecraft:snowy_taiga", "minecraft:ice_spikes"],
+                 "surface_structures", -weapon_x_lab.G, "WORLD_SURFACE_WG", 48, 20, False),
     "sinister_lab": ("#minecraft:is_overworld", "underground_structures", -30, None, 40, 16, False),
     "hellfire_club": (["minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow", "minecraft:forest",
                        "minecraft:birch_forest", "minecraft:dark_forest"], "surface_structures", -2,
@@ -187,8 +188,15 @@ LOOT = {
                                     item("xmen:sentinel_part", 6, 1, 2), item("gold_nugget", 6, 2, 8),
                                     item("copper_ingot", 6, 1, 4)])],
     "weapon_x": [pool(3, 6, [item("iron_ingot", 10, 2, 6), item("bone", 8, 2, 6), potion("healing", 5),
-                             potion("strength", 4), item("xmen:adamantium_ingot", 2), item("iron_sword", 4),
-                             item("cooked_porkchop", 6, 2, 5)])],
+                             potion("strength", 4), item("xmen:adamantium_ingot", 2), item("bread", 6, 2, 5),
+                             item("cooked_porkchop", 6, 2, 5), item("paper", 6, 2, 6), item("compass", 2)])],
+    "weapon_x_armory": [pool(3, 6, [item("xmen:weapon_x_rifle", 3), item("iron_helmet", 4), item("iron_chestplate", 3),
+                                    item("shield", 4), item("arrow", 6, 8, 20), item("crossbow", 3),
+                                    item("iron_ingot", 8, 2, 5), item("tnt", 2, 1, 3)])],
+    "weapon_x_lab": [pool(3, 6, [potion("healing", 8), potion("regeneration", 6), potion("strength", 5),
+                                 splash("slowness", 4), splash("weakness", 4), item("glass_bottle", 6, 2, 5),
+                                 item("xmen:mutant_serum", 2), item("xmen:adamantium_ingot", 2, 1, 2),
+                                 item("golden_apple", 2)])],
     "weapon_x_vault": [pool(2, 4, [item("xmen:adamantium_ingot", 1, 2, 5)]),
                        pool(1, 2, ADAMANTIUM_GEAR)],
     "sinister_lab": [pool(3, 6, [potion("healing", 5), potion("strength", 4), potion("swiftness", 4),

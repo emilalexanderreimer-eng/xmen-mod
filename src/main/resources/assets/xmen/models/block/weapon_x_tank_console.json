@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "top": "xmen:block/weapon_x_tank_console_top",
+    "front": "xmen:block/weapon_x_tank_console_front",
+    "side": "xmen:block/weapon_x_tank_console_side"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "xmen:block/weapon_x_tank_console"
+    },
+    "facing=east": {
+      "model": "xmen:block/weapon_x_tank_console",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "xmen:block/weapon_x_tank_console",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "xmen:block/weapon_x_tank_console",
+      "y": 270
+    }
+  }
+}

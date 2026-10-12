@@ -6,6 +6,7 @@ import com.emil.xmen.apocalypse.ApocalypseContent;
 import com.emil.xmen.entity.MagnetoEntities;
 import com.emil.xmen.entity.ModEntities;
 import com.emil.xmen.entity.SinisterEntities;
+import com.emil.xmen.entity.WeaponXEntities;
 import com.emil.xmen.network.ModNetwork;
 import com.emil.xmen.power.PlayerPowers;
 import com.emil.xmen.power.PowerCommand;
@@ -32,6 +33,7 @@ public class XMenMod {
         MagnetoEntities.register(modEventBus);
         SinisterEntities.register(modEventBus);
         ApocalypseContent.register(modEventBus);
+        WeaponXEntities.register(modEventBus);
         XMenWorld.register(modEventBus);
         modEventBus.addListener(ModNetwork::register);
         PowerEvents.register();

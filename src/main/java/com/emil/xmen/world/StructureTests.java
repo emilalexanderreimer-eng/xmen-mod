@@ -24,6 +24,17 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import com.emil.xmen.entity.JasonStryker;
+import com.emil.xmen.entity.LadyDeathstrike;
+import com.emil.xmen.entity.WeaponXI;
+import com.emil.xmen.entity.WeaponXLogan;
+import com.emil.xmen.entity.WeaponXMob;
+import com.emil.xmen.entity.WeaponXScientist;
+import com.emil.xmen.entity.WeaponXSoldier;
+import com.emil.xmen.entity.WilliamStryker;
+import com.emil.xmen.entity.X24;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -114,6 +125,52 @@ public class StructureTests {
             return;
         }
         XMenMod.LOGGER.info("Test: {} structure mobs set up, {} X-Men", people.size(), xmen.size());
+        helper.succeed();
+    }
+
+    /**
+     * Builds the Weapon X lab by itself (the test world is too flat and low for its deep levels) and checks that
+     * everybody is in it and the three in tanks are still locked up.
+     */
+    @GameTest(template = "empty", timeoutTicks = 200)
+    public static void weaponXHasItsPeople(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        StructureTemplate template = level.getStructureManager()
+                .get(ResourceLocation.fromNamespaceAndPath(XMenMod.MOD_ID, "weapon_x")).orElse(null);
+        if (template == null) {
+            helper.fail("Missing building for xmen:weapon_x");
+            return;
+        }
+        BlockPos corner = new BlockPos(3000 * 16, -50, 3000 * 16);
+        for (int x = 2999; x <= 3008; x++) {
+            for (int z = 2999; z <= 3008; z++) {
+                level.setChunkForced(x, z, true);
+                level.getChunk(x, z);
+            }
+        }
+        template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
+        AABB area = new AABB(corner).inflate(0, 0, 0).expandTowards(template.getSize().getX(),
+                template.getSize().getY(), template.getSize().getZ()).inflate(4);
+        int soldiers = level.getEntitiesOfClass(WeaponXSoldier.class, area).size();
+        int scientists = level.getEntitiesOfClass(WeaponXScientist.class, area).size();
+        if (soldiers < 15 || scientists < 6) {
+            helper.fail("Weapon X has only " + soldiers + " soldiers and " + scientists + " scientists");
+            return;
+        }
+        for (Class<? extends WeaponXMob> boss : List.of(WilliamStryker.class, LadyDeathstrike.class,
+                JasonStryker.class)) {
+            if (level.getEntitiesOfClass(boss, area).isEmpty()) {
+                helper.fail(boss.getSimpleName() + " isn't in the Weapon X lab");
+                return;
+            }
+        }
+        for (Class<? extends WeaponXMob> tank : List.of(WeaponXLogan.class, X24.class, WeaponXI.class)) {
+            if (level.getEntitiesOfClass(tank, area, WeaponXMob::isContained).isEmpty()) {
+                helper.fail(tank.getSimpleName() + " isn't locked in his tank");
+                return;
+            }
+        }
+        XMenMod.LOGGER.info("Test: Weapon X has {} soldiers and {} scientists", soldiers, scientists);
         helper.succeed();
     }
 }
