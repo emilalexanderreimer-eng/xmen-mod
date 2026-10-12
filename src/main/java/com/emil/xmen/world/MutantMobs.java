@@ -272,13 +272,6 @@ public final class MutantMobs {
         kind("feral_subject", "Feral Subject").color(ChatFormatting.DARK_RED).health(40).speed(1.35).damage(6)
                 .ability("regenerate").gear(mob -> hold(mob, Items.IRON_SWORD));
 
-        // --- Mister Sinister
-        kind("sinister", "Mister Sinister").color(ChatFormatting.RED).health(300).damage(8)
-                .boss(BossEvent.BossBarColor.RED).ability("sinister");
-        kind("sinister_clone", "Sinister Clone").color(ChatFormatting.DARK_GRAY).health(25);
-        kind("marauder", "Marauder").color(ChatFormatting.DARK_RED).health(40)
-                .gear(mob -> wear(mob, EquipmentSlot.CHEST, Items.CHAINMAIL_CHESTPLATE));
-
         // --- Hellfire Club
         kind("white_queen", "The White Queen").color(ChatFormatting.WHITE).health(200)
                 .boss(BossEvent.BossBarColor.WHITE).ability("psychic");
@@ -593,25 +586,6 @@ public final class MutantMobs {
                 sound(level, mob, SoundEvents.ILLUSIONER_CAST_SPELL);
                 return 90;
             }
-            case "sinister" -> {
-                if (distance > 20) {
-                    return 0;
-                }
-                if (step % 3 == 2) {
-                    int clones = level.getEntitiesOfClass(Mob.class, mob.getBoundingBox().inflate(20),
-                            e -> kindOf(e) == KINDS.get("sinister_clone") && !e.isNoAi()).size();
-                    if (clones < 5) {
-                        summon(level, mob, EntityType.ZOMBIE, "sinister_clone", 2, target);
-                        say(level, mob, "Mister Sinister: \"Meet my children.\"");
-                    }
-                    return 100;
-                }
-                beam(level, mob, target, RED_LASER);
-                target.hurt(mob.damageSources().indirectMagic(mob, mob), 6);
-                target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, 0));
-                sound(level, mob, SoundEvents.EVOKER_CAST_SPELL);
-                return 60;
-            }
             case "apocalypse" -> {
                 if (mob.getHealth() < mob.getMaxHealth() / 2) {
                     mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 80, 1, true, false));
@@ -876,10 +850,6 @@ public final class MutantMobs {
                 drop(entity, new ItemStack(ModContent.SENTINEL_PART.get(), 6));
                 drop(entity, new ItemStack(Items.IRON_BLOCK, 4));
                 drop(entity, new ItemStack(Items.DIAMOND, 2));
-            }
-            case "sinister" -> {
-                drop(entity, new ItemStack(ModContent.MUTANT_SERUM.get()));
-                drop(entity, new ItemStack(Items.EMERALD, 10));
             }
             case "white_queen" -> {
                 drop(entity, new ItemStack(Items.DIAMOND, 4));

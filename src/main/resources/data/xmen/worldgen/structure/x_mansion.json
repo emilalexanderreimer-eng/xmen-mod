@@ -12,7 +12,7 @@
   "start_pool": "xmen:x_mansion/start",
   "size": 1,
   "start_height": {
-    "absolute": -26
+    "absolute": -36
   },
   "max_distance_from_center": 80,
   "use_expansion_hack": false,

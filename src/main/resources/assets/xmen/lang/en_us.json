@@ -35,5 +35,10 @@
   "entity.xmen.blackbird": "X-Jet",
   "entity.xmen.magneto": "Magneto",
   "entity.xmen.magneto_debris": "Flying Metal",
-  "item.xmen.magneto_spawn_egg": "Magneto Spawn Egg"
+  "item.xmen.magneto_spawn_egg": "Magneto Spawn Egg",
+  "entity.xmen.mister_sinister": "Mister Sinister",
+  "entity.xmen.sinister_clone": "Sinister Clone",
+  "entity.xmen.sinister_blast": "Sinister's Energy Blast",
+  "item.xmen.mister_sinister_spawn_egg": "Mister Sinister Spawn Egg",
+  "item.xmen.sinister_clone_spawn_egg": "Sinister Clone Spawn Egg"
 }
