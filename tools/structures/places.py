@@ -253,11 +253,9 @@ def asteroid_m():
     t.disc(c, 17, c, 2, "purple_concrete")
     t.fill(c - 1, 18, c + 2, c + 1, 19, c + 2, "red_concrete")
     t.set(c, 20, c + 2, "red_concrete")
-    t.npc(c, 18, c, "magneto")
+    t.mob(c, 19, c, "xmen:magneto")   # the real Magneto (Java: entity/MagnetoBoss), floating over his dais
     t.chest(c - 4, 16, c, "east", "asteroid_m")
     t.chest(c + 4, 16, c - 1, "west", "asteroid_m")
-    for x, z in ((c - 8, c), (c + 8, c), (c, c + 8), (c - 5, c - 6)):
-        t.mob(x, 16, z, "vindicator", "acolyte")
     t.chest(c - 11, 16, c + 4, "east", "asteroid_m")
     t.chest(c + 11, 16, c - 4, "west", "asteroid_m")
     # metal scraps floating around it

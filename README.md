@@ -409,7 +409,7 @@ The full list of powers is in [tools/powers.psv](tools/powers.psv).
 |---|---|---|
 | `x_mansion` | plains, meadows, forests (rare) | Xavier's School, students, Professor X. Elevator in the lounge goes down to Cerebro, the medical lab, the war room, the Danger Room and the X-Jet hangar. Krakoa gate in the garden. |
 | `apocalypse_pyramid` | desert (very rare) | The Four Horsemen, a sleeping Apocalypse (boss), a hidden lava vault. Apocalypse drops a Celestial Orb: a new power that is always Beta or better. |
-| `asteroid_m` | floating high over oceans | Magneto (boss) and his Acolytes. Magneto drops his helmet, which blocks mind powers and hides you from Cerebro. |
+| `asteroid_m` | floating high over oceans | Magneto (boss). He floats, sends arrows back, throws ripped-out metal, lifts you by the iron in your blood, pulls metal weapons out of your hands and cages you in iron bars. He drops his helmet, which blocks mind powers and hides you from Cerebro. Spawn him anywhere with the Magneto Spawn Egg or `/summon xmen:magneto`. |
 | `sentinel_factory` | plains, savanna, desert | Trask guards, Sentinels that hunt mutants, and a giant Sentinel boss. |
 | `fallen_sentinel` | almost anywhere (common) | A broken giant robot with loot inside. |
 | `brotherhood_hideout` | plains, forests | Pyro, Avalanche, the Blob, Toad, Mystique. Chance of a map to Asteroid M. |

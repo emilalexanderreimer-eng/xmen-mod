@@ -43,7 +43,6 @@ import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.animal.horse.SkeletonHorse;
 import net.minecraft.world.entity.npc.WanderingTrader;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.SmallFireball;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -60,13 +59,12 @@ import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
 /**
  * The people and enemies that live in the X-Men structures. Structures place normal Minecraft mobs with a tag
- * like "xmen.magneto"; this class turns them into that character: name, health, gear and special moves.
+ * like "xmen.pyro"; this class turns them into that character: name, health, gear and special moves.
  */
 public final class MutantMobs {
     private static final String KIND = "xmen_kind";
@@ -77,7 +75,6 @@ public final class MutantMobs {
 
     private static final DustParticleOptions RED_LASER = new DustParticleOptions(new Vector3f(1.0f, 0.1f, 0.1f), 1.2f);
     private static final DustParticleOptions BLUE_BEAM = new DustParticleOptions(new Vector3f(0.3f, 0.5f, 1.0f), 1.5f);
-    private static final DustParticleOptions PURPLE = new DustParticleOptions(new Vector3f(0.7f, 0.2f, 0.9f), 1.2f);
 
     private MutantMobs() {
     }
@@ -247,11 +244,6 @@ public final class MutantMobs {
         kind("mystique", "Mystique").color(ChatFormatting.BLUE).health(45).ability("shift");
         kind("thug", "Brotherhood Thug").color(ChatFormatting.DARK_RED).health(30)
                 .gear(mob -> wear(mob, EquipmentSlot.HEAD, Items.IRON_HELMET));
-        kind("acolyte", "Acolyte of Magneto").color(ChatFormatting.DARK_PURPLE).health(35)
-                .gear(mob -> wear(mob, EquipmentSlot.CHEST, Items.IRON_CHESTPLATE));
-        kind("magneto", "Magneto").color(ChatFormatting.DARK_PURPLE).health(320).damage(8)
-                .boss(BossEvent.BossBarColor.PURPLE).ability("magnet")
-                .gear(mob -> wear(mob, EquipmentSlot.HEAD, ModContent.MAGNETO_HELMET.get()));
 
         // --- Sentinels and Trask
         kind("sentinel", "Sentinel").color(ChatFormatting.LIGHT_PURPLE).health(120).scale(1.25).ability("laser");
@@ -320,7 +312,6 @@ public final class MutantMobs {
         NeoForge.EVENT_BUS.addListener(MutantMobs::onDrops);
         NeoForge.EVENT_BUS.addListener(MutantMobs::onExperience);
         NeoForge.EVENT_BUS.addListener(MutantMobs::onChangeTarget);
-        NeoForge.EVENT_BUS.addListener(MutantMobs::onDamage);
         NeoForge.EVENT_BUS.addListener(MutantMobs::onInteract);
     }
 
@@ -581,31 +572,6 @@ public final class MutantMobs {
                 target.igniteForSeconds(3);
                 sound(level, mob, SoundEvents.BEACON_DEACTIVATE);
                 return 40;
-            }
-            case "magnet" -> {
-                if (distance > 24) {
-                    return 0;
-                }
-                switch (step % 3) {
-                    case 0 -> {
-                        target.addEffect(new MobEffectInstance(MobEffects.LEVITATION, 50, 1));
-                        say(level, mob, "Magneto: \"Your metal belongs to me!\"");
-                    }
-                    case 1 -> {
-                        Vec3 push = target.position().subtract(mob.position()).normalize().scale(2.2);
-                        target.setDeltaMovement(push.x, 0.8, push.z);
-                        target.hurtMarked = true;
-                        target.hurt(mob.damageSources().mobAttack(mob), 7);
-                    }
-                    default -> {
-                        Vec3 pull = mob.position().subtract(target.position()).normalize().scale(1.6);
-                        target.setDeltaMovement(pull.x, 0.3, pull.z);
-                        target.hurtMarked = true;
-                    }
-                }
-                beam(level, mob, target, PURPLE);
-                sound(level, mob, SoundEvents.ANVIL_LAND);
-                return 70;
             }
             case "psychic" -> {
                 if (distance > 16) {
@@ -906,11 +872,6 @@ public final class MutantMobs {
                 broadcast(level, (Mob) entity, Component.literal("Apocalypse has fallen! He left behind a Celestial "
                         + "Orb...").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
             }
-            case "magneto" -> {
-                drop(entity, new ItemStack(ModContent.MAGNETO_HELMET.get()));
-                drop(entity, new ItemStack(Items.IRON_BLOCK, 4));
-                drop(entity, new ItemStack(Items.DIAMOND, 3));
-            }
             case "giant_sentinel" -> {
                 drop(entity, new ItemStack(ModContent.SENTINEL_PART.get(), 6));
                 drop(entity, new ItemStack(Items.IRON_BLOCK, 4));
@@ -968,14 +929,6 @@ public final class MutantMobs {
         Kind victim = kindOf(target);
         if (attacker != null && victim != null && attacker.hostile && victim.hostile) {
             event.setCanceled(true);
-        }
-    }
-
-    /** Magneto turns away arrows and other projectiles. */
-    private static void onDamage(LivingIncomingDamageEvent event) {
-        Kind kind = kindOf(event.getEntity());
-        if (kind != null && kind.id.equals("magneto") && event.getSource().getDirectEntity() instanceof Projectile) {
-            event.setAmount(event.getAmount() * 0.3f);
         }
     }
 

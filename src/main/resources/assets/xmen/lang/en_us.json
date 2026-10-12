@@ -32,5 +32,8 @@
   "block.xmen.hangar_control": "Hangar Control",
   "item.xmen.blackbird": "X-Jet (Blackbird)",
   "entity.xmen.mutant": "Mutant",
-  "entity.xmen.blackbird": "X-Jet"
+  "entity.xmen.blackbird": "X-Jet",
+  "entity.xmen.magneto": "Magneto",
+  "entity.xmen.magneto_debris": "Flying Metal",
+  "item.xmen.magneto_spawn_egg": "Magneto Spawn Egg"
 }

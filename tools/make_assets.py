@@ -392,7 +392,8 @@ def armor_layers():
                         img.putpixel((x, y), hexc(accent))
         return img
 
-    for name, base in (("adamantium", "9fb4c8"), ("magneto", "b3262e")):
+    # Magneto's helmet has its own 3D model and texture, see make_magneto.py
+    for name, base in (("adamantium", "9fb4c8"),):
         save(layer(base), "models", "armor", f"{name}_layer_1.png")
         save(layer(base), "models", "armor", f"{name}_layer_2.png")
     # X-Men suit: blue with yellow belt, shoulders and boots

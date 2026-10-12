@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.emil.xmen.XMenMod;
+import com.emil.xmen.entity.MagnetoBoss;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
@@ -68,10 +69,10 @@ public class StructureTests {
             helper.fail("Only " + people.size() + " structure mobs were set up");
             return;
         }
-        boolean magneto = people.stream().anyMatch(mob -> mob.getCustomName() != null
-                && mob.getCustomName().getString().equals("Magneto"));
+        boolean magneto = !level.getEntitiesOfClass(MagnetoBoss.class, new AABB(2000 * 16 - 200, -64,
+                2000 * 16 - 200, 2064 * 16 + 200, 320, 2064 * 16 + 200)).isEmpty();
         if (!magneto) {
-            helper.fail("Magneto wasn't set up");
+            helper.fail("Magneto isn't on Asteroid M");
             return;
         }
         XMenMod.LOGGER.info("Test: {} structure mobs set up", people.size());
