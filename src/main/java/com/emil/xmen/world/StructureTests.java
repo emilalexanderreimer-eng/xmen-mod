@@ -92,14 +92,6 @@ public class StructureTests {
             return;
         }
         AABB area = new AABB(2000 * 16 - 200, -64, 2000 * 16 - 200, 2064 * 16 + 200, 320, 2064 * 16 + 200);
-        if (level.getEntitiesOfClass(SinisterBoss.class, area).isEmpty()) {
-            helper.fail("Mister Sinister isn't in his lab");
-            return;
-        }
-        if (level.getEntitiesOfClass(SinisterClone.class, area, SinisterClone::isDormant).size() < 8) {
-            helper.fail("Sinister's clones aren't asleep in their tanks");
-            return;
-        }
         // the X-Mansion: the X-Men are real characters (no villagers) and Professor X sits.
         // (The lower level with the X-Jet ends up below the bottom of the flat test world, so it isn't checked.)
         List<MutantNpc> xmen = level.getEntitiesOfClass(MutantNpc.class, area, npc -> !npc.isHostile());
@@ -125,6 +117,50 @@ public class StructureTests {
             return;
         }
         XMenMod.LOGGER.info("Test: {} structure mobs set up, {} X-Men", people.size(), xmen.size());
+        helper.succeed();
+    }
+
+    /**
+     * Builds Mister Sinister's lab by itself (the test world is too flat and low for its underground level) and
+     * checks that Sinister is in it, his clones are asleep in their tanks, and both elevator stops are there.
+     */
+    @GameTest(template = "empty", timeoutTicks = 200)
+    public static void sinisterLabHasItsPeople(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        StructureTemplate template = level.getStructureManager()
+                .get(ResourceLocation.fromNamespaceAndPath(XMenMod.MOD_ID, "sinister_lab")).orElse(null);
+        if (template == null) {
+            helper.fail("Missing building for xmen:sinister_lab");
+            return;
+        }
+        BlockPos corner = new BlockPos(3100 * 16, -60, 3100 * 16);
+        for (int x = 3099; x <= 3106; x++) {
+            for (int z = 3099; z <= 3106; z++) {
+                level.setChunkForced(x, z, true);
+                level.getChunk(x, z);
+            }
+        }
+        template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
+        AABB area = new AABB(corner).expandTowards(template.getSize().getX(), template.getSize().getY(),
+                template.getSize().getZ()).inflate(4);
+        if (level.getEntitiesOfClass(SinisterBoss.class, area).isEmpty()) {
+            helper.fail("Mister Sinister isn't in his lab");
+            return;
+        }
+        int sleeping = level.getEntitiesOfClass(SinisterClone.class, area, SinisterClone::isDormant).size();
+        if (sleeping < 12) {
+            helper.fail("Only " + sleeping + " of Sinister's clones are asleep in their tanks");
+            return;
+        }
+        // the freight elevator: one stop in the Essex Corp lobby, one on the lab level, straight below
+        BlockPos top = corner.offset(37, 40, 11);
+        BlockPos bottom = corner.offset(37, 6, 11);
+        if (!level.getBlockState(top).is(ModContent.ELEVATOR.get())
+                || !level.getBlockState(bottom).is(ModContent.ELEVATOR.get())) {
+            helper.fail("The elevator down to Sinister's lab is missing");
+            return;
+        }
+        XMenMod.LOGGER.info("Test: Sinister's lab has {} sleeping clones", sleeping);
         helper.succeed();
     }
 

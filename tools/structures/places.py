@@ -502,82 +502,8 @@ def weapon_x():
 
 # ======================================================================= Mister Sinister's lab
 def sinister_lab():
-    t = Template("sinister_lab", 42, 14, 42, seed=8)
-    t.room(0, 0, 0, 41, 13, 41, "polished_blackstone_bricks", "polished_blackstone", "polished_blackstone_bricks")
-    t.clear(1, 1, 1, 40, 12, 40)
-    t.scatter(0, 0, 0, 41, 13, 41, "cracked_polished_blackstone_bricks", 0.15,
-              lambda s: s == "minecraft:polished_blackstone_bricks")
-    t.fill(1, 0, 1, 40, 0, 40, "polished_blackstone")
-    # dim red light from the ceiling
-    for x in range(4, 39, 6):
-        for z in range(4, 39, 6):
-            t.set(x, 13, z, "shroomlight" if (x + z) % 12 == 8 else "redstone_lamp[lit=true]")
-    # pipes along the walls
-    for z in (2, 39):
-        t.fill(1, 10, z, 40, 10, z, "iron_block")
-        t.fill(1, 11, z, 40, 11, z, "polished_basalt[axis=x]")
-    # clone tanks along the side walls: a lit base, glass all around, a lid and pipes into the ceiling.
-    # Each one holds a sleeping clone of Sinister (Java: entity/SinisterClone) that smashes out when he calls it.
-    tanks = [(3, 4), (3, 12), (3, 26), (3, 34), (36, 4), (36, 12), (36, 26), (36, 34)]
-    for x, z in tanks:
-        t.fill(x, 1, z, x + 2, 1, z + 2, "polished_blackstone")
-        t.set(x + 1, 1, z + 1, "sea_lantern")
-        t.fill(x, 2, z, x + 2, 4, z + 2, "red_stained_glass")
-        t.clear(x + 1, 2, z + 1, x + 1, 4, z + 1)
-        t.fill(x, 5, z, x + 2, 5, z + 2, "iron_block")
-        t.set(x + 1, 5, z + 1, "redstone_lamp[lit=true]")
-        t.fill(x + 1, 6, z + 1, x + 1, 12, z + 1, "chain[axis=y]")
-        yaw = -90.0 if x < 20 else 90.0   # facing into the room
-        t.mob(x + 1, 2, z + 1, "xmen:sinister_clone", extra={"Dormant": True, "NoAI": True}, yaw=yaw)
-    # operating tables where the spawners used to be, with lamps hanging over them
-    for x, z in ((10, 20), (31, 20)):
-        t.fill(x - 1, 1, z, x + 1, 1, z, "smooth_stone_slab[type=top]")
-        t.set(x - 2, 1, z, "anvil[facing=east]")
-        t.set(x + 2, 1, z, "brewing_stand")
-        t.fill(x, 8, z, x, 12, z, "chain[axis=y]")
-        t.set(x, 7, z, "lantern[hanging=true]")
-        t.set(x, 2, z, "red_carpet")
-    # Sinister's dais in the middle: a raised black disc with his red diamond, and red light around it
-    t.disc(20.5, 0, 20.5, 8, "crimson_nylium")
-    t.disc(20.5, 0, 20.5, 7, "polished_blackstone")
-    t.disc(20.5, 1, 20.5, 4, "polished_blackstone_bricks")
-    t.disc(20.5, 1, 20.5, 4, "polished_blackstone", hollow=True)
-    for i in range(4):
-        for dx, dz in ((i, 3 - i), (-1 - i, 3 - i), (i, -4 + i), (-1 - i, -4 + i)):
-            t.set(21 + dx, 1, 21 + dz, "red_concrete")
-    t.set(20, 1, 20, "red_concrete")
-    t.set(21, 1, 20, "red_concrete")
-    t.set(20, 1, 21, "red_concrete")
-    t.set(21, 1, 21, "red_concrete")
-    for x, z in ((15, 15), (26, 15), (15, 26), (26, 26)):
-        t.fill(x, 1, z, x, 4, z, "polished_blackstone_wall")
-        t.set(x, 5, z, "redstone_lamp[lit=true]")
-    # walkways shaped like his diamond on the floor around the dais
-    for i in range(6):
-        t.set(20 - i, 0, 8 + i, "crying_obsidian")
-        t.set(21 + i, 0, 8 + i, "crying_obsidian")
-        t.set(20 - i, 0, 33 - i, "crying_obsidian")
-        t.set(21 + i, 0, 33 - i, "crying_obsidian")
-    # Sinister himself (Java: entity/SinisterBoss), standing on his dais and facing the entrance
-    t.mob(20, 2, 21, "xmen:mister_sinister", yaw=180.0)
-    # his desk, his gene archive (rows of samples) and chests
-    t.fill(17, 1, 36, 24, 1, 37, "polished_blackstone_slab[type=top]")
-    t.set(20, 1, 38, "polished_blackstone_stairs[facing=north]")
-    t.set(18, 2, 36, "brewing_stand")
-    t.set(23, 2, 36, "lectern[facing=north]")
-    t.chest(17, 1, 39, "north", "sinister_lab")
-    t.chest(24, 1, 39, "north", "sinister_lab")
-    t.chest(39, 1, 20, "west", "sinister_lab")
-    # gene archive along the north wall: a counter full of samples
-    for x in range(9, 33):
-        if x not in (19, 20, 21, 22):
-            t.set(x, 1, 1, "polished_blackstone_slab[type=top]")
-    for x in range(9, 33):
-        if x not in (19, 20, 21, 22):
-            t.set(x, 2, 1, "brewing_stand" if x % 2 else "red_stained_glass_pane")
-    # escape tunnel heading up (ends in a dead end of stone, players dig the rest)
-    t.clear(20, 1, 0, 21, 3, 1)
-    return t
+    import sinister_lab as lab
+    return lab.build()
 
 
 # ======================================================================= Hellfire Club

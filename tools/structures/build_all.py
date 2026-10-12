@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import mansion  # noqa: E402
 import nbt  # noqa: E402
 import places  # noqa: E402
+import sinister_lab  # noqa: E402
 import weapon_x_lab  # noqa: E402
 from lib import Template  # noqa: E402
 
@@ -54,7 +55,7 @@ STRUCTURES = {
     "sentinel_factory": (FLAT, "surface_structures", -3, "WORLD_SURFACE_WG", 48, 20, False),
     "weapon_x": (["minecraft:snowy_plains", "minecraft:snowy_taiga", "minecraft:ice_spikes"],
                  "surface_structures", -weapon_x_lab.G, "WORLD_SURFACE_WG", 48, 20, False),
-    "sinister_lab": ("#minecraft:is_overworld", "underground_structures", -30, None, 40, 16, False),
+    "sinister_lab": (LAND, "surface_structures", -sinister_lab.G, "WORLD_SURFACE_WG", 40, 16, False),
     "hellfire_club": (["minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow", "minecraft:forest",
                        "minecraft:birch_forest", "minecraft:dark_forest"], "surface_structures", -2,
                       "WORLD_SURFACE_WG", 40, 16, False),
