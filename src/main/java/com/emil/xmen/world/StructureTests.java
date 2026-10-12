@@ -291,4 +291,28 @@ public class StructureTests {
         XMenMod.LOGGER.info("Test: the small structures have {} real characters", people.size());
         helper.succeed();
     }
+
+    /** Jumping on an elevator must take you up even though you are already in the air when the server hears it. */
+    @GameTest(template = "empty", timeoutTicks = 100)
+    public static void elevatorGoesUpWhenJumping(GameTestHelper helper) {
+        BlockPos lower = new BlockPos(1, 1, 1);
+        BlockPos upper = new BlockPos(1, 7, 1);
+        helper.setBlock(lower, ModContent.ELEVATOR.get());
+        helper.setBlock(upper, ModContent.ELEVATOR.get());
+        net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        BlockPos abs = helper.absolutePos(lower);
+        // half way through the jump
+        player.moveTo(abs.getX() + 0.5, abs.getY() + 1.6, abs.getZ() + 0.5);
+        ElevatorBlock.ride(player, true);
+        BlockPos top = helper.absolutePos(upper);
+        if (Math.abs(player.getY() - (top.getY() + 1)) > 0.01) {
+            helper.fail("Elevator did not go up: player is at y " + player.getY() + ", expected " + (top.getY() + 1));
+        }
+        ElevatorBlock.ride(player, false);
+        if (Math.abs(player.getY() - (abs.getY() + 1)) > 0.01) {
+            helper.fail("Elevator did not go down: player is at y " + player.getY());
+        }
+        player.discard();
+        helper.succeed();
+    }
 }

@@ -46,6 +46,7 @@ public class XMenClient {
     private boolean lastJump;
     private boolean lastSneak;
     private int elevatorCooldown;
+    private int onElevatorTicks;
 
     public XMenClient(IEventBus modEventBus) {
         modEventBus.addListener(this::registerKeys);
@@ -169,20 +170,26 @@ public class XMenClient {
     }
 
     // Elevator blocks: jump to ride up, sneak to ride down. The keys are only known on the client.
+    // This runs after the player has moved, so by the time we see the jump key the player has already left the
+    // ground: remember standing on an elevator for a few ticks instead of checking onGround() right now.
     private void elevatorTick(LocalPlayer player) {
         Minecraft minecraft = Minecraft.getInstance();
         boolean jump = minecraft.options.keyJump.isDown();
         boolean sneak = minecraft.options.keyShift.isDown();
-        if (minecraft.screen == null && player.onGround() && elevatorCooldown <= 0) {
+        if (player.onGround()) {
             BlockPos below = BlockPos.containing(player.getX(), player.getY() - 0.2, player.getZ());
-            if (player.level().getBlockState(below).is(ModContent.ELEVATOR.get())) {
-                if (jump && !lastJump) {
-                    PacketDistributor.sendToServer(new ElevatorPayload(true));
-                    elevatorCooldown = 8;
-                } else if (sneak && !lastSneak) {
-                    PacketDistributor.sendToServer(new ElevatorPayload(false));
-                    elevatorCooldown = 8;
-                }
+            onElevatorTicks = player.level().getBlockState(below).is(ModContent.ELEVATOR.get()) ? 4 : 0;
+        } else if (onElevatorTicks > 0) {
+            onElevatorTicks--;
+        }
+        if (minecraft.screen == null && onElevatorTicks > 0 && elevatorCooldown <= 0) {
+            if (jump && !lastJump) {
+                PacketDistributor.sendToServer(new ElevatorPayload(true));
+                elevatorCooldown = 8;
+                onElevatorTicks = 0;
+            } else if (sneak && !lastSneak && player.onGround()) {
+                PacketDistributor.sendToServer(new ElevatorPayload(false));
+                elevatorCooldown = 8;
             }
         }
         if (elevatorCooldown > 0) {
