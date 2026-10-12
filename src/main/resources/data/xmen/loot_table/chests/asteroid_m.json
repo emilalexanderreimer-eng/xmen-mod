@@ -102,11 +102,6 @@
               }
             }
           ]
-        },
-        {
-          "type": "minecraft:item",
-          "name": "xmen:magneto_helmet",
-          "weight": 1
         }
       ]
     }

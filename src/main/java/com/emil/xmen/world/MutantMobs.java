@@ -201,6 +201,10 @@ public final class MutantMobs {
                         "Have you read the books in the library? Simply marvelous.");
         kind("rogue", "Rogue").color(ChatFormatting.DARK_GREEN).health(50).ability("drain")
                 .friendly("Don't touch my skin, sugar. Trust me.", "This place was the first real home I ever had.");
+        kind("captive_rogue", "Rogue").color(ChatFormatting.DARK_GREEN).health(50)
+                .friendly("Get me out of here! Magneto wants to use my power for his machine.",
+                        "Break the glass, sugar. Just don't touch my skin.",
+                        "His machine turns people into mutants... and it would kill me.");
         kind("iceman", "Iceman").color(ChatFormatting.AQUA).health(50).ability("freeze")
                 .friendly("Want a snow cone? I can make one.", "Pyro and I used to be friends...");
         kind("nightcrawler", "Nightcrawler").color(ChatFormatting.DARK_PURPLE).health(50).ability("teleport")

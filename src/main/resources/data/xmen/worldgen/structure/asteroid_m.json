@@ -7,7 +7,7 @@
   "start_pool": "xmen:asteroid_m/start",
   "size": 1,
   "start_height": {
-    "absolute": 170
+    "absolute": 150
   },
   "max_distance_from_center": 80,
   "use_expansion_hack": false

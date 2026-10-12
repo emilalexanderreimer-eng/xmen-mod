@@ -354,63 +354,9 @@ def brotherhood_hideout():
 
 # ======================================================================= Asteroid M
 def asteroid_m():
-    N = 47
-    t = Template("asteroid_m", N, 40, N, seed=5)
-    c = N // 2
-    rock = ["stone", "stone", "andesite", "tuff", "cobblestone", "iron_ore", "deepslate"]
-    # the floating rock, flat on top
-    for y in range(0, 16):
-        r = 6 + (y / 15) ** 0.7 * 16
-        for x in range(N):
-            for z in range(N):
-                wobble = math.sin(x * 0.7) * 1.2 + math.cos(z * 0.6) * 1.2
-                if math.hypot(x - c, z - c) <= r + wobble:
-                    t.set(x, y, z, t.rand.choice(rock))
-    t.disc(c, 15, c, 21, "polished_andesite")
-    # citadel walls with towers
-    t.cylinder(c, 16, c, 15, 22, "iron_block", hollow=True)
-    t.cylinder(c, 16, c, 14, 22, AIR)
-    t.disc(c, 23, c, 15, "polished_deepslate")
-    t.disc(c, 23, c, 13, "purple_stained_glass")
-    for ang in range(0, 360, 60):
-        x = round(c + math.cos(math.radians(ang)) * 15)
-        z = round(c + math.sin(math.radians(ang)) * 15)
-        t.cylinder(x, 16, z, 2, 30, "polished_deepslate")
-        t.set(x, 31, z, "lightning_rod")
-        t.set(x, 30, z, "redstone_lamp[lit=true]")
-    t.clear(c - 1, 16, c - 15, c + 1, 19, c - 13)   # gate
-    # inner hall
-    t.disc(c, 15, c, 14, "smooth_stone")
-    t.disc(c, 15, c, 6, "red_concrete")
-    t.disc(c, 15, c, 4, "purple_concrete")
-    for ang in range(0, 360, 45):
-        x = round(c + math.cos(math.radians(ang)) * 10)
-        z = round(c + math.sin(math.radians(ang)) * 10)
-        t.fill(x, 16, z, x, 22, z, "iron_block")
-        t.set(x, 21, z, LIGHT)
-    # Magneto's tower on the roof (just for looks) and his dais in the middle of the hall
-    t.cylinder(c, 24, c, 5, 32, "iron_block", hollow=True)
-    t.disc(c, 23, c, 5, "polished_deepslate")
-    t.disc(c, 33, c, 6, "polished_deepslate")
-    t.set(c, 34, c, "lightning_rod")
-    t.disc(c, 16, c, 3, "red_concrete")
-    t.disc(c, 17, c, 2, "purple_concrete")
-    t.fill(c - 1, 18, c + 2, c + 1, 19, c + 2, "red_concrete")
-    t.set(c, 20, c + 2, "red_concrete")
-    t.mob(c, 19, c, "xmen:magneto")   # the real Magneto (Java: entity/MagnetoBoss), floating over his dais
-    t.chest(c - 4, 16, c, "east", "asteroid_m")
-    t.chest(c + 4, 16, c - 1, "west", "asteroid_m")
-    t.chest(c - 11, 16, c + 4, "east", "asteroid_m")
-    t.chest(c + 11, 16, c - 4, "west", "asteroid_m")
-    # metal scraps floating around it
-    for i in range(10):
-        ang = t.rand.random() * math.tau
-        r = 22 + t.rand.random() * 1.5
-        x, z = round(c + math.cos(ang) * r), round(c + math.sin(ang) * r)
-        y = 8 + t.rand.randint(0, 12)
-        t.fill(x, y, z, x + t.rand.randint(0, 1), y, z + t.rand.randint(0, 1),
-               t.rand.choice(["iron_block", "raw_iron_block", "stone"]))
-    return t
+    """Magneto's big floating asteroid lives in its own file."""
+    import asteroid
+    return asteroid.build()
 
 
 # ======================================================================= Sentinel Factory
