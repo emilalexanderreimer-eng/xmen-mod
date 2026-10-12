@@ -356,6 +356,92 @@ def vein_block(lit):
     return img
 
 
+# ============================================================================ horsemen drops
+def pixel_art(rows, palette):
+    img = Image.new("RGBA", (16, 16), CLEAR)
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            if ch in palette:
+                img.putpixel((x, y), palette[ch])
+    return img
+
+
+RELICS = {
+    "storm_crystal": ([
+        "................",
+        ".......aa.......",
+        "......abba......",
+        ".....abccba.....",
+        ".....bcwwcb.....",
+        "....abcwycba....",
+        "....bccyycb.....",
+        "....bcwwycb.....",
+        "....abcyccba....",
+        ".....bcycb......",
+        ".....bycwb......",
+        ".....abccba.....",
+        "......abba......",
+        ".......aa.......",
+        "................",
+        "................"],
+        {"a": hexc("3a5a8a"), "b": hexc("6a9ad0"), "c": hexc("b8d8ff"), "w": hexc("ffffff"), "y": hexc("fff27a")}),
+    "psychic_blade": ([
+        "..............ww",
+        ".............wpw",
+        "............wpp.",
+        "...........wpp..",
+        "..........wpp...",
+        ".........wpp....",
+        "........wpp.....",
+        ".......wpp......",
+        "......wpp.......",
+        "..g..wpp........",
+        "...gwpp.........",
+        "....gg..........",
+        "...hgg..........",
+        "..hh..g.........",
+        ".hh.............",
+        "hh.............."],
+        {"w": hexc("ffc8ff"), "p": hexc("c040ff"), "g": hexc("2a1a3a"), "h": hexc("5a1f78")}),
+    "metal_wing": ([
+        "................",
+        "..........ss....",
+        "........ssls....",
+        ".......sllds....",
+        "......slldd.....",
+        ".....slldds.....",
+        "....slldds......",
+        "...slldds.......",
+        "..sllddss.......",
+        "..slddss........",
+        ".slddss.........",
+        ".sldss..........",
+        "slds............",
+        "sds.............",
+        "ss..............",
+        "................"],
+        {"s": hexc("4a5468"), "l": hexc("c8d0dc"), "d": hexc("8e9aae")}),
+    "magnet_gauntlet": ([
+        "................",
+        "....d.d.d.......",
+        "...dgdgdgd......",
+        "...dgdgdgd.d....",
+        "...dgdgdgddgd...",
+        "...dgggggdgd....",
+        "...dggggggd.....",
+        "...dggrrggd.....",
+        "...dgrrrrgd.....",
+        "...dggrrggd.....",
+        "...dggggggd.....",
+        "....dsssssd.....",
+        "....dssssd......",
+        ".....dddd.......",
+        "................",
+        "................"],
+        {"d": hexc("1c1e22"), "g": hexc("5a5f6a"), "r": hexc("b02030"), "s": hexc("a8adb6")}),
+}
+
+
 # ============================================================================ json
 NAMES = {
     "entity.xmen.apocalypse": ("Apocalypse", "Apocalypse"),
@@ -371,6 +457,10 @@ NAMES = {
     "item.xmen.horseman_magneto_spawn_egg": ("Horseman Magneto Spawn Egg", "Reiter-Magneto-Spawn-Ei"),
     "item.xmen.akkaba_cultist_spawn_egg": ("Clan Akkaba Cultist Spawn Egg", "Akkaba-Kultist-Spawn-Ei"),
     "block.xmen.celestial_vein": ("Celestial Vein", "Himmlische Ader"),
+    "item.xmen.storm_crystal": ("Storm's Crystal", "Storms Kristall"),
+    "item.xmen.psychic_blade": ("Psylocke's Psychic Blade", "Psylockes Psi-Klinge"),
+    "item.xmen.metal_wing": ("Archangel's Metal Wing", "Archangels Metallflügel"),
+    "item.xmen.magnet_gauntlet": ("Magneto's Gauntlet", "Magnetos Handschuh"),
 }
 
 
@@ -397,6 +487,11 @@ def main():
             save(glow, "textures", "entity", "apocalypse", name + "_glow.png")
         write_json(os.path.join(ASSETS, "models", "item", name + "_spawn_egg.json"),
                    {"parent": "minecraft:item/template_spawn_egg"})
+    for name, (rows, palette) in RELICS.items():
+        save(pixel_art(rows, palette), "textures", "item", name + ".png")
+        write_json(os.path.join(ASSETS, "models", "item", name + ".json"),
+                   {"parent": "minecraft:item/handheld" if name == "psychic_blade" else "minecraft:item/generated",
+                    "textures": {"layer0": "xmen:item/" + name}})
     save(vein_block(False), "textures", "block", "celestial_vein.png")
     save(vein_block(True), "textures", "block", "celestial_vein_lit.png")
     for suffix in ("", "_lit"):

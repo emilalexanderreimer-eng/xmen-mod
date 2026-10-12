@@ -77,5 +77,9 @@
   "entity.xmen.laser_drone": "Laser Drone",
   "item.xmen.sentinel_spawn_egg": "Sentinel Spawn Egg",
   "item.xmen.training_robot_spawn_egg": "Training Robot Spawn Egg",
-  "item.xmen.laser_drone_spawn_egg": "Laser Drone Spawn Egg"
+  "item.xmen.laser_drone_spawn_egg": "Laser Drone Spawn Egg",
+  "item.xmen.storm_crystal": "Storm's Crystal",
+  "item.xmen.psychic_blade": "Psylocke's Psychic Blade",
+  "item.xmen.metal_wing": "Archangel's Metal Wing",
+  "item.xmen.magnet_gauntlet": "Magneto's Gauntlet"
 }

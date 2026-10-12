@@ -504,8 +504,8 @@ public class ApocalypseBoss extends Monster {
             Scheduler.later(60, () -> {
                 for (ServerPlayer player : level.players()) {
                     if (player.distanceToSqr(center.getX(), center.getY(), center.getZ()) < 64 * 64) {
-                        player.sendSystemMessage(Component.literal("The altar is cracking! Jump down into the vault "
-                                + "below, the water will catch you...").withStyle(ChatFormatting.GOLD,
+                        player.sendSystemMessage(Component.literal("The altar is cracking open... stairs lead down "
+                                + "into a hidden vault!").withStyle(ChatFormatting.GOLD,
                                         ChatFormatting.ITALIC));
                     }
                 }
@@ -516,14 +516,14 @@ public class ApocalypseBoss extends Monster {
         }
     }
 
-    /** Like the end of the movie's opening: the altar floor gives way and drops into the hidden vault. */
+    /** The gold seal on top of the altar crumbles away and opens the stairs down to his treasure vault. */
     static void collapse(ServerLevel level, BlockPos center) {
         for (int y = 1; y <= 4; y++) {
             for (int dx = -2; dx <= 2; dx++) {
                 for (int dz = -2; dz <= 2; dz++) {
                     BlockPos pos = center.offset(dx, -y, dz);
                     BlockState state = level.getBlockState(pos);
-                    if (!state.isAir() && state.getDestroySpeed(level, pos) >= 0 && !state.hasBlockEntity()) {
+                    if (state.getBlock() instanceof VeinBlock) {
                         level.removeBlock(pos, false);
                     }
                 }

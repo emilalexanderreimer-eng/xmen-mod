@@ -296,6 +296,12 @@ public class ApocalypseServant extends Monster {
         if (level() instanceof ServerLevel level && kind.horseman()) {
             spawnAtLocation(new ItemStack(Items.GOLD_INGOT, 4));
             spawnAtLocation(new ItemStack(Items.DIAMOND, 1 + random.nextInt(2)));
+            spawnAtLocation(new ItemStack(switch (kind) {
+                case STORM -> ApocalypseContent.STORM_CRYSTAL.get();
+                case PSYLOCKE -> ApocalypseContent.PSYCHIC_BLADE.get();
+                case ARCHANGEL -> ApocalypseContent.METAL_WING.get();
+                default -> ApocalypseContent.MAGNET_GAUNTLET.get();
+            }));
             for (ServerPlayer player : level.players()) {
                 if (player.distanceToSqr(this) < 64 * 64) {
                     player.sendSystemMessage(Component.literal(getDisplayName().getString()

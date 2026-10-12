@@ -77,5 +77,9 @@
   "entity.xmen.laser_drone": "Laserdrohne",
   "item.xmen.sentinel_spawn_egg": "Sentinel-Spawn-Ei",
   "item.xmen.training_robot_spawn_egg": "Trainingsroboter-Spawn-Ei",
-  "item.xmen.laser_drone_spawn_egg": "Laserdrohnen-Spawn-Ei"
+  "item.xmen.laser_drone_spawn_egg": "Laserdrohnen-Spawn-Ei",
+  "item.xmen.storm_crystal": "Storms Kristall",
+  "item.xmen.psychic_blade": "Psylockes Psi-Klinge",
+  "item.xmen.metal_wing": "Archangels Metallfl\u00fcgel",
+  "item.xmen.magnet_gauntlet": "Magnetos Handschuh"
 }

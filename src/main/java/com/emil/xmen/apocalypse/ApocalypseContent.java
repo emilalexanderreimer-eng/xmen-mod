@@ -11,6 +11,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -53,6 +56,19 @@ public final class ApocalypseContent {
             0x8a2030);
     public static final DeferredItem<Item> CULTIST_EGG = egg("akkaba_cultist", CULTIST, 0x6b4a2a, 0xc9a227);
 
+    // what the Horsemen drop
+    public static final DeferredItem<Item> STORM_CRYSTAL = ITEMS.register("storm_crystal",
+            () -> new HorsemanRelic.StormCrystal(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+    public static final DeferredItem<Item> PSYCHIC_BLADE = ITEMS.register("psychic_blade",
+            () -> new HorsemanRelic.PsychicBlade(Tiers.DIAMOND, new Item.Properties().rarity(Rarity.EPIC)
+                    .attributes(SwordItem.createAttributes(Tiers.DIAMOND, 5, -2.2f))));
+    public static final DeferredItem<Item> METAL_WING = ITEMS.register("metal_wing",
+            () -> new HorsemanRelic.MetalWing(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+    public static final DeferredItem<Item> MAGNET_GAUNTLET = ITEMS.register("magnet_gauntlet",
+            () -> new HorsemanRelic.MagnetGauntlet(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+    private static final List<DeferredItem<Item>> RELICS = List.of(STORM_CRYSTAL, PSYCHIC_BLADE, METAL_WING,
+            MAGNET_GAUNTLET);
+
     private ApocalypseContent() {
     }
 
@@ -84,9 +100,12 @@ public final class ApocalypseContent {
     }
 
     private static void addToTabs(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS || event.getTab() == ModContent.TAB.get()) {
-            for (var egg : ITEMS.getEntries()) {
-                event.accept(egg.get());
+        boolean ourTab = event.getTab() == ModContent.TAB.get();
+        if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS || ourTab) {
+            for (var item : ITEMS.getEntries()) {
+                if (ourTab || !RELICS.contains(item)) {
+                    event.accept(item.get());
+                }
             }
         }
     }

@@ -218,34 +218,44 @@ def apocalypse_pyramid():
     for (x, z) in ((32, 36), (36, 42), (20, 66), (48, 66), (30, 81), (38, 51)):
         t.mob(x, G + 1, z, "xmen:akkaba_cultist", yaw=180.0)
 
-    # ------------------------------------------------------------ the upside-down pyramid under the chamber
-    for k in range(16):
-        y = G - 3 - k
-        hw = 18 - k
-        t.fill(CX - hw - 2, y, CZ - hw - 2, CX + hw + 2, y, CZ + hw + 2, "smooth_sandstone")
-        t.clear(CX - hw, y, CZ - hw, CX + hw, y, CZ + hw)
-        e = hw + 1
-        q = e // 2
-        for sx in (-e, -q, 0, q, e):
-            for sz in (-e, -q, 0, q, e):
-                if abs(sx) == e or abs(sz) == e:
-                    t.set(CX + sx, y, CZ + sz, "xmen:celestial_vein[lit=false]")
-    bottom = G - 3 - 15
-    t.fill(CX - 5, bottom - 3, CZ - 5, CX + 5, bottom - 1, CZ + 5, "smooth_sandstone")
-    t.fill(CX - 2, bottom - 2, CZ - 2, CX + 2, bottom, CZ + 2, "water")   # breaks your fall
-    for (x, z) in ((CX - 3, CZ - 3), (CX + 3, CZ - 3), (CX - 3, CZ + 3)):
-        t.chest(x, bottom, z, "north", "pyramid_treasure")
-    t.chest(CX + 3, bottom, CZ + 3, "north", "pyramid")
-    # the way out: up the south steps, a stair tunnel, and a door you can only open from inside
-    for y in range(G - 3, G + 2):
-        z = CZ + y - (G - 3) + 18
-        t.clear(CX - 1, y, z, CX + 1, y + 2, z)
-        t.fill(CX - 1, y - 1, z, CX + 1, y - 1, z, "smooth_sandstone_stairs[facing=south,half=bottom,"
-                                                   "shape=straight]")
-    t.clear(CX - 1, G + 1, 83, CX + 1, G + 3, CZ + 23)
-    t.fill(CX - 1, G + 1, 83, CX + 1, G + 3, 83, "chiseled_sandstone")
-    t.door(CX, G + 1, 83, "north", wood="iron")
-    t.set(CX + 1, G + 2, 84, "stone_button[face=wall,facing=south,powered=false]")
+    # ------------------------------------------------------------ the treasure vault under the altar
+    # Under the dais is a gold seal. When Apocalypse dies it crumbles and opens a wide staircase down to a vault
+    # with a lava lake; the treasure sits on an island you reach by jumping across stepping stones.
+    t.fill(CX - 2, G, CZ - 2, CX + 2, G, CZ + 2, "xmen:celestial_vein[lit=false]")
+    F = 12
+    steps = G - 1 - F                       # 13 steps down
+    for k in range(steps):
+        z, y = CZ - 2 + k, G - 1 - k
+        t.fill(CX - 3, y - 1, z, CX + 3, min(G - 1, y + 5), z, "smooth_sandstone")
+    t.room(20, F, CZ + steps - 3, 48, F + 10, CZ + 30, "chiseled_sandstone", "cut_sandstone", "smooth_sandstone")
+    for k in range(steps):
+        z, y = CZ - 2 + k, G - 1 - k
+        t.fill(CX - 2, y, z, CX + 2, y, z, "smooth_sandstone_stairs[facing=north,half=bottom,shape=straight]")
+        t.clear(CX - 2, y + 1, z, CX + 2, min(G - 1, y + 4), z)
+    zl = CZ + steps - 2                     # first row of the vault floor
+    # the lava lake and the island
+    t.fill(21, F - 2, zl + 4, 47, F - 2, CZ + 29, "sandstone")
+    t.fill(21, F - 1, zl + 4, 47, F, CZ + 29, "lava")
+    ix, iz = CX, zl + 12
+    t.disc(ix, F - 1, iz, 4, "chiseled_sandstone")
+    t.disc(ix, F, iz, 4, "chiseled_sandstone")
+    t.disc(ix, F + 1, iz, 3, "gold_block")
+    t.set(ix, F + 2, iz, "xmen:celestial_vein[lit=false]")
+    for (x, z, loot) in ((ix - 2, iz, "pyramid_treasure"), (ix + 2, iz, "pyramid_treasure"),
+                         (ix, iz - 2, "pyramid_treasure"), (ix, iz + 2, "pyramid")):
+        t.chest(x, F + 2, z, "north" if z >= iz else "south", loot)
+    for (x, z) in ((CX - 1, zl + 5), (CX + 1, zl + 7)):      # stepping stones over the lava
+        t.fill(x, F - 1, z, x, F, z, "chiseled_sandstone")
+    # gold veins up the walls light the vault
+    for x in range(22, 48, 4):
+        for z in (CZ + steps - 3, CZ + 30):
+            if z == CZ + steps - 3 and CX - 3 <= x <= CX + 3:
+                continue
+            t.fill(x, F + 1, z, x, F + 9, z, "xmen:celestial_vein[lit=false]")
+    for z in range(zl + 1, CZ + 30, 4):
+        for x in (20, 48):
+            t.fill(x, F + 1, z, x, F + 9, z, "xmen:celestial_vein[lit=false]")
+    t.clear(CX - 2, F + 2, CZ + steps - 3, CX + 2, F + 5, CZ + steps - 3)
     return t
 
 
