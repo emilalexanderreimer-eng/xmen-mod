@@ -358,9 +358,224 @@ CHARACTERS = {
                         belt="f5f5f5", emblem="none", lips="c06070", coat="f5f5f5"),
 }
 
+
+# ---------------------------------------------------------------- extras for the characters added in 0.6.2
+def eyepatch(s, n):
+    """Callisto's black eyepatch over her right eye, with the strap around the head."""
+    black = hexc("0e0e10")
+    for x in (1, 2):
+        for y in (3, 4, 5):
+            s.px("head", "front", x, y, black)
+    for x in range(8):
+        s.px("head", "right", x, 3, black)
+    for x in range(8):
+        s.px("head", "back", x, 3, black)
+    s.px("head", "front", 0, 3, black)
+    s.px("head", "front", 3, 3, black)
+
+
+def bone_spikes(s, n):
+    """Marrow: white bone spikes growing out of her shoulders, arms and back."""
+    bone = hexc("ece4cf")
+    for box in ("rarm", "larm"):
+        for (x, y) in ((1, 1), (2, 4), (1, 7)):
+            for face in ("front", "back", "left", "right"):
+                s.px(box, face, x, y, n(bone, 0.05))
+    for (x, y) in ((1, 1), (6, 1), (3, 4), (5, 7), (2, 8)):
+        s.px("body", "back", x, y, n(bone, 0.05))
+    for x in (2, 5):
+        s.px("head", "front", x, 6, bone)
+
+
+def masque_face(s, n):
+    """Masque reshapes faces, and his own is a patchwork of scars under a hood."""
+    scar = hexc("b58a8a")
+    pale = hexc("d8c0a8")
+    for (x, y) in ((1, 2), (2, 2), (5, 5), (6, 5), (6, 6), (1, 6), (2, 7), (4, 3)):
+        s.px("head", "front", x, y, scar)
+    for (x, y) in ((3, 4), (4, 4), (0, 5), (7, 3)):
+        s.px("head", "front", x, y, pale)
+    hood = hexc("3a2f2a")
+
+    def hat(face, x, y, w, h):
+        if face == "bottom":
+            return None
+        if face == "front":
+            return n(hood) if y == 0 or x in (0, 7) else None
+        return n(hood)
+    s.paint("hat", hat)
+
+
+def leech_look(s, n):
+    """Leech: a small green boy with big black eyes."""
+    black = hexc("08080a")
+    for x in (1, 2, 5, 6):
+        for y in (3, 4):
+            s.px("head", "front", x, y, black)
+    s.px("head", "front", 2, 3, hexc("5a6a5a"))
+    s.px("head", "front", 5, 3, hexc("5a6a5a"))
+
+
+def healer_look(s, n):
+    """Healer: a big bald man in a long grey robe with a glowing hand-print on the chest."""
+    glow = hexc("9ef0c0")
+    for (x, y) in ((3, 3), (4, 3), (2, 4), (3, 4), (4, 4), (5, 4), (3, 5), (4, 5)):
+        s.px("body", "front", x, y, glow)
+
+
+def caliban_look(s, n):
+    """Caliban: chalk-white skin, no hair, dark round goggles."""
+    dark = hexc("141416")
+    for x in (1, 2, 5, 6):
+        s.px("head", "front", x, 4, dark)
+    s.px("head", "front", 3, 4, hexc("3a3a3a"))
+    s.px("head", "front", 4, 4, hexc("3a3a3a"))
+    for x in (0, 7):
+        s.px("head", "front", x, 4, hexc("3a3a3a"))
+
+
+def sabretooth_look(s, n):
+    """Sabretooth: wild blond mane, fur collar and claws."""
+    fur_c = hexc("6b4a2a")
+    for x in range(8):
+        for y in (0, 1):
+            s.px("body", "front", x, y, n(fur_c, 0.12))
+            s.px("body", "back", x, y, n(fur_c, 0.12))
+    for box in ("rarm", "larm"):
+        for y in (0, 1):
+            for face in ("front", "back", "left", "right", "top"):
+                for x in range(4):
+                    s.px(box, face, x, y, n(fur_c, 0.12))
+        for x in range(4):
+            s.px(box, "bottom", x, 0, hexc("e8e0c8"))
+    s.px("head", "front", 2, 6, hexc("f2f2e0"))
+    s.px("head", "front", 5, 6, hexc("f2f2e0"))
+
+
+def juggernaut_look(s, n):
+    """Juggernaut: his round rust-red helmet that covers everything but the face."""
+    helm = hexc("8a3a24")
+    dark = hexc("5a2416")
+
+    def hat(face, x, y, w, h):
+        if face == "bottom":
+            return None
+        if face == "front":
+            return n(helm) if y <= 2 or x in (0, 7) or y == 7 else None
+        if face == "top":
+            return n(dark) if x in (3, 4) else n(helm)
+        return n(helm)
+    s.paint("hat", hat)
+
+
+def jumpsuit_number(s, n):
+    """Multiple Man in his orange prison jumpsuit with a number on the chest."""
+    for (x, y) in ((1, 2), (2, 2), (5, 2), (6, 2)):
+        s.px("body", "front", x, y, hexc("1a1a1a"))
+
+
+def azazel_look(s, n):
+    """Azazel: red skin, black hair and beard, yellow eyes."""
+    s.px("head", "front", 2, 4, hexc("f5d742"))
+    s.px("head", "front", 5, 4, hexc("f5d742"))
+
+
+def tuxedo(s, n):
+    """A Hellfire Club tuxedo: white shirt, black bow tie."""
+    white = hexc("f2f2f2")
+    for y in range(0, 8):
+        for x in (3, 4):
+            s.px("body", "front", x, y, white)
+    s.px("body", "front", 3, 0, hexc("101010"))
+    s.px("body", "front", 4, 0, hexc("101010"))
+    s.px("body", "front", 2, 0, hexc("101010"))
+    s.px("body", "front", 5, 0, hexc("101010"))
+
+
+def soldier_helmet(s, n):
+    """Anti-mutant soldier: olive helmet and a dark visor."""
+    olive = hexc("4a5a34")
+
+    def hat(face, x, y, w, h):
+        if face == "bottom":
+            return None
+        if face == "front":
+            return n(olive) if y <= 2 or x in (0, 7) else (hexc("1a1a1e") if y == 4 else None)
+        return n(olive) if y < 5 or face == "top" else None
+    s.paint("hat", hat)
+
+
+def selene_look(s, n):
+    """Selene: black hair, pale skin, a black gown and red lips."""
+    s.px("head", "front", 2, 4, hexc("8a1a1a"))
+    s.px("head", "front", 5, 4, hexc("8a1a1a"))
+
+
+CHARACTERS.update({
+    # ---- the Morlocks (0.6.2)
+    "callisto": dict(skin="e8c3a2", hair="121214", style="long", eyes="3b2a1e", suit="1a1a1c", panel="2a2622",
+                     sleeves="1a1a1c", gloves="1a1a1c", legs="1f1c1a", boots="0e0e10", belt="3a2a1a",
+                     buckle="8a8a8a", emblem="none", lips="7a3a3a", coat="2a2420", extra=eyepatch),
+    "caliban": dict(skin="ece9e4", style="bald", eyes="141416", suit="161618", panel="161618", sleeves="161618",
+                    gloves="ece9e4", legs="161618", boots="0e0e10", belt="161618", emblem="none", panels=False,
+                    coat="1c1c20", long_coat=True, lips="b0a8a0", extra=caliban_look),
+    "healer": dict(skin="c99a74", style="bald", eyes="3b2a1e", suit="6a6a6e", panel="5a5a5e", sleeves="6a6a6e",
+                   gloves="c99a74", legs="5a5a5e", boots="3a2a1a", belt="4a3a2a", emblem="none", panels=False,
+                   coat="7a7a7e", long_coat=True, extra=healer_look),
+    "masque": dict(skin="c8a080", hair="2a1e1a", eyes="7a2a2a", suit="3a2f2a", panel="2a221e", sleeves="3a2f2a",
+                   gloves="2a221e", legs="2a221e", boots="1a1410", belt="1a1410", emblem="none",
+                   extra=masque_face),
+    "leech": dict(skin="8fbf7a", style="bald", eyes="08080a", suit="6b5a3a", panel="5a4a2e", sleeves="6b5a3a",
+                  gloves="8fbf7a", legs="4a3e2a", boots="8fbf7a", belt="4a3e2a", emblem="none", panels=False,
+                  lips="5a7a4a", extra=leech_look),
+    "marrow": dict(skin="e2b08e", hair="e04a8a", style="spiky", eyes="3f8a4a", suit="3a2a2a", panel="5a3a3a",
+                   sleeves="3a2a2a", gloves="e2b08e", legs="2a2222", boots="1a1414", belt="1a1414", emblem="none",
+                   bare_arms=True, tank_top=True, extra=bone_spikes),
+    # ---- the Brotherhood's heavy hitters
+    "sabretooth": dict(skin="d9a07a", hair="d9b26b", style="long", eyes="c9a032", suit="3a2a1a", panel="2a1e12",
+                       sleeves="3a2a1a", gloves="d9a07a", legs="2a2218", boots="1a120a", belt="1a120a",
+                       emblem="none", coat="4a3220", long_coat=True, beard="b8924a", extra=sabretooth_look),
+    "juggernaut": dict(skin="e2b08e", eyes="3a5f9c", suit="8a3a24", panel="5a2416", sleeves="5a2416",
+                       gloves="3a3a3a", legs="3a2a24", boots="2a1a14", belt="3a3a3a", buckle="8a8a8a",
+                       emblem="none", chest_v="5a2416", extra=juggernaut_look),
+    "multiple_man": dict(skin="e8c3a2", hair="4a3020", eyes="3a5f9c", suit="e0601a", panel="c8501a",
+                         sleeves="e0601a", gloves="e8c3a2", legs="e0601a", boots="2a2a2a", belt="e0601a",
+                         emblem="none", panels=False, extra=jumpsuit_number),
+    # ---- the Hellfire Club (X-Men: First Class)
+    "sebastian_shaw": dict(skin="e8c3a2", hair="8a8a8a", style="short_receding", eyes="3a5f9c", suit="1a1a1e",
+                           panel="1a1a1e", sleeves="1a1a1e", gloves="e8c3a2", legs="1a1a1e", boots="0e0e10",
+                           belt="1a1a1e", emblem="none", panels=False, coat="20202a", extra=tuxedo),
+    "azazel": dict(skin="b8241a", hair="121212", style="short", eyes="f5d742", suit="141416", panel="141416",
+                   sleeves="141416", gloves="b8241a", legs="141416", boots="0e0e10", belt="141416",
+                   emblem="none", beard="121212", lips="7a1410", coat="1a1a1e", long_coat=True, extra=azazel_look),
+    "riptide": dict(skin="d9a07a", hair="2a1a12", style="long", eyes="3b2a1e", suit="2a2a30", panel="2a2a30",
+                    sleeves="2a2a30", gloves="d9a07a", legs="2a2a30", boots="141416", belt="2a2a30",
+                    emblem="none", beard="2a1a12", panels=False, extra=tuxedo),
+    "hellfire_guard": dict(skin="e2b08e", hair="2a1e14", eyes="3b2a1e", suit="121214", panel="121214",
+                           sleeves="121214", gloves="f2f2f2", legs="121214", boots="0a0a0a", belt="121214",
+                           emblem="none", panels=False, extra=tuxedo),
+    # ---- Genosha (X-Men: Dark Phoenix)
+    "selene": dict(skin="f0d4c0", hair="0e0e10", style="long", eyes="8a1a1a", suit="141016", panel="221a26",
+                   sleeves="141016", gloves="f0d4c0", legs="141016", boots="0e0e10", belt="141016",
+                   emblem="none", lips="a01a2a", panels=False, coat="1a141e", long_coat=True, extra=selene_look),
+    "ariki": dict(skin="9a6a48", hair="141414", style="long", eyes="3b2a1e", suit="3a3428", panel="2a261e",
+                  sleeves="3a3428", gloves="9a6a48", legs="2a261e", boots="1a1610", belt="1a1610", emblem="none",
+                  bare_arms=True),
+    "red_lotus": dict(skin="e8c3a2", hair="b8241a", style="spiky", eyes="3b2a1e", suit="8a1a1a", panel="5a1212",
+                      sleeves="8a1a1a", gloves="1a1a1a", legs="1a1a1a", boots="0e0e10", belt="1a1a1a",
+                      emblem="none"),
+    "genoshan": dict(skin="c99a74", hair="3b2416", style="short", eyes="3b2a1e", suit="8a7a5a", panel="7a6a4a",
+                     sleeves="8a7a5a", gloves="c99a74", legs="4a4a5a", boots="3a2a1a", belt="3a2a1a",
+                     emblem="none", panels=False),
+    # ---- anti-mutant soldiers at the Detection Tower
+    "anti_mutant_soldier": dict(skin="e2b08e", hair="2a1e14", eyes="3b2a1e", suit="4a5a34", panel="3a4a28",
+                                sleeves="4a5a34", gloves="1a1a1a", legs="3a4a28", boots="1a1a12", belt="2a2a1a",
+                                buckle="6a6a5a", emblem="none", knee="2f3a20", extra=soldier_helmet),
+})
+
 # Characters with slim (Alex-style) arms
 SLIM = {"storm", "jean_grey", "rogue", "kitty_pryde", "jubilee", "moira", "mystique", "white_queen",
-        "krakoa_mutant"}
+        "krakoa_mutant", "callisto", "marrow", "selene"}
 
 
 def main():

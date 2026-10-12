@@ -7,7 +7,7 @@
   "start_pool": "xmen:morlock_tunnels/start",
   "size": 1,
   "start_height": {
-    "absolute": -22
+    "absolute": -40
   },
   "max_distance_from_center": 80,
   "use_expansion_hack": false,

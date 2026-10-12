@@ -16,6 +16,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import mansion  # noqa: E402
+import morlock_tunnels  # noqa: E402
 import nbt  # noqa: E402
 import places  # noqa: E402
 import sinister_lab  # noqa: E402
@@ -62,7 +63,8 @@ STRUCTURES = {
     "genosha": (OCEAN, "surface_structures", 63 - 20, None, 56, 24, False),
     "krakoa": (WARM_OCEAN, "surface_structures", 63 - 20, None, 56, 24, True),
     "muir_island": (COLD_OCEAN, "surface_structures", 63 - 12, None, 40, 16, True),
-    "morlock_tunnels": (FLAT + WOODS, "underground_structures", -22, "WORLD_SURFACE_WG", 32, 12, False),
+    "morlock_tunnels": (FLAT + WOODS, "underground_structures", -morlock_tunnels.G, "WORLD_SURFACE_WG", 32, 12,
+                        False),
     "blackbird_crash": (LAND, "surface_structures", -4, "WORLD_SURFACE_WG", 36, 14, False),
     "safehouse": (WOODS + ["minecraft:plains", "minecraft:meadow"], "surface_structures", -2, "WORLD_SURFACE_WG",
                   24, 10, True),
@@ -174,6 +176,12 @@ LOOT = {
     "morlock": [pool(2, 5, [item("rotten_flesh", 10, 2, 6), item("bread", 8, 1, 3), item("iron_nugget", 8, 3, 9),
                             item("string", 6, 2, 6), item("candle", 5, 1, 3), item("emerald", 3, 1, 2),
                             item("diamond", 1), item("leather_boots", 3)])],
+    "morlock_healer": [pool(2, 4, [potion("healing", 8), potion("regeneration", 6), splash("healing", 4),
+                                   item("golden_apple", 2), item("honey_bottle", 6, 1, 3), item("bread", 6, 1, 3)])],
+    "morlock_hoard": [pool(4, 7, [item("diamond", 6, 1, 3), item("emerald", 10, 3, 9), item("gold_ingot", 10, 2, 6),
+                                  item("golden_apple", 4), item("enchanted_golden_apple", 1), item("iron_ingot", 8, 3, 8),
+                                  enchanted("iron_sword", 3, 25), item("xmen:mutant_serum", 1), book(3)])] +
+                     [chance(40, treasure_map("x_mansion", "Map to the X-Mansion"))],
     "asteroid_m": [pool(4, 8, [item("iron_block", 6, 1, 3), item("iron_ingot", 10, 4, 12), item("netherite_scrap", 3),
                                item("diamond", 5, 1, 3), item("ender_pearl", 5, 1, 3), item("gold_ingot", 6, 2, 6),
                                enchanted("iron_chestplate", 3, 30)])],
@@ -254,6 +262,14 @@ def main():
     names = {t.name for t in templates}
     assert names == set(STRUCTURES), names ^ set(STRUCTURES)
     used_loot = set()
+    # Emil doesn't want renamed vanilla mobs as people. These structures use real characters only.
+    vanilla_people = {"minecraft:pillager", "minecraft:vindicator", "minecraft:husk", "minecraft:villager",
+                      "minecraft:zombie", "minecraft:wandering_trader"}
+    for t in templates:
+        if t.name in ("brotherhood_hideout", "hellfire_club", "genosha", "detection_tower", "morlock_tunnels",
+                      "krakoa", "muir_island", "safehouse", "fallen_sentinel", "blackbird_crash"):
+            bad = [e["nbt"]["id"] for e in t.entities if e["nbt"]["id"] in vanilla_people]
+            assert not bad, f"{t.name} still has vanilla mobs: {bad}"
     for t in templates:
         path, blocks, palette, mobs = t.save(structure_dir)
         size = os.path.getsize(path) // 1024

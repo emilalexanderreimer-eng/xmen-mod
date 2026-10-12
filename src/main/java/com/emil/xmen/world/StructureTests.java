@@ -37,6 +37,10 @@ import com.emil.xmen.entity.WeaponXScientist;
 import com.emil.xmen.entity.WeaponXSoldier;
 import com.emil.xmen.entity.WilliamStryker;
 import com.emil.xmen.entity.X24;
+import net.minecraft.world.entity.monster.AbstractIllager;
+import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -224,6 +228,67 @@ public class StructureTests {
             }
         }
         XMenMod.LOGGER.info("Test: Weapon X has {} soldiers and {} scientists", soldiers, scientists);
+        helper.succeed();
+    }
+
+    /**
+     * Builds the reworked smaller structures by themselves (the Morlock tunnels are too deep for the flat test world)
+     * and checks that their people are real characters, not renamed pillagers, vindicators or husks.
+     */
+    @GameTest(template = "empty", timeoutTicks = 200)
+    public static void smallStructuresHaveRealPeople(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        String[] names = {"morlock_tunnels", "brotherhood_hideout", "hellfire_club", "genosha", "detection_tower"};
+        AABB all = null;
+        AABB tunnels = null;
+        for (int i = 0; i < names.length; i++) {
+            StructureTemplate template = level.getStructureManager()
+                    .get(ResourceLocation.fromNamespaceAndPath(XMenMod.MOD_ID, names[i])).orElse(null);
+            if (template == null) {
+                helper.fail("Missing building for xmen:" + names[i]);
+                return;
+            }
+            int cx = 4000 + i * 8;
+            for (int x = cx - 1; x <= cx + 6; x++) {
+                for (int z = 3999; z <= 4006; z++) {
+                    level.setChunkForced(x, z, true);
+                    level.getChunk(x, z);
+                }
+            }
+            BlockPos corner = new BlockPos(cx * 16, -55, 4000 * 16);
+            template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
+            AABB box = new AABB(corner).expandTowards(template.getSize().getX(), template.getSize().getY(),
+                    template.getSize().getZ()).inflate(4);
+            all = all == null ? box : all.minmax(box);
+            if (i == 0) {
+                tunnels = box;
+            }
+        }
+        List<Mob> vanilla = level.getEntitiesOfClass(Mob.class, all,
+                mob -> mob instanceof AbstractIllager || mob instanceof Zombie || mob instanceof AbstractVillager);
+        if (!vanilla.isEmpty()) {
+            helper.fail("There are still vanilla mobs in the small structures: " + vanilla.get(0).getType());
+            return;
+        }
+        List<MutantNpc> people = level.getEntitiesOfClass(MutantNpc.class, all);
+        for (String character : List.of("callisto", "caliban", "healer", "masque", "sabretooth", "juggernaut",
+                "multiple_man", "sebastian_shaw", "azazel", "riptide", "hellfire_guard", "selene", "genoshan",
+                "anti_mutant_soldier")) {
+            if (people.stream().noneMatch(npc -> npc.getCharacter().equals(character))) {
+                helper.fail(character + " isn't in the small structures");
+                return;
+            }
+        }
+        if (people.stream().anyMatch(npc -> npc.getCharacter().equals("callisto") && npc.isHostile())) {
+            helper.fail("Callisto should only fight once she's challenged");
+            return;
+        }
+        int carts = level.getEntitiesOfClass(AbstractMinecart.class, tunnels).size();
+        if (carts < 2) {
+            helper.fail("The Morlock minecart line has " + carts + " carts instead of 2");
+            return;
+        }
+        XMenMod.LOGGER.info("Test: the small structures have {} real characters", people.size());
         helper.succeed();
     }
 }

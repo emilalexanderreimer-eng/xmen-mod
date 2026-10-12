@@ -8,11 +8,14 @@ import java.util.function.Consumer;
 
 import org.joml.Vector3f;
 
+import com.emil.xmen.entity.ModEntities;
 import com.emil.xmen.entity.MutantNpc;
+import com.emil.xmen.entity.WeaponXEntities;
 import com.emil.xmen.power.PlayerPowers;
 import com.emil.xmen.power.Power;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
@@ -27,6 +30,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -50,6 +54,12 @@ import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -69,6 +79,7 @@ public final class MutantMobs {
     private static final String KIND = "xmen_kind";
     private static final String COOLDOWN = "xmen_cooldown";
     private static final String STEP = "xmen_step";
+    private static final String HOME = "xmen_home";
     private static final Map<String, Kind> KINDS = new HashMap<>();
     private static final Map<UUID, ServerBossEvent> BARS = new HashMap<>();
 
@@ -220,10 +231,31 @@ public final class MutantMobs {
                 .friendly("Wanna see some fireworks?", "The mall is way more fun than class.");
         kind("gambit", "Gambit").color(ChatFormatting.DARK_RED).health(55).ability("cards")
                 .friendly("Remy LeBeau, at your service.", "Wanna play cards, mon ami?");
-        kind("morlock", "Caliban", "Callisto", "Masque", "Sunder", "Marrow", "Leech", "Tommy", "Berto")
+        kind("morlock", "Sunder", "Tommy", "Berto", "Erg", "Ape", "Plague", "Scaleface", "Skids", "Annalee",
+                "Cybelle", "Beautiful Dreamer", "Tar Baby")
                 .color(ChatFormatting.GRAY)
                 .friendly("Surface folk don't come down here often.", "We Morlocks keep to the tunnels.",
-                        "Leave us in peace and we'll leave you in peace.");
+                        "Leave us in peace and we'll leave you in peace.", "Take the cart at the station, it goes "
+                                + "down to the Alley.", "Healer can fix you up. His hut is next to the cart stop.",
+                        "Callisto leads us. Anyone can challenge her... nobody ever wins.",
+                        "Caliban can feel every mutant in the world. Ask him where to go.");
+        // --- the Morlock leaders (0.6.2)
+        kind("callisto", "Callisto").color(ChatFormatting.DARK_PURPLE).health(160).damage(9).speed(1.25)
+                .boss(BossEvent.BossBarColor.PURPLE).ability("knife")
+                .friendly("I'm Callisto. I lead the Morlocks.");
+        kind("caliban", "Caliban").color(ChatFormatting.WHITE).health(50)
+                .friendly("Caliban feels mutants. Caliban feels you.");
+        kind("healer", "Healer").color(ChatFormatting.GREEN).health(60)
+                .friendly("Healer helps.");
+        kind("masque", "Masque").color(ChatFormatting.GRAY).health(45)
+                .friendly("I can change any face. Want a new one? Heh. Didn't think so.",
+                        "Up there they call us freaks. Down here we're family.");
+        kind("leech", "Leech").color(ChatFormatting.GREEN).health(25).scale(0.7)
+                .friendly("When I'm close, other mutants' powers just... turn off. Sorry.",
+                        "Kitty Pryde played with me once. She was nice.");
+        kind("marrow", "Marrow").color(ChatFormatting.LIGHT_PURPLE).health(55).damage(8)
+                .friendly("I grow my own knives. Bones, I mean.", "This station is ours. Callisto's orders.",
+                        "Don't touch the train. Masque lives in it sometimes.");
         kind("krakoa_mutant", "Cypher", "Wolfsbane", "Magik", "Sunspot", "Mirage", "Karma", "Armor", "Pixie")
                 .color(ChatFormatting.GREEN)
                 .friendly("Welcome to Krakoa. Every mutant is safe here.", "No monsters can spawn on Krakoa.",
@@ -281,6 +313,33 @@ public final class MutantMobs {
 
         // --- Genosha
         kind("scavenger", "Genoshan Scavenger").color(ChatFormatting.GRAY).health(26);
+        // --- Magneto's people on Genosha (X-Men: Dark Phoenix, 0.6.2)
+        kind("selene", "Selene").color(ChatFormatting.DARK_PURPLE).health(70).damage(7).ability("drain");
+        kind("ariki", "Ariki").color(ChatFormatting.DARK_GRAY).health(55).ability("hair");
+        kind("red_lotus", "Red Lotus").color(ChatFormatting.RED).health(50).speed(1.25).ability("pounce");
+        kind("genoshan", "Ana", "Kofi", "Mira", "Tomas", "Leni", "Jun", "Amara").color(ChatFormatting.YELLOW)
+                .friendly("Erik gave us this island. A home for every mutant.", "The Sentinels came at night. "
+                        + "Most of the city is gone now.", "Watch out for Selene and her friends. They don't like "
+                                + "visitors.", "The Magneto statue still stands. Mostly.");
+
+        // --- the movie Brotherhood (0.6.2)
+        kind("sabretooth", "Sabretooth").color(ChatFormatting.GOLD).health(90).damage(9).speed(1.15)
+                .ability("pounce");
+        kind("juggernaut", "Juggernaut").color(ChatFormatting.DARK_RED).health(160).damage(12).speed(0.9).scale(1.3)
+                .heavy().ability("charge");
+        kind("multiple_man", "Multiple Man").color(ChatFormatting.GOLD).health(40).ability("copies");
+        kind("multiple_man_copy", "Multiple Man").color(ChatFormatting.GOLD).health(10).damage(4);
+
+        // --- the Hellfire Club (X-Men: First Class, 0.6.2)
+        kind("sebastian_shaw", "Sebastian Shaw").color(ChatFormatting.DARK_RED).health(220).damage(9)
+                .boss(BossEvent.BossBarColor.RED).ability("shockwave");
+        kind("azazel", "Azazel").color(ChatFormatting.RED).health(60).damage(8).ability("teleport")
+                .gear(mob -> hold(mob, Items.IRON_SWORD));
+        kind("riptide", "Riptide").color(ChatFormatting.GRAY).health(55).ability("whirlwind");
+
+        // --- the Detection Tower's soldiers (0.6.2)
+        kind("anti_mutant_soldier", "Anti-Mutant Soldier").color(ChatFormatting.GRAY).health(30).ability("rifle")
+                .gear(mob -> hold(mob, WeaponXEntities.RIFLE.get()));
 
     }
 
@@ -359,6 +418,9 @@ public final class MutantMobs {
             setBase(mob, Attributes.KNOCKBACK_RESISTANCE, kind.knockbackResistance);
         }
         kind.gear.accept(mob);
+        if (kind.id.equals("callisto")) {
+            mob.getPersistentData().putLong(HOME, mob.blockPosition().asLong());
+        }
         if (kind.id.equals("professor_x") && mob instanceof WanderingTrader trader) {
             trader.setDespawnDelay(0);
             MerchantOffers offers = trader.getOffers();
@@ -424,7 +486,11 @@ public final class MutantMobs {
             return;
         }
         if (kind.bar != null) {
-            updateBar(level, mob, kind);
+            if (!(mob instanceof MutantNpc npc) || npc.isHostile()) {
+                updateBar(level, mob, kind);
+            } else {
+                removeBar(mob);    // Callisto only shows her bar once she's been challenged
+            }
         }
         if (kind.ability.isEmpty()) {
             return;
@@ -638,6 +704,166 @@ public final class MutantMobs {
                 mob.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 60, 1, true, false));
                 return 40;
             }
+            case "pounce" -> {
+                if (distance < 3 || distance > 12 || !mob.onGround()) {
+                    return 0;
+                }
+                Vec3 dir = target.position().subtract(mob.position()).normalize();
+                mob.setDeltaMovement(dir.x * 1.3, 0.55, dir.z * 1.3);
+                mob.hurtMarked = true;
+                if (kind.id.equals("sabretooth")) {
+                    mob.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 80, 0, true, false));
+                    sound(level, mob, SoundEvents.RAVAGER_ROAR);
+                } else {
+                    sound(level, mob, SoundEvents.PLAYER_ATTACK_SWEEP);
+                }
+                return 70;
+            }
+            case "charge" -> {
+                if (distance < 2.8) {
+                    target.hurt(mob.damageSources().mobAttack(mob), 10);
+                    Vec3 push = target.position().subtract(mob.position()).normalize().scale(2.2);
+                    target.setDeltaMovement(push.x, 0.7, push.z);
+                    target.hurtMarked = true;
+                    level.sendParticles(ParticleTypes.EXPLOSION, target.getX(), target.getY() + 1, target.getZ(), 2,
+                            0.3, 0.3, 0.3, 0);
+                    sound(level, mob, SoundEvents.IRON_GOLEM_ATTACK);
+                    return 50;
+                }
+                if (distance > 18) {
+                    return 0;
+                }
+                Vec3 dir = target.position().subtract(mob.position()).normalize();
+                mob.setDeltaMovement(dir.x * 1.1, mob.getDeltaMovement().y, dir.z * 1.1);
+                mob.hurtMarked = true;
+                mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 40, 3, true, false));
+                level.sendParticles(ParticleTypes.CLOUD, mob.getX(), mob.getY() + 0.2, mob.getZ(), 6, 0.4, 0.1, 0.4,
+                        0.02);
+                if (step % 4 == 0) {
+                    say(level, mob, "Juggernaut: \"Don't you know who I am? I'm the Juggernaut!\"");
+                }
+                sound(level, mob, SoundEvents.RAVAGER_STEP);
+                return 15;
+            }
+            case "copies" -> {
+                if (distance > 16) {
+                    return 0;
+                }
+                int copies = level.getEntitiesOfClass(MutantNpc.class, mob.getBoundingBox().inflate(16),
+                        n -> "multiple_man_copy".equals(n.getPersistentData().getString(KIND))).size();
+                if (copies >= 4) {
+                    return 40;
+                }
+                for (int i = 0; i < 2; i++) {
+                    MutantNpc copy = ModEntities.MUTANT.get().create(level);
+                    if (copy == null) {
+                        return 100;
+                    }
+                    double angle = mob.getRandom().nextDouble() * Math.PI * 2;
+                    copy.setCharacter("multiple_man");
+                    copy.moveTo(mob.getX() + Math.cos(angle) * 1.5, mob.getY(), mob.getZ() + Math.sin(angle) * 1.5,
+                            mob.getYRot(), 0);
+                    copy.addTag("xmen.multiple_man_copy");
+                    copy.addTag("xmen.no_loot");
+                    level.addFreshEntity(copy);
+                    copy.setTarget(target);
+                    level.sendParticles(ParticleTypes.POOF, copy.getX(), copy.getY() + 1, copy.getZ(), 12, 0.3, 0.6,
+                            0.3, 0.02);
+                }
+                say(level, mob, "Multiple Man: \"Meet the rest of me!\"");
+                sound(level, mob, SoundEvents.ILLUSIONER_MIRROR_MOVE);
+                return 140;
+            }
+            case "shockwave" -> {
+                if (distance > 7) {
+                    return 0;
+                }
+                // he soaks up every hit and gives it back: the more hurt he is, the harder it hits
+                float missing = 1 - mob.getHealth() / mob.getMaxHealth();
+                for (LivingEntity victim : level.getEntitiesOfClass(LivingEntity.class, mob.getBoundingBox()
+                        .inflate(7), e -> e != mob && kindOf(e) == null)) {
+                    victim.hurt(mob.damageSources().mobAttack(mob), 4 + missing * 10);
+                    Vec3 push = victim.position().subtract(mob.position()).normalize().scale(1.6);
+                    victim.setDeltaMovement(push.x, 0.5, push.z);
+                    victim.hurtMarked = true;
+                }
+                level.sendParticles(ParticleTypes.EXPLOSION, mob.getX(), mob.getY() + 1, mob.getZ(), 10, 2.5, 0.5,
+                        2.5, 0);
+                if (missing > 0.3 && step % 2 == 0) {
+                    say(level, mob, "Sebastian Shaw: \"Every hit you land only makes me stronger!\"");
+                }
+                sound(level, mob, SoundEvents.GENERIC_EXPLODE.value());
+                return 100;
+            }
+            case "whirlwind" -> {
+                if (distance > 12 || !sees) {
+                    return 0;
+                }
+                for (LivingEntity victim : level.getEntitiesOfClass(LivingEntity.class, target.getBoundingBox()
+                        .inflate(3), e -> e != mob && kindOf(e) == null)) {
+                    victim.setDeltaMovement((mob.getRandom().nextDouble() - 0.5) * 1.2, 1.1,
+                            (mob.getRandom().nextDouble() - 0.5) * 1.2);
+                    victim.hurtMarked = true;
+                }
+                for (int i = 0; i < 6; i++) {
+                    level.sendParticles(ParticleTypes.CLOUD, target.getX(), target.getY() + i * 0.6, target.getZ(),
+                            10, 0.4 + i * 0.15, 0.2, 0.4 + i * 0.15, 0.05);
+                }
+                sound(level, mob, SoundEvents.ELYTRA_FLYING);
+                return 90;
+            }
+            case "hair" -> {
+                if (distance > 10 || distance < 2.5 || !sees) {
+                    return 0;
+                }
+                beam(level, mob, target, new DustParticleOptions(new Vector3f(0.12f, 0.08f, 0.06f), 1.4f));
+                Vec3 pull = mob.position().subtract(target.position()).normalize().scale(1.2);
+                target.setDeltaMovement(pull.x, 0.3, pull.z);
+                target.hurtMarked = true;
+                target.hurt(mob.damageSources().mobAttack(mob), 3);
+                target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1));
+                sound(level, mob, SoundEvents.FISHING_BOBBER_THROW);
+                return 70;
+            }
+            case "rifle" -> {
+                if (distance > 22 || !sees) {
+                    return 0;
+                }
+                mob.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
+                beam(level, mob, target, ParticleTypes.CRIT);
+                if (mob.getRandom().nextFloat() < 0.65f) {
+                    target.hurt(mob.damageSources().mobAttack(mob), 4);
+                }
+                level.playSound(null, mob.blockPosition(), SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.HOSTILE,
+                        1.2f, 1.8f);
+                return 30;
+            }
+            case "knife" -> {
+                if (!(mob instanceof MutantNpc npc) || !npc.isHostile()) {
+                    return 0;
+                }
+                if (distance < 2.5) {
+                    mob.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
+                    target.hurt(mob.damageSources().mobAttack(mob), 5);
+                    target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 60, 0));
+                    level.sendParticles(ParticleTypes.SWEEP_ATTACK, target.getX(), target.getY() + 1, target.getZ(),
+                            1, 0, 0, 0, 0);
+                    sound(level, mob, SoundEvents.PLAYER_ATTACK_SWEEP);
+                    return 25;
+                }
+                if (distance > 14) {
+                    return 0;
+                }
+                // Callisto's super-fast dash
+                Vec3 dir = target.position().subtract(mob.position()).normalize();
+                mob.setDeltaMovement(dir.x * 1.6, 0.25, dir.z * 1.6);
+                mob.hurtMarked = true;
+                mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 30, 2, true, false));
+                level.sendParticles(ParticleTypes.CLOUD, mob.getX(), mob.getY() + 0.3, mob.getZ(), 8, 0.3, 0.1, 0.3,
+                        0.02);
+                sound(level, mob, SoundEvents.PHANTOM_SWOOP);
+                return 30;
+            }
             default -> {
                 return 0;
             }
@@ -745,12 +971,40 @@ public final class MutantMobs {
                 drop(entity, new ItemStack(Items.DIAMOND, 4));
                 drop(entity, new ItemStack(Items.EMERALD, 12));
             }
+            case "sebastian_shaw" -> {
+                drop(entity, new ItemStack(Items.DIAMOND, 3));
+                drop(entity, new ItemStack(Items.GOLD_INGOT, 8));
+            }
+            case "juggernaut" -> drop(entity, new ItemStack(Items.IRON_BLOCK, 2));
+            case "callisto" -> {
+                drop(entity, new ItemStack(Items.DIAMOND, 3));
+                drop(entity, new ItemStack(Items.EMERALD, 12));
+                if (entity instanceof Mob mob) {
+                    broadcast(level, mob, Component.literal("Callisto: ...You win. The Morlocks follow you now. "
+                            + "The hoard is yours.").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD));
+                }
+                CompoundTag data = entity.getPersistentData();
+                openIronDoors(level, data.contains(HOME) ? BlockPos.of(data.getLong(HOME)) : entity.blockPosition());
+                level.playSound(null, entity.blockPosition(), SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1.0f,
+                        0.8f);
+            }
             case "sentinel" -> {
                 if (entity.getRandom().nextBoolean()) {
                     drop(entity, new ItemStack(ModContent.SENTINEL_PART.get()));
                 }
             }
             default -> {
+            }
+        }
+    }
+
+    /** Opens the iron doors around a spot (the Morlock hoard behind Callisto's pit). */
+    private static void openIronDoors(ServerLevel level, BlockPos center) {
+        for (BlockPos pos : BlockPos.betweenClosed(center.offset(-12, -4, -12), center.offset(12, 4, 12))) {
+            BlockState state = level.getBlockState(pos);
+            if (state.is(Blocks.IRON_DOOR) && state.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER
+                    && state.getBlock() instanceof DoorBlock door) {
+                door.setOpen(null, level, state, pos.immutable(), true);
             }
         }
     }
@@ -797,6 +1051,9 @@ public final class MutantMobs {
         if (kind == null || kind.lines == null || !(event.getEntity() instanceof ServerPlayer player)) {
             return;
         }
+        if (morlockInteract(kind, event.getTarget(), player)) {
+            return;
+        }
         String line = kind.lines[player.getRandom().nextInt(kind.lines.length)];
         player.sendSystemMessage(event.getTarget().getDisplayName().copy().append(Component.literal(": " + line)
                 .withStyle(ChatFormatting.WHITE)));
@@ -813,6 +1070,117 @@ public final class MutantMobs {
                         + "trade you a Mutant Serum. It isn't cheap.").withStyle(ChatFormatting.LIGHT_PURPLE));
             }
         }
+    }
+
+    /** Callisto can be challenged, Healer heals, Caliban senses mutants. Returns true if it handled the click. */
+    private static boolean morlockInteract(Kind kind, Entity target, ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) {
+            return false;
+        }
+        long now = level.getGameTime();
+        CompoundTag data = target.getPersistentData();
+        switch (kind.id) {
+            case "callisto" -> {
+                if (!(target instanceof MutantNpc npc) || npc.isHostile()) {
+                    return true;
+                }
+                boolean again = data.hasUUID("xmen_challenger") && data.getUUID("xmen_challenger")
+                        .equals(player.getUUID()) && now - data.getLong("xmen_challenge_time") < 200;
+                if (!again) {
+                    data.putUUID("xmen_challenger", player.getUUID());
+                    data.putLong("xmen_challenge_time", now);
+                    tell(player, "Callisto: So you want to lead the Morlocks? Down here the leader is whoever beats "
+                            + "me. Right-click me again if you dare.", ChatFormatting.DARK_PURPLE);
+                    return true;
+                }
+                if (player.isCreative()) {
+                    tell(player, "Callisto: Come back without your god powers (leave creative mode).",
+                            ChatFormatting.DARK_PURPLE);
+                    return true;
+                }
+                npc.setHostile(true);
+                npc.clearRestriction();
+                npc.setTarget(player);
+                broadcast(level, npc, Component.literal("Callisto: Then fight me, surface dweller! Morlocks, give us "
+                        + "room!").withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD));
+                level.playSound(null, npc.blockPosition(), SoundEvents.RAVAGER_ROAR, SoundSource.HOSTILE, 1.0f, 1.3f);
+                return true;
+            }
+            case "healer" -> {
+                if (now < data.getLong("xmen_heal_ready")) {
+                    tell(player, "Healer: Healer is tired. Come back soon.", ChatFormatting.GREEN);
+                    return true;
+                }
+                data.putLong("xmen_heal_ready", now + 400);
+                player.setHealth(player.getMaxHealth());
+                player.getFoodData().setFoodLevel(20);
+                player.clearFire();
+                for (MobEffectInstance effect : List.copyOf(player.getActiveEffects())) {
+                    if (effect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL) {
+                        player.removeEffect(effect.getEffect());
+                    }
+                }
+                level.sendParticles(ParticleTypes.HEART, player.getX(), player.getY() + 1.2, player.getZ(), 8, 0.4,
+                        0.4, 0.4, 0);
+                level.playSound(null, player.blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.NEUTRAL,
+                        1.5f, 1.2f);
+                tell(player, "Healer puts his hand on you. Your wounds close.", ChatFormatting.GREEN);
+                return true;
+            }
+            case "caliban" -> {
+                if (CerebroBlock.hiddenFromTelepaths(player)) {
+                    tell(player, "Caliban: Caliban can't feel you... the helmet hides you.", ChatFormatting.WHITE);
+                    return true;
+                }
+                Power power = PlayerPowers.get(player);
+                if (power != null) {
+                    player.sendSystemMessage(Component.literal("Caliban feels your power: ").withStyle(
+                            ChatFormatting.WHITE).append(power.title()));
+                }
+                BlockPos here = player.blockPosition();
+                ResourceKey<Structure> best = null;
+                BlockPos bestPos = null;
+                double bestDistance = Double.MAX_VALUE;
+                for (ResourceKey<Structure> key : ModStructures.ALL) {
+                    if (key == ModStructures.MORLOCK_TUNNELS) {
+                        continue;
+                    }
+                    BlockPos at = ModStructures.findNearest(level, key, here, 32);
+                    if (at == null) {
+                        continue;
+                    }
+                    double distance = Math.sqrt(at.distSqr(new BlockPos(here.getX(), at.getY(), here.getZ())));
+                    if (distance < bestDistance) {
+                        best = key;
+                        bestPos = at;
+                        bestDistance = distance;
+                    }
+                }
+                if (best == null) {
+                    tell(player, "Caliban: Caliban feels no other mutants near. Only Morlocks.", ChatFormatting.WHITE);
+                } else {
+                    tell(player, "Caliban: Caliban feels mutants at the " + ModStructures.displayName(best) + ". "
+                            + (int) bestDistance + " blocks " + compass(here, bestPos) + ".", ChatFormatting.WHITE);
+                }
+                return true;
+            }
+            default -> {
+                return false;
+            }
+        }
+    }
+
+    private static void tell(ServerPlayer player, String text, ChatFormatting color) {
+        player.sendSystemMessage(Component.literal(text).withStyle(color));
+    }
+
+    private static String compass(BlockPos from, BlockPos to) {
+        double dx = to.getX() - from.getX();
+        double dz = to.getZ() - from.getZ();
+        String ns = Math.abs(dz) > Math.abs(dx) / 2 ? (dz < 0 ? "north" : "south") : "";
+        String ew = Math.abs(dx) > Math.abs(dz) / 2 ? (dx < 0 ? "west" : "east") : "";
+        String dir = ns + (ns.isEmpty() || ew.isEmpty() ? "" : "-") + ew;
+        return dir.isEmpty() ? "right here" : dir;
     }
 
     /** Used by the game tests. */

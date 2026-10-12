@@ -344,11 +344,12 @@ def brotherhood_hideout():
     for x in range(6, 27, 6):
         for z in (8, 17):
             t.set(x, G + 8, z, "lantern[hanging=true]")
-    # members
+    # members: the movie Brotherhood, no more helmeted thugs
     for kind, x, z in (("pyro", 8, 10), ("avalanche", 22, 8), ("blob", 15, 17), ("toad", 9, 18),
-                       ("mystique", 24, 19), ("thug", 12, 6), ("thug", 20, 12)):
+                       ("mystique", 24, 19), ("sabretooth", 12, 6), ("juggernaut", 20, 12),
+                       ("multiple_man", 26, 8)):
         y = G + 5 if kind == "mystique" else G + 1
-        t.mob(x, y, z, "vindicator", kind) if kind == "thug" else t.npc(x, y, z, kind)
+        t.npc(x, y, z, kind)
     return t
 
 
@@ -519,10 +520,13 @@ def hellfire_club():
     t.chest(21, G + 7, 7, "south", "hellfire")
     for x in range(6, 30, 6):
         t.set(x, G + 11, 15, "lantern[hanging=true]")
+    # the Hellfire Club from X-Men: First Class, with guards in tuxedos
     t.npc(24, G + 8, 22, "white_queen", yaw=180.0)
-    for x, z in ((8, 12), (26, 12), (18, 20), (18, 9)):
-        t.mob(x, G + 1, z, "vindicator", "hellfire_guard")
-    t.mob(22, G + 7, 15, "vindicator", "hellfire_guard")
+    t.npc(18, G + 1, 20, "sebastian_shaw", yaw=180.0)
+    t.npc(8, G + 1, 12, "hellfire_guard")
+    t.npc(26, G + 1, 12, "hellfire_guard")
+    t.npc(18, G + 1, 9, "riptide")
+    t.npc(22, G + 7, 15, "azazel")
     # hedges in front
     for x in list(range(1, 15)) + list(range(21, 35)):
         t.set(x, G + 1, 1, "dark_oak_leaves[persistent=true]")
@@ -597,9 +601,10 @@ def genosha():
         t.ruin(sx - 3, base, sz - 3, sx + 12, base + 4, sz + 3, 0.25)
         t.set(sx - 2, base + 2, sz, "red_concrete")
         t.chest(sx + 6, base + 1, sz, "north", "fallen_sentinel")
-    # scavengers
-    for x, z in ((30, 20), (44, 22), (26, 46), (46, 48), (36, 56), (14, 36), (58, 36)):
-        t.mob(x, base + 1, z, "husk", "scavenger")
+    # Magneto's people from Dark Phoenix: Selene, Ariki and Red Lotus guard the ruins, survivors live in them
+    for kind, x, z in (("selene", 30, 20), ("ariki", 44, 22), ("red_lotus", 26, 46), ("genoshan", 46, 48),
+                       ("genoshan", 36, 56), ("genoshan", 14, 36), ("genoshan", 58, 36)):
+        t.npc(x, base + 1, z, kind)
     # a dock
     t.fill(34, W, 0, 37, W, 8, "spruce_planks")
     for z in (0, 4):
@@ -741,69 +746,9 @@ def muir_island():
 
 # ======================================================================= Morlock Tunnels
 def morlock_tunnels():
-    G = 22
-    N = 48
-    t = Template("morlock_tunnels", N, G + 3, N, seed=13)
-
-    def tunnel(x1, z1, x2, z2):
-        if z1 == z2:
-            t.fill(x1, 0, z1 - 3, x2, 7, z1 + 3, "mossy_stone_bricks")
-            t.mix(x1, 0, z1 - 3, x2, 7, z1 + 3, ["stone_bricks", "mossy_stone_bricks", "cracked_stone_bricks"])
-            t.clear(x1, 1, z1 - 2, x2, 5, z1 + 2)
-            t.clear(x1, 6, z1 - 1, x2, 6, z1 + 1)
-            t.fill(x1, 0, z1 - 1, x2, 0, z1 + 1, "water")
-            t.fill(x1, 0, z1 - 1, x2, 0, z1 + 1, "water")
-            t.fill(x1, -1, z1 - 1, x2, -1, z1 + 1, "stone")
-            t.fill(x1, 1, z1 - 2, x2, 1, z1 - 2, "stone_brick_slab[type=bottom]")
-            t.fill(x1, 1, z1 + 2, x2, 1, z1 + 2, "stone_brick_slab[type=bottom]")
-            t.fill(x1, 0, z1 - 2, x2, 0, z1 - 2, "stone_bricks")
-            t.fill(x1, 0, z1 + 2, x2, 0, z1 + 2, "stone_bricks")
-        else:
-            t.fill(x1 - 3, 0, z1, x1 + 3, 7, z2, "stone_bricks")
-            t.mix(x1 - 3, 0, z1, x1 + 3, 7, z2, ["stone_bricks", "mossy_stone_bricks", "cracked_stone_bricks"])
-            t.clear(x1 - 2, 1, z1, x1 + 2, 5, z2)
-            t.clear(x1 - 1, 6, z1, x1 + 1, 6, z2)
-            t.fill(x1 - 1, 0, z1, x1 + 1, 0, z2, "water")
-            t.fill(x1 - 2, 0, z1, x1 - 2, 0, z2, "stone_bricks")
-            t.fill(x1 + 2, 0, z1, x1 + 2, 0, z2, "stone_bricks")
-            t.fill(x1 - 2, 1, z1, x1 - 2, 1, z2, "stone_brick_slab[type=bottom]")
-            t.fill(x1 + 2, 1, z1, x1 + 2, 1, z2, "stone_brick_slab[type=bottom]")
-
-    tunnel(0, 24, 47, 24)
-    tunnel(24, 0, 24, 47)
-    # the crossing: a bigger chamber where the Morlocks live
-    t.room(14, 0, 14, 34, 9, 34, "stone_bricks", "stone_bricks", "stone_bricks")
-    t.mix(14, 0, 14, 34, 9, 34, ["stone_bricks", "mossy_stone_bricks", "cracked_stone_bricks"])
-    t.clear(15, 1, 15, 33, 8, 33)
-    t.fill(15, 0, 15, 33, 0, 33, "stone_bricks")
-    t.fill(23, 0, 15, 25, 0, 33, "water")
-    t.fill(15, 0, 23, 33, 0, 25, "water")
-    t.fill(23, 0, 23, 25, 0, 25, "stone_bricks")
-    for x, z in ((24, 22), (24, 26), (22, 24), (26, 24)):
-        t.set(x, 0, z, "spruce_slab[type=top]")
-    for x, z in ((18, 18), (30, 18), (18, 30), (30, 30)):
-        t.set(x, 1, z, "campfire[lit=true]")
-    for x, z, f in ((16, 16, "east"), (16, 31, "east"), (32, 16, "west"), (32, 31, "west")):
-        t.bed(x, 1, z, f, "brown")
-    t.chest(16, 1, 20, "east", "morlock")
-    t.chest(32, 1, 28, "west", "morlock")
-    t.barrel(20, 1, 32, "morlock")
-    for x, z in ((20, 20), (28, 20), (20, 28), (28, 28)):
-        t.set(x, 8, z, "lantern[hanging=true]")
-    for x in (6, 42):
-        t.set(x, 6, 24, "lantern[hanging=true]")
-    for z in (6, 42):
-        t.set(24, 6, z, "lantern[hanging=true]")
-    for x, z in ((19, 22), (29, 26), (21, 30), (27, 17), (8, 23), (40, 25)):
-        t.npc(x, 1, z, "morlock")
-    # manhole shaft up to the surface
-    t.fill(31, 9, 32, 33, G, 34, "stone_bricks")
-    t.fill(32, 1, 34, 32, G, 34, "stone_bricks")
-    t.clear(32, 1, 33, 32, G, 33)
-    for y in range(1, G + 1):
-        t.set(32, y, 33, "ladder[facing=north]")
-    t.set(32, G + 1, 33, "iron_trapdoor[facing=north,half=bottom,open=false]")
-    return t
+    """The Morlocks' hidden town under the city lives in its own file."""
+    import morlock_tunnels as tunnels
+    return tunnels.build()
 
 
 # ======================================================================= Blackbird crash site
@@ -911,9 +856,9 @@ def detection_tower():
     t.set(c, G + 22, c, "redstone_lamp[lit=true]")
     t.chest(c + 3, G + 17, c + 2, "west", "detection_tower")
     t.set(c - 3, G + 17, c + 2, "cartography_table")
-    t.mob(c - 2, G + 17, c - 2, "pillager", "tower_guard")
-    t.mob(c + 2, G + 1, c - 2, "pillager", "tower_guard")
-    t.mob(c - 2, G + 1, c + 2, "pillager", "tower_guard")
+    t.npc(c - 2, G + 17, c - 2, "anti_mutant_soldier")
+    t.npc(c + 2, G + 1, c - 2, "anti_mutant_soldier")
+    t.npc(c - 2, G + 1, c + 2, "anti_mutant_soldier")
     # a sign-like warning: red wool stripes on the legs
     for dx in (-3, 3):
         for dz in (-3, 3):

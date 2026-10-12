@@ -16,8 +16,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 /**
@@ -75,16 +73,18 @@ public final class StructureEffects {
         level.playSound(null, player.blockPosition(), SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 2.0f, 1.0f);
         level.playSound(null, player.blockPosition(), SoundEvents.RAID_HORN.value(), SoundSource.HOSTILE, 1.0f, 1.0f);
         for (int i = 0; i < 2; i++) {
-            Mob guard = EntityType.PILLAGER.create(level);
+            // real anti-mutant soldiers with rifles, not renamed pillagers
+            com.emil.xmen.entity.MutantNpc guard = com.emil.xmen.entity.ModEntities.MUTANT.get().create(level);
             if (guard == null) {
                 return;
             }
+            guard.setCharacter("anti_mutant_soldier");
             double angle = level.random.nextDouble() * Math.PI * 2;
             int x = (int) (player.getX() + Math.cos(angle) * 8);
             int z = (int) (player.getZ() + Math.sin(angle) * 8);
             int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
             guard.moveTo(x + 0.5, y, z + 0.5, 0, 0);
-            guard.addTag("xmen.tower_guard");
+            guard.addTag("xmen.anti_mutant_soldier");
             guard.addTag("xmen.no_loot");
             level.addFreshEntity(guard);
             guard.setTarget(player);

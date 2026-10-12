@@ -18,7 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 public class MutantRenderer extends HumanoidMobRenderer<MutantNpc, PlayerModel<MutantNpc>> {
     /** Characters drawn with thin arms (like Alex). Must match SLIM in tools/skins.py. */
     private static final java.util.Set<String> SLIM = java.util.Set.of("storm", "jean_grey", "rogue", "kitty_pryde",
-            "jubilee", "moira", "mystique", "white_queen", "krakoa_mutant");
+            "jubilee", "moira", "mystique", "white_queen", "krakoa_mutant", "callisto", "marrow", "selene");
     private static final ResourceLocation FALLBACK =
             ResourceLocation.withDefaultNamespace("textures/entity/player/wide/steve.png");
 
