@@ -2,6 +2,7 @@ package com.emil.xmen;
 
 import com.emil.xmen.ability.PowerBehaviors;
 import com.emil.xmen.ability.PowerEvents;
+import com.emil.xmen.entity.MagnetoEntities;
 import com.emil.xmen.entity.ModEntities;
 import com.emil.xmen.network.ModNetwork;
 import com.emil.xmen.power.PlayerPowers;
@@ -26,6 +27,7 @@ public class XMenMod {
     public XMenMod(IEventBus modEventBus) {
         PlayerPowers.register(modEventBus);
         ModEntities.register(modEventBus);
+        MagnetoEntities.register(modEventBus);
         XMenWorld.register(modEventBus);
         modEventBus.addListener(ModNetwork::register);
         PowerEvents.register();

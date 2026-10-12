@@ -21,5 +21,8 @@
   "item.xmen.xmen_pants": "X-Men-Hose",
   "item.xmen.xmen_boots": "X-Men-Stiefel",
   "item.xmen.magneto_helmet": "Magnetos Helm",
-  "itemGroup.xmen": "X-Men"
+  "itemGroup.xmen": "X-Men",
+  "entity.xmen.magneto": "Magneto",
+  "entity.xmen.magneto_debris": "Fliegendes Metall",
+  "item.xmen.magneto_spawn_egg": "Magneto-Spawn-Ei"
 }
