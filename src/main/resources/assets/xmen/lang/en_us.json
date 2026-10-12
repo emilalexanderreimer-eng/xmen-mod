@@ -16,10 +16,21 @@
   "item.xmen.adamantium_chestplate": "Adamantium Chestplate",
   "item.xmen.adamantium_leggings": "Adamantium Leggings",
   "item.xmen.adamantium_boots": "Adamantium Boots",
-  "item.xmen.xmen_mask": "X-Men Mask",
+  "item.xmen.xmen_mask": "X-Men Visor",
   "item.xmen.xmen_suit": "X-Men Suit",
   "item.xmen.xmen_pants": "X-Men Pants",
   "item.xmen.xmen_boots": "X-Men Boots",
   "item.xmen.magneto_helmet": "Magneto's Helmet",
-  "itemGroup.xmen": "X-Men"
+  "itemGroup.xmen": "X-Men",
+  "block.xmen.x_door": "X-Door",
+  "block.xmen.cerebro_panel": "Cerebro Panel",
+  "block.xmen.silver_panel": "Silver Wall Panel",
+  "block.xmen.silver_floor": "Silver Floor",
+  "block.xmen.silver_light": "Silver Light",
+  "block.xmen.danger_room_wall": "Danger Room Wall",
+  "block.xmen.court_floor": "Basketball Court Floor",
+  "block.xmen.hangar_control": "Hangar Control",
+  "item.xmen.blackbird": "X-Jet (Blackbird)",
+  "entity.xmen.mutant": "Mutant",
+  "entity.xmen.blackbird": "X-Jet"
 }

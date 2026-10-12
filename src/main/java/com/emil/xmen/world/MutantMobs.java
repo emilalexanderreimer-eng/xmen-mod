@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 
 import org.joml.Vector3f;
 
+import com.emil.xmen.entity.MutantNpc;
 import com.emil.xmen.power.PlayerPowers;
 import com.emil.xmen.power.Power;
 
@@ -95,6 +96,7 @@ public final class MutantMobs {
         String ability = "";
         boolean hostile = true;
         boolean showName;
+        boolean sits;
         String[] lines;
         Consumer<Mob> gear = mob -> {
         };
@@ -152,6 +154,11 @@ public final class MutantMobs {
             return this;
         }
 
+        Kind sits() {
+            sits = true;
+            return this;
+        }
+
         Kind gear(Consumer<Mob> value) {
             gear = value;
             return this;
@@ -173,8 +180,47 @@ public final class MutantMobs {
                         + "The elevator next to the lounge goes down.", "Professor X is upstairs in his study.",
                         "Cerebro can find every mutant in the world.", "The flower gate in the garden goes to "
                                 + "Krakoa!", "Don't tell anyone where the X-Jet is.");
-        kind("professor_x", "Professor X").color(ChatFormatting.LIGHT_PURPLE)
-                .friendly("Welcome, young mutant. Let me look into your mind...");
+        kind("professor_x", "Professor X").color(ChatFormatting.LIGHT_PURPLE).health(60).sits()
+                .friendly("Welcome, young mutant. Let me look into your mind...",
+                        "Cerebro is downstairs. Take the elevator in the hall and look for the round door.",
+                        "Mutants are not to be feared. We are simply the next step.");
+
+        // --- the X-Men (movie team), living in the mansion
+        kind("wolverine", "Wolverine").color(ChatFormatting.YELLOW).health(80).damage(10).ability("regenerate")
+                .friendly("What are you lookin' at, bub?", "Don't touch my bike.",
+                        "If you see Magneto, tell him I said hi. With these.", "The Danger Room's no fun anymore.");
+        kind("cyclops", "Cyclops").color(ChatFormatting.BLUE).health(60).ability("laser")
+                .friendly("Stay in formation.", "The X-Jet is ready if we need it. The hangar is under the "
+                        + "basketball court.", "These glasses are ruby quartz. Without them I'd blow a hole in the "
+                        + "wall.");
+        kind("storm", "Storm").color(ChatFormatting.WHITE).health(60).ability("lightning")
+                .friendly("Do you know what happens to a toad when it's struck by lightning?",
+                        "I teach the students when the Professor is busy.", "The weather is lovely today. I made it "
+                                + "that way.");
+        kind("jean_grey", "Jean Grey").color(ChatFormatting.RED).health(60).ability("telekinesis")
+                .friendly("I'm the doctor here. The med lab is downstairs if you get hurt.",
+                        "Sometimes I can hear what everyone is thinking. It's very loud.",
+                        "Cerebro amplifies the mind. It can be dangerous for anyone but the Professor.");
+        kind("beast", "Beast").color(ChatFormatting.DARK_BLUE).health(70).damage(8).speed(1.2)
+                .friendly("Oh my stars and garters!", "I'm working on a new formula in the lab.",
+                        "Have you read the books in the library? Simply marvelous.");
+        kind("rogue", "Rogue").color(ChatFormatting.DARK_GREEN).health(50).ability("drain")
+                .friendly("Don't touch my skin, sugar. Trust me.", "This place was the first real home I ever had.");
+        kind("iceman", "Iceman").color(ChatFormatting.AQUA).health(50).ability("freeze")
+                .friendly("Want a snow cone? I can make one.", "Pyro and I used to be friends...");
+        kind("nightcrawler", "Nightcrawler").color(ChatFormatting.DARK_PURPLE).health(50).ability("teleport")
+                .friendly("Guten Tag! Do not be afraid of how I look.", "*BAMF*",
+                        "I like the circus. And the church. And this school.");
+        kind("colossus", "Colossus").color(ChatFormatting.GRAY).health(110).damage(10).speed(0.85).heavy()
+                .friendly("Hello, comrade.", "I am drawing a picture of the garden.", "I am made of steel. "
+                        + "Hit me if you like, it will not hurt.");
+        kind("kitty_pryde", "Kitty Pryde").color(ChatFormatting.LIGHT_PURPLE).health(40).ability("phase")
+                .friendly("I just walk through walls. Doors are for other people.", "Don't tell Logan I ate his "
+                        + "pudding.");
+        kind("jubilee", "Jubilee").color(ChatFormatting.GOLD).health(40).ability("fireworks")
+                .friendly("Wanna see some fireworks?", "The mall is way more fun than class.");
+        kind("gambit", "Gambit").color(ChatFormatting.DARK_RED).health(55).ability("cards")
+                .friendly("Remy LeBeau, at your service.", "Wanna play cards, mon ami?");
         kind("morlock", "Caliban", "Callisto", "Masque", "Sunder", "Marrow", "Leech", "Tommy", "Berto")
                 .color(ChatFormatting.GRAY)
                 .friendly("Surface folk don't come down here often.", "We Morlocks keep to the tunnels.",
@@ -266,6 +312,7 @@ public final class MutantMobs {
     }
 
     public static void register() {
+        MutantNpc.professorOffers = MutantMobs::professorOffers;
         NeoForge.EVENT_BUS.addListener(MutantMobs::onJoin);
         NeoForge.EVENT_BUS.addListener(MutantMobs::onLeave);
         NeoForge.EVENT_BUS.addListener(MutantMobs::onTick);
@@ -309,6 +356,13 @@ public final class MutantMobs {
     /** First time only: name, health, gear. Saved with the mob. */
     private static void setup(Mob mob, Kind kind) {
         mob.getPersistentData().putString(KIND, kind.id);
+        if (mob instanceof MutantNpc npc) {
+            if (npc.getCharacter().isEmpty()) {
+                npc.setCharacter(kind.id);
+            }
+            npc.setHostile(kind.hostile);
+            npc.setSitting(kind.sits);
+        }
         String name = kind.names[mob.getRandom().nextInt(kind.names.length)];
         mob.setCustomName(Component.literal(name).withStyle(kind.color));
         mob.setCustomNameVisible(kind.showName);
@@ -340,13 +394,7 @@ public final class MutantMobs {
             trader.setDespawnDelay(0);
             MerchantOffers offers = trader.getOffers();
             offers.clear();
-            offers.add(offer(Items.EMERALD, 6, ModContent.XMEN_MASK.get(), 1, 99));
-            offers.add(offer(Items.EMERALD, 10, ModContent.XMEN_SUIT.get(), 1, 99));
-            offers.add(offer(Items.EMERALD, 8, ModContent.XMEN_PANTS.get(), 1, 99));
-            offers.add(offer(Items.EMERALD, 6, ModContent.XMEN_BOOTS.get(), 1, 99));
-            offers.add(offer(Items.EMERALD, 12, ModContent.ELEVATOR_ITEM.get(), 4, 99));
-            offers.add(new MerchantOffer(new ItemCost(Items.EMERALD, 64), java.util.Optional.of(
-                    new ItemCost(Items.DIAMOND, 8)), new ItemStack(ModContent.MUTANT_SERUM.get()), 3, 10, 0.0f));
+            offers.addAll(professorOffers());
         }
         if (kind.id.startsWith("horseman_") && mob.level() instanceof ServerLevel level) {
             SkeletonHorse horse = EntityType.SKELETON_HORSE.create(level);
@@ -359,6 +407,19 @@ public final class MutantMobs {
                 mob.startRiding(horse, true);
             }
         }
+    }
+
+    /** What Professor X sells. */
+    public static MerchantOffers professorOffers() {
+        MerchantOffers offers = new MerchantOffers();
+        offers.add(offer(Items.EMERALD, 6, ModContent.XMEN_MASK.get(), 1, 99));
+        offers.add(offer(Items.EMERALD, 10, ModContent.XMEN_SUIT.get(), 1, 99));
+        offers.add(offer(Items.EMERALD, 8, ModContent.XMEN_PANTS.get(), 1, 99));
+        offers.add(offer(Items.EMERALD, 6, ModContent.XMEN_BOOTS.get(), 1, 99));
+        offers.add(offer(Items.EMERALD, 12, ModContent.ELEVATOR_ITEM.get(), 4, 99));
+        offers.add(new MerchantOffer(new ItemCost(Items.EMERALD, 64), java.util.Optional.of(
+                new ItemCost(Items.DIAMOND, 8)), new ItemStack(ModContent.MUTANT_SERUM.get()), 3, 10, 0.0f));
+        return offers;
     }
 
     private static MerchantOffer offer(ItemLike cost, int count, ItemLike result, int resultCount, int uses) {
@@ -636,6 +697,91 @@ public final class MutantMobs {
             }
             case "death" -> {
                 return touch(level, mob, target, distance, MobEffects.WITHER, 1, ParticleTypes.SOUL);
+            }
+            case "lightning" -> {
+                if (distance > 20 || !sees) {
+                    return 0;
+                }
+                net.minecraft.world.entity.LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);
+                if (bolt != null) {
+                    bolt.moveTo(target.getX(), target.getY(), target.getZ());
+                    bolt.setVisualOnly(true);
+                    level.addFreshEntity(bolt);
+                }
+                target.hurt(mob.damageSources().lightningBolt(), 8);
+                return 80;
+            }
+            case "telekinesis" -> {
+                if (distance > 16 || !sees) {
+                    return 0;
+                }
+                Vec3 push = target.position().subtract(mob.position()).normalize().scale(1.8);
+                target.setDeltaMovement(push.x, 0.7, push.z);
+                target.hurtMarked = true;
+                target.hurt(mob.damageSources().mobAttack(mob), 6);
+                beam(level, mob, target, new DustParticleOptions(new Vector3f(1.0f, 0.5f, 0.1f), 1.2f));
+                sound(level, mob, SoundEvents.ILLUSIONER_CAST_SPELL);
+                return 70;
+            }
+            case "freeze" -> {
+                if (distance > 14 || !sees) {
+                    return 0;
+                }
+                beam(level, mob, target, ParticleTypes.SNOWFLAKE);
+                target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 3));
+                target.setTicksFrozen(Math.max(target.getTicksFrozen(), 200));
+                target.hurt(mob.damageSources().freeze(), 5);
+                sound(level, mob, SoundEvents.GLASS_BREAK);
+                return 60;
+            }
+            case "drain" -> {
+                if (distance > 3) {
+                    return 0;
+                }
+                target.hurt(mob.damageSources().mobAttack(mob), 4);
+                target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, 1));
+                mob.heal(4);
+                level.sendParticles(ParticleTypes.HAPPY_VILLAGER, mob.getX(), mob.getY() + 1, mob.getZ(), 8, 0.3,
+                        0.6, 0.3, 0);
+                return 60;
+            }
+            case "teleport" -> {
+                if (distance > 20 || distance < 3) {
+                    return 0;
+                }
+                level.sendParticles(ParticleTypes.LARGE_SMOKE, mob.getX(), mob.getY() + 1, mob.getZ(), 20, 0.3, 0.6,
+                        0.3, 0.01);
+                Vec3 behind = target.position().subtract(target.getLookAngle().multiply(1.5, 0, 1.5));
+                mob.teleportTo(behind.x, target.getY(), behind.z);
+                level.sendParticles(ParticleTypes.LARGE_SMOKE, mob.getX(), mob.getY() + 1, mob.getZ(), 20, 0.3, 0.6,
+                        0.3, 0.01);
+                level.playSound(null, mob.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.NEUTRAL, 1.0f,
+                        1.2f);
+                return 80;
+            }
+            case "phase" -> {
+                mob.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 60, 2, true, false));
+                return 120;
+            }
+            case "fireworks" -> {
+                if (distance > 12 || !sees) {
+                    return 0;
+                }
+                level.sendParticles(ParticleTypes.FIREWORK, target.getX(), target.getY() + 1, target.getZ(), 40, 0.4,
+                        0.6, 0.4, 0.15);
+                target.hurt(mob.damageSources().mobAttack(mob), 4);
+                target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 0));
+                sound(level, mob, SoundEvents.FIREWORK_ROCKET_BLAST);
+                return 50;
+            }
+            case "cards" -> {
+                if (distance > 16 || !sees) {
+                    return 0;
+                }
+                beam(level, mob, target, new DustParticleOptions(new Vector3f(1.0f, 0.2f, 0.8f), 1.0f));
+                level.explode(mob, target.getX(), target.getY() + 0.5, target.getZ(), 1.2f,
+                        Level.ExplosionInteraction.NONE);
+                return 70;
             }
             case "regenerate" -> {
                 mob.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 60, 1, true, false));

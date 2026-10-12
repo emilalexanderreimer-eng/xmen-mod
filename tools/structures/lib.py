@@ -202,8 +202,80 @@ class Template:
         self.entities.append({"pos": [nbt.Double(x + 0.5), nbt.Double(y), nbt.Double(z + 0.5)],
                               "blockPos": [x, y, z], "nbt": data})
 
+    def npc(self, x, y, z, kind, character=None, yaw=0.0, extra=None):
+        """Places a real X-Men character (xmen:mutant) with its own skin; 'kind' works like for mob()."""
+        data = {"Character": character or kind}
+        if extra:
+            data.update(extra)
+        self.mob(x, y, z, "xmen:mutant", kind, data, yaw)
+
     # ------------------------------------------------------------------ saving
+    # ------------------------------------------------------------------ connections
+    _NOT_SOLID = ("air", "torch", "lantern", "carpet", "door", "button", "sign", "rail", "ladder", "vine", "bed",
+                  "chest", "pot", "candle", "chain", "rod", "plate", "flower", "poppy", "tulip", "dandelion",
+                  "orchid", "allium", "bluet", "daisy", "cornflower", "lily", "fern", "grass", "sapling", "banner",
+                  "head", "skull", "lever", "campfire", "slab", "stairs", "leaves", "water", "lava", "snow",
+                  "glass_pane", "bars", "fence", "_wall", "scaffolding", "cauldron", "anvil", "lectern", "bell",
+                  "brewing", "end_rod", "pickle", "kelp", "coral", "cluster", "bush", "mushroom", "dripleaf",
+                  "azalea", "barrier", "light")
+
+    @staticmethod
+    def _kind(name):
+        n = name.split(":")[-1]
+        if n.endswith("_pane") or n == "iron_bars":
+            return "pane"
+        if n.endswith("_fence"):
+            return "nether_fence" if "nether" in n else "fence"
+        if n.endswith("_wall") and not any(k in n for k in ("torch", "sign", "banner", "head", "skull", "fan")):
+            return "wall"
+        return None
+
+    def _connects(self, kind, other):
+        if other is None:
+            return False
+        oname = other.split("[")[0]
+        okind = self._kind(oname)
+        if okind:
+            if kind == "pane":
+                return okind in ("pane", "wall")
+            if kind in ("fence", "nether_fence"):
+                return okind == kind
+            return okind in ("wall", "pane")
+        if kind in ("fence", "nether_fence") and "fence_gate" in oname:
+            return True
+        if kind == "wall" and "fence_gate" in oname:
+            return True
+        n = oname.split(":")[-1]
+        return not any(k in n for k in self._NOT_SOLID)
+
+    def connect_all(self):
+        """Gives glass panes, iron bars, fences and walls their side connections (templates don't update)."""
+        updates = {}
+        for (x, y, z), (state, data) in self.blocks.items():
+            name, props = parse_state(state)
+            kind = self._kind(name)
+            if not kind:
+                continue
+            sides = {}
+            for side, (dx, dz) in FACING.items():
+                sides[side] = self._connects(kind, self.get(x + dx, y, z + dz))
+            if kind == "wall":
+                for side, on in sides.items():
+                    props[side] = "low" if on else "none"
+                straight = (sides["north"] and sides["south"] and not sides["east"] and not sides["west"]) or \
+                    (sides["east"] and sides["west"] and not sides["north"] and not sides["south"])
+                above = self.get(x, y + 1, z)
+                props["up"] = "false" if straight and (above is None or above.endswith(":air")) else "true"
+            else:
+                for side, on in sides.items():
+                    props[side] = "true" if on else "false"
+            props.setdefault("waterlogged", "false")
+            updates[(x, y, z)] = (state_key(name + "[" + ",".join(f"{k}={v}" for k, v in props.items()) + "]"),
+                                  data)
+        self.blocks.update(updates)
+
     def save(self, out_dir):
+        self.connect_all()
         palette, index = [], {}
         normal, special = [], []
         for pos, (state, data) in sorted(self.blocks.items(), key=lambda e: (e[0][1], e[0][0], e[0][2])):

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "xmen:block/cerebro_panel"
+    },
+    "lit=true": {
+      "model": "xmen:block/cerebro_panel_lit"
+    }
+  }
+}

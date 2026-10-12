@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "open=false": {
+      "model": "xmen:block/court_floor"
+    },
+    "open=true": {
+      "model": "xmen:block/empty"
+    }
+  }
+}

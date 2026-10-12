@@ -3,18 +3,18 @@
   "category": "equipment",
   "pattern": [
     "L L",
-    "LYL",
-    "LBL"
+    "LBL",
+    "LIL"
   ],
   "key": {
     "L": {
       "item": "minecraft:leather"
     },
-    "Y": {
-      "item": "minecraft:yellow_dye"
-    },
     "B": {
-      "item": "minecraft:blue_dye"
+      "item": "minecraft:black_dye"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
     }
   },
   "result": {

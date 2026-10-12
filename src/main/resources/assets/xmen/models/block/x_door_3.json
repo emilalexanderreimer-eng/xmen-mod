@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "north": "xmen:block/x_door_3",
+    "south": "xmen:block/x_door_5",
+    "east": "xmen:block/silver_panel",
+    "west": "xmen:block/silver_panel",
+    "up": "xmen:block/silver_panel",
+    "down": "xmen:block/silver_panel",
+    "particle": "xmen:block/silver_panel"
+  }
+}

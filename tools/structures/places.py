@@ -83,7 +83,7 @@ def apocalypse_pyramid():
     t.fill(25, G + 8, 36, 29, G + 9, 36, "gold_block")
     for x in range(22, 33):
         t.set(x, G + 1, 29, "gold_block")
-    t.mob(27, G + 3, 32, "wither_skeleton", "apocalypse", yaw=180.0)
+    t.npc(27, G + 3, 32, "apocalypse", yaw=180.0)
     for x, z in ((19, 19), (35, 19), (19, 35), (35, 35)):
         t.set(x, G + 1, z, "soul_campfire")
     for x in range(19, 36, 4):
@@ -204,7 +204,7 @@ def brotherhood_hideout():
     for kind, x, z in (("pyro", 8, 10), ("avalanche", 22, 8), ("blob", 15, 17), ("toad", 9, 18),
                        ("mystique", 24, 19), ("thug", 12, 6), ("thug", 20, 12)):
         y = G + 5 if kind == "mystique" else G + 1
-        t.mob(x, y, z, "vindicator" if kind not in ("blob",) else "zombie", kind)
+        t.mob(x, y, z, "vindicator", kind) if kind == "thug" else t.npc(x, y, z, kind)
     return t
 
 
@@ -253,7 +253,7 @@ def asteroid_m():
     t.disc(c, 17, c, 2, "purple_concrete")
     t.fill(c - 1, 18, c + 2, c + 1, 19, c + 2, "red_concrete")
     t.set(c, 20, c + 2, "red_concrete")
-    t.mob(c, 18, c, "evoker", "magneto")
+    t.npc(c, 18, c, "magneto")
     t.chest(c - 4, 16, c, "east", "asteroid_m")
     t.chest(c + 4, 16, c - 1, "west", "asteroid_m")
     for x, z in ((c - 8, c), (c + 8, c), (c, c + 8), (c - 5, c - 6)):
@@ -449,7 +449,7 @@ def sinister_lab():
         t.set(x, 1, 1, "brewing_stand")
     t.spawner(12, 1, 20, "minecraft:zombie")
     t.spawner(29, 1, 20, "minecraft:zombie")
-    t.mob(20, 1, 22, "evoker", "sinister")
+    t.npc(20, 1, 22, "sinister")
     t.mob(14, 1, 30, "vindicator", "marauder")
     t.mob(27, 1, 10, "vindicator", "marauder")
     t.mob(27, 1, 31, "vindicator", "marauder")
@@ -513,7 +513,7 @@ def hellfire_club():
     t.chest(21, G + 7, 7, "south", "hellfire")
     for x in range(6, 30, 6):
         t.set(x, G + 11, 15, "lantern[hanging=true]")
-    t.mob(24, G + 8, 22, "witch", "white_queen", yaw=180.0)
+    t.npc(24, G + 8, 22, "white_queen", yaw=180.0)
     for x, z in ((8, 12), (26, 12), (18, 20), (18, 9)):
         t.mob(x, G + 1, z, "vindicator", "hellfire_guard")
     t.mob(22, G + 7, 15, "vindicator", "hellfire_guard")
@@ -674,8 +674,7 @@ def krakoa():
                         and "azalea" not in s:
                     y = yy + 1
                     break
-        t.mob(x, y, z, "villager", "krakoa_mutant",
-              {"VillagerData": {"profession": "minecraft:nitwit", "type": "minecraft:jungle", "level": 1}})
+        t.npc(x, y, z, "krakoa_mutant")
     # a beach with a dock
     t.fill(34, W, 0, 36, W, 6, "bamboo_planks")
     return t
@@ -724,11 +723,8 @@ def muir_island():
     t.bed(18, base + 1, 25, "east", "light_blue")
     for x in range(19, 31, 5):
         t.set(x, base + 5, 22, "lantern[hanging=true]")
-    t.mob(24, base + 1, 20, "villager", "moira",
-          {"VillagerData": {"profession": "minecraft:librarian", "type": "minecraft:taiga", "level": 5},
-           "NoAI": False})
-    t.mob(21, base + 1, 26, "villager", "scientist",
-          {"VillagerData": {"profession": "minecraft:nitwit", "type": "minecraft:taiga", "level": 1}})
+    t.npc(24, base + 1, 20, "moira")
+    t.npc(21, base + 1, 26, "scientist")
     # stairs down to the jetty
     t.fill(22, W, 0, 25, W, 4, "spruce_planks")
     for i in range(3):
@@ -793,8 +789,7 @@ def morlock_tunnels():
     for z in (6, 42):
         t.set(24, 6, z, "lantern[hanging=true]")
     for x, z in ((19, 22), (29, 26), (21, 30), (27, 17), (8, 23), (40, 25)):
-        t.mob(x, 1, z, "villager", "morlock",
-              {"VillagerData": {"profession": "minecraft:nitwit", "type": "minecraft:swamp", "level": 1}})
+        t.npc(x, 1, z, "morlock")
     # manhole shaft up to the surface
     t.fill(31, 9, 32, 33, G, 34, "stone_bricks")
     t.fill(32, 1, 34, 32, G, 34, "stone_bricks")
@@ -875,8 +870,7 @@ def safehouse():
     t.set(10, G + 1, 7, "crafting_table")
     t.set(6, G + 4, 5, "lantern[hanging=true]")
     t.set(9, G + 1, 3, "red_carpet")
-    t.mob(6, G + 1, 5, "villager", "refugee",
-          {"VillagerData": {"profession": "minecraft:nitwit", "type": "minecraft:taiga", "level": 1}})
+    t.npc(6, G + 1, 5, "refugee")
     t.set(3, G + 1, 0, "campfire[lit=false]")
     return t
 

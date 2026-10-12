@@ -3,6 +3,13 @@
   "values": [
     "xmen:elevator",
     "xmen:cerebro",
-    "xmen:danger_room_console"
+    "xmen:danger_room_console",
+    "xmen:x_door",
+    "xmen:cerebro_panel",
+    "xmen:silver_panel",
+    "xmen:silver_floor",
+    "xmen:silver_light",
+    "xmen:danger_room_wall",
+    "xmen:hangar_control"
   ]
 }

@@ -22,16 +22,25 @@ public final class XMenWorld {
 
     private static void onServerTick(ServerTickEvent.Post event) {
         DangerRoom.tick();
+        CerebroBlock.tickSessions();
     }
 
     private static void onPlayerTick(PlayerTickEvent.Post event) {
-        if (event.getEntity() instanceof ServerPlayer player && player.tickCount % 40 == 0) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) {
+            return;
+        }
+        if (player.tickCount % 40 == 0) {
             StructureEffects.tick(player);
+            XMenSuit.tick(player);
+        }
+        if (player.tickCount % 4 == 0) {
+            XDoorBlock.openNear(player);
         }
     }
 
     private static void onServerStopping(ServerStoppingEvent event) {
         DangerRoom.clearAll();
+        CerebroBlock.clearSessions();
         MutantMobs.clearBars();
     }
 }

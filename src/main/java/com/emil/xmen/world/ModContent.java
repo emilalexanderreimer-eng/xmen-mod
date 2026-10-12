@@ -56,6 +56,26 @@ public final class ModContent {
             () -> new KrakoaGateBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PINK)
                     .strength(2.0f, 1200.0f).sound(SoundType.MOSS).lightLevel(state -> 12)));
 
+    // the lower level of the mansion
+    public static final DeferredBlock<XDoorBlock> X_DOOR = BLOCKS.register("x_door",
+            () -> new XDoorBlock(metal().strength(50.0f, 1200.0f).noOcclusion()));
+    public static final DeferredBlock<CerebroPanelBlock> CEREBRO_PANEL = BLOCKS.register("cerebro_panel",
+            () -> new CerebroPanelBlock(metal().strength(5.0f, 1200.0f)
+                    .lightLevel(state -> state.getValue(CerebroPanelBlock.LIT) ? 9 : 0)));
+    public static final DeferredBlock<Block> SILVER_PANEL = BLOCKS.register("silver_panel",
+            () -> new Block(metal().strength(5.0f, 1200.0f)));
+    public static final DeferredBlock<Block> SILVER_FLOOR = BLOCKS.register("silver_floor",
+            () -> new Block(metal().strength(5.0f, 1200.0f)));
+    public static final DeferredBlock<Block> SILVER_LIGHT = BLOCKS.register("silver_light",
+            () -> new Block(metal().strength(3.0f, 1200.0f).lightLevel(state -> 14)));
+    public static final DeferredBlock<Block> DANGER_ROOM_WALL = BLOCKS.register("danger_room_wall",
+            () -> new Block(metal().strength(5.0f, 1200.0f).lightLevel(state -> 4)));
+    public static final DeferredBlock<CourtFloorBlock> COURT_FLOOR = BLOCKS.register("court_floor",
+            () -> new CourtFloorBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).sound(SoundType.WOOD)
+                    .strength(50.0f, 1200.0f).noOcclusion()));
+    public static final DeferredBlock<HangarControlBlock> HANGAR_CONTROL = BLOCKS.register("hangar_control",
+            () -> new HangarControlBlock(metal().strength(5.0f, 1200.0f).lightLevel(state -> 7)));
+
     // ------------------------------------------------------------------ armor
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> ADAMANTIUM_MATERIAL = armorMaterial("adamantium",
             3, 6, 8, 3, 15, 3.5f, 0.15f, () -> Ingredient.of(ModContent.ADAMANTIUM_INGOT.get()));
@@ -107,6 +127,17 @@ public final class ModContent {
     public static final DeferredItem<BlockItem> DANGER_ROOM_CONSOLE_ITEM =
             ITEMS.registerSimpleBlockItem(DANGER_ROOM_CONSOLE);
     public static final DeferredItem<BlockItem> KRAKOA_GATE_ITEM = ITEMS.registerSimpleBlockItem(KRAKOA_GATE);
+    public static final DeferredItem<BlockItem> X_DOOR_ITEM = ITEMS.registerSimpleBlockItem(X_DOOR);
+    public static final DeferredItem<BlockItem> CEREBRO_PANEL_ITEM = ITEMS.registerSimpleBlockItem(CEREBRO_PANEL);
+    public static final DeferredItem<BlockItem> SILVER_PANEL_ITEM = ITEMS.registerSimpleBlockItem(SILVER_PANEL);
+    public static final DeferredItem<BlockItem> SILVER_FLOOR_ITEM = ITEMS.registerSimpleBlockItem(SILVER_FLOOR);
+    public static final DeferredItem<BlockItem> SILVER_LIGHT_ITEM = ITEMS.registerSimpleBlockItem(SILVER_LIGHT);
+    public static final DeferredItem<BlockItem> DANGER_ROOM_WALL_ITEM =
+            ITEMS.registerSimpleBlockItem(DANGER_ROOM_WALL);
+    public static final DeferredItem<BlockItem> COURT_FLOOR_ITEM = ITEMS.registerSimpleBlockItem(COURT_FLOOR);
+    public static final DeferredItem<BlockItem> HANGAR_CONTROL_ITEM = ITEMS.registerSimpleBlockItem(HANGAR_CONTROL);
+    public static final DeferredItem<Item> BLACKBIRD = ITEMS.register("blackbird",
+            () -> new BlackbirdItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC).fireResistant()));
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB = TABS.register("xmen",
             () -> CreativeModeTab.builder()

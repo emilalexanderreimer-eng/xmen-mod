@@ -1,0 +1,130 @@
+{
+  "variants": {
+    "axis=x,open=false,part=0": {
+      "model": "xmen:block/x_door_0",
+      "y": 0
+    },
+    "axis=x,open=true,part=0": {
+      "model": "xmen:block/empty"
+    },
+    "axis=z,open=false,part=0": {
+      "model": "xmen:block/x_door_0",
+      "y": 90
+    },
+    "axis=z,open=true,part=0": {
+      "model": "xmen:block/empty"
+    },
+    "axis=x,open=false,part=1": {
+      "model": "xmen:block/x_door_1",
+      "y": 0
+    },
+    "axis=x,open=true,part=1": {
+      "model": "xmen:block/empty"
+    },
+    "axis=z,open=false,part=1": {
+      "model": "xmen:block/x_door_1",
+      "y": 90
+    },
+    "axis=z,open=true,part=1": {
+      "model": "xmen:block/empty"
+    },
+    "axis=x,open=false,part=2": {
+      "model": "xmen:block/x_door_2",
+      "y": 0
+    },
+    "axis=x,open=true,part=2": {
+      "model": "xmen:block/empty"
+    },
+    "axis=z,open=false,part=2": {
+      "model": "xmen:block/x_door_2",
+      "y": 90
+    },
+    "axis=z,open=true,part=2": {
+      "model": "xmen:block/empty"
+    },
+    "axis=x,open=false,part=3": {
+      "model": "xmen:block/x_door_3",
+      "y": 0
+    },
+    "axis=x,open=true,part=3": {
+      "model": "xmen:block/empty"
+    },
+    "axis=z,open=false,part=3": {
+      "model": "xmen:block/x_door_3",
+      "y": 90
+    },
+    "axis=z,open=true,part=3": {
+      "model": "xmen:block/empty"
+    },
+    "axis=x,open=false,part=4": {
+      "model": "xmen:block/x_door_4",
+      "y": 0
+    },
+    "axis=x,open=true,part=4": {
+      "model": "xmen:block/empty"
+    },
+    "axis=z,open=false,part=4": {
+      "model": "xmen:block/x_door_4",
+      "y": 90
+    },
+    "axis=z,open=true,part=4": {
+      "model": "xmen:block/empty"
+    },
+    "axis=x,open=false,part=5": {
+      "model": "xmen:block/x_door_5",
+      "y": 0
+    },
+    "axis=x,open=true,part=5": {
+      "model": "xmen:block/empty"
+    },
+    "axis=z,open=false,part=5": {
+      "model": "xmen:block/x_door_5",
+      "y": 90
+    },
+    "axis=z,open=true,part=5": {
+      "model": "xmen:block/empty"
+    },
+    "axis=x,open=false,part=6": {
+      "model": "xmen:block/x_door_6",
+      "y": 0
+    },
+    "axis=x,open=true,part=6": {
+      "model": "xmen:block/empty"
+    },
+    "axis=z,open=false,part=6": {
+      "model": "xmen:block/x_door_6",
+      "y": 90
+    },
+    "axis=z,open=true,part=6": {
+      "model": "xmen:block/empty"
+    },
+    "axis=x,open=false,part=7": {
+      "model": "xmen:block/x_door_7",
+      "y": 0
+    },
+    "axis=x,open=true,part=7": {
+      "model": "xmen:block/empty"
+    },
+    "axis=z,open=false,part=7": {
+      "model": "xmen:block/x_door_7",
+      "y": 90
+    },
+    "axis=z,open=true,part=7": {
+      "model": "xmen:block/empty"
+    },
+    "axis=x,open=false,part=8": {
+      "model": "xmen:block/x_door_8",
+      "y": 0
+    },
+    "axis=x,open=true,part=8": {
+      "model": "xmen:block/empty"
+    },
+    "axis=z,open=false,part=8": {
+      "model": "xmen:block/x_door_8",
+      "y": 90
+    },
+    "axis=z,open=true,part=8": {
+      "model": "xmen:block/empty"
+    }
+  }
+}

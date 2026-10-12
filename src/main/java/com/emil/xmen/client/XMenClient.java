@@ -51,6 +51,7 @@ public class XMenClient {
         modEventBus.addListener(this::registerKeys);
         modEventBus.addListener(this::registerGuiLayers);
         modEventBus.addListener(this::registerRenderers);
+        modEventBus.addListener(this::registerLayers);
         NeoForge.EVENT_BUS.addListener(this::onClientTick);
         NeoForge.EVENT_BUS.addListener(this::onLoggingOut);
         NeoForge.EVENT_BUS.addListener(this::onFov);
@@ -59,6 +60,13 @@ public class XMenClient {
 
     private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.CLONE.get(), CloneRenderer::new);
+        event.registerEntityRenderer(ModEntities.MUTANT.get(), MutantRenderer::new);
+        event.registerEntityRenderer(ModEntities.BLACKBIRD.get(), BlackbirdRenderer::new);
+    }
+
+    private void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(WheelchairLayer.LAYER, WheelchairLayer::createLayer);
+        event.registerLayerDefinition(BlackbirdRenderer.LAYER, BlackbirdRenderer::createLayer);
     }
 
     // Eagle Eyes zooms in like a spyglass.

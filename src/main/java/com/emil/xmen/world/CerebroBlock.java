@@ -12,7 +12,13 @@ import com.emil.xmen.power.Power;
 import com.emil.xmen.power.PowerCategory;
 
 import net.minecraft.ChatFormatting;
+import org.joml.Vector3f;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -48,7 +54,10 @@ public class CerebroBlock extends Block {
                 return InteractionResult.SUCCESS;
             }
             LAST_USE.put(player.getUUID(), now);
-            scan(serverLevel, pos, serverPlayer);
+            List<Vec3> dots = new ArrayList<>();
+            List<Vec3> places = new ArrayList<>();
+            scan(serverLevel, pos, serverPlayer, dots, places);
+            activate(serverLevel, pos, serverPlayer, dots, places);
         }
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
@@ -62,7 +71,96 @@ public class CerebroBlock extends Block {
         return player.getItemBySlot(EquipmentSlot.HEAD).is(ModContent.MAGNETO_HELMET.get());
     }
 
-    private static void scan(ServerLevel level, BlockPos pos, ServerPlayer user) {
+    // ------------------------------------------------------------------ the sphere lighting up
+    /** A running Cerebro: shows dots on the sphere for every mutant (red) and place (gold) it found. */
+    private record Session(ServerLevel level, Vec3 center, long end, List<Vec3> mutants, List<Vec3> places,
+            List<Vec3> people) {
+    }
+
+    private static final List<Session> SESSIONS = new ArrayList<>();
+    private static final DustParticleOptions RED = new DustParticleOptions(new Vector3f(1.0f, 0.15f, 0.1f), 1.6f);
+    private static final DustParticleOptions GOLD = new DustParticleOptions(new Vector3f(1.0f, 0.8f, 0.2f), 1.8f);
+    private static final DustParticleOptions WHITE = new DustParticleOptions(new Vector3f(0.85f, 0.9f, 1.0f), 0.9f);
+    private static final int SPHERE = 15;
+    private static final double DOT_RADIUS = 10.5;
+
+    private static void activate(ServerLevel level, BlockPos pos, ServerPlayer user, List<Vec3> mutants,
+            List<Vec3> places) {
+        // light the panels of the sphere ring by ring, starting next to the console
+        Block panel = ModContent.CEREBRO_PANEL.get();
+        for (BlockPos at : BlockPos.betweenClosed(pos.offset(-SPHERE, -SPHERE, -SPHERE),
+                pos.offset(SPHERE, SPHERE, SPHERE))) {
+            BlockState state = level.getBlockState(at);
+            if (state.is(panel) && !state.getValue(CerebroPanelBlock.LIT) && !level.getBlockTicks().hasScheduledTick(at,
+                    panel)) {
+                int delay = 2 + (int) Math.sqrt(at.distSqr(pos)) * 2;
+                level.scheduleTick(at.immutable(), panel, delay);
+            }
+        }
+        level.playSound(null, pos, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 2.0f, 0.6f);
+        level.playSound(null, pos, SoundEvents.CONDUIT_ACTIVATE, SoundSource.BLOCKS, 2.0f, 0.8f);
+        user.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 400, 0, true, false));
+        // the whole world as little white dots, mutants red, places gold
+        List<Vec3> people = new ArrayList<>();
+        RandomSource random = RandomSource.create(pos.asLong());
+        for (int i = 0; i < 260; i++) {
+            double yaw = random.nextDouble() * Math.PI * 2;
+            double pitch = Math.asin(random.nextDouble() * 1.6 - 0.8);
+            people.add(new Vec3(Math.cos(yaw) * Math.cos(pitch), Math.sin(pitch), Math.sin(yaw) * Math.cos(pitch)));
+        }
+        Vec3 center = Vec3.atCenterOf(pos).add(0, 1.0, 0);
+        SESSIONS.removeIf(s -> s.level == level && s.center.distanceToSqr(center) < 4);
+        SESSIONS.add(new Session(level, center, level.getGameTime() + CerebroPanelBlock.GLOW_TICKS, mutants, places,
+                people));
+    }
+
+    /** Direction on the sphere for something at 'target': the compass direction, higher up the further away. */
+    private static Vec3 onSphere(BlockPos from, Vec3 target, double maxDistance) {
+        double dx = target.x - from.getX();
+        double dz = target.z - from.getZ();
+        double distance = Math.sqrt(dx * dx + dz * dz);
+        double yaw = Math.atan2(dz, dx);
+        double pitch = -0.5 + Math.min(1.0, distance / maxDistance) * 1.4;
+        return new Vec3(Math.cos(yaw) * Math.cos(pitch), Math.sin(pitch), Math.sin(yaw) * Math.cos(pitch));
+    }
+
+    public static void tickSessions() {
+        SESSIONS.removeIf(s -> s.level.getGameTime() > s.end);
+        for (Session session : SESSIONS) {
+            long time = session.level.getGameTime();
+            if (time % 4 != 0) {
+                continue;
+            }
+            for (Vec3 dir : session.people) {
+                if (session.level.random.nextInt(3) == 0) {
+                    dot(session, dir, WHITE);
+                }
+            }
+            for (Vec3 dir : session.mutants) {
+                dot(session, dir, RED);
+            }
+            for (Vec3 dir : session.places) {
+                dot(session, dir, GOLD);
+            }
+            if (time % 40 == 0) {
+                session.level.playSound(null, BlockPos.containing(session.center), SoundEvents.BEACON_AMBIENT,
+                        SoundSource.BLOCKS, 1.5f, 1.4f);
+            }
+        }
+    }
+
+    private static void dot(Session session, Vec3 dir, DustParticleOptions color) {
+        Vec3 at = session.center.add(dir.scale(DOT_RADIUS));
+        session.level.sendParticles(color, at.x, at.y, at.z, 1, 0.05, 0.05, 0.05, 0);
+    }
+
+    public static void clearSessions() {
+        SESSIONS.clear();
+    }
+
+    // ------------------------------------------------------------------ the list in chat
+    private static void scan(ServerLevel level, BlockPos pos, ServerPlayer user, List<Vec3> dots,
+            List<Vec3> placeDots) {
         boolean telepath = isTelepath(user);
         level.playSound(null, pos, SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 1.0f, 1.5f);
         level.sendParticles(ParticleTypes.ENCHANT, pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5, 80, 1.5,
@@ -104,11 +202,20 @@ public class CerebroBlock extends Block {
                 continue;
             }
             found++;
+            dots.add(onSphere(pos, other.position(), 2000));
+            if (distance < 300) {
+                other.addEffect(new MobEffectInstance(MobEffects.GLOWING, 300, 0, true, false));
+            }
             user.sendSystemMessage(Component.literal(other.getName().getString() + " - ").append(power.title())
                     .append(Component.literal(" - " + (int) distance + " blocks " + direction(pos, other.position())
                             + (telepath ? " at " + other.getBlockX() + " " + other.getBlockY() + " "
                                     + other.getBlockZ() : ""))
                             .withStyle(ChatFormatting.GRAY)));
+        }
+        // the other mutant characters around (heroes, villains, Morlocks...) show up as red dots too
+        for (net.minecraft.world.entity.Mob mob : level.getEntitiesOfClass(net.minecraft.world.entity.Mob.class,
+                new net.minecraft.world.phys.AABB(pos).inflate(256), m -> m instanceof com.emil.xmen.entity.MutantNpc)) {
+            dots.add(onSphere(pos, mob.position(), 400));
         }
         if (found == 0) {
             user.sendSystemMessage(Component.literal("No other mutants found.").withStyle(ChatFormatting.GRAY));
@@ -127,6 +234,7 @@ public class CerebroBlock extends Block {
                 continue;  // that's the mansion we're standing in
             }
             places.add(new Object[] {key, at, distance});
+            placeDots.add(onSphere(pos, Vec3.atCenterOf(at), radius * 16));
         }
         places.sort(Comparator.comparingDouble(p -> (Double) p[2]));
         user.sendSystemMessage(Component.literal("Nearest places:").withStyle(ChatFormatting.AQUA));
