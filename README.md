@@ -400,6 +400,34 @@ Every power works. "R" means you press your power key.
 
 The full list of powers is in [tools/powers.psv](tools/powers.psv).
 
+## Structures
+
+16 X-Men places spawn in new worlds (or in new, unexplored chunks of old worlds). Find one fast with
+`/locate structure xmen:x_mansion` (swap in any name below).
+
+| Structure | Where | What's there |
+|---|---|---|
+| `x_mansion` | plains, meadows, forests (rare) | Xavier's School, students, Professor X. Elevator in the lounge goes down to Cerebro, the medical lab, the war room, the Danger Room and the X-Jet hangar. Krakoa gate in the garden. |
+| `apocalypse_pyramid` | desert (very rare) | The Four Horsemen, a sleeping Apocalypse (boss), a hidden lava vault. Apocalypse drops a Celestial Orb: a new power that is always Beta or better. |
+| `asteroid_m` | floating high over oceans | Magneto (boss) and his Acolytes. Magneto drops his helmet, which blocks mind powers and hides you from Cerebro. |
+| `sentinel_factory` | plains, savanna, desert | Trask guards, Sentinels that hunt mutants, and a giant Sentinel boss. |
+| `fallen_sentinel` | almost anywhere (common) | A broken giant robot with loot inside. |
+| `brotherhood_hideout` | plains, forests | Pyro, Avalanche, the Blob, Toad, Mystique. Chance of a map to Asteroid M. |
+| `weapon_x` | snowy biomes | Underground lab with feral subjects and an adamantium vault. |
+| `sinister_lab` | deep underground | Mister Sinister (boss), his clones and Marauders. Drops a Mutant Serum. |
+| `hellfire_club` | plains, forests | Hellfire guards and the White Queen (boss). |
+| `genosha` | ocean island | A ruined mutant city with scavengers and Sentinel wrecks. |
+| `krakoa` | warm ocean island | Peaceful mutants, no monsters, slow healing. The gate in the cave leads to the X-Mansion. |
+| `muir_island` | cold ocean island | Moira MacTaggert's lab and lighthouse. Chance of a map to the X-Mansion. |
+| `morlock_tunnels` | underground below plains and forests | The Morlocks' sewer home. Manhole on the surface. |
+| `blackbird_crash` | almost anywhere | A crashed X-Jet. |
+| `safehouse` | forests, plains | A small cabin with a friendly mutant. |
+| `detection_tower` | plains, forests, savanna | Raises the alarm and calls guards when a mutant comes close. |
+
+New blocks and items: Elevator (jump to go up, sneak to go down, craft 8 iron + 1 ender pearl), Cerebro,
+Danger Room Console, Krakoa Gate, Mutant Serum, Celestial Orb, Adamantium (ingot, sword, pickaxe, armor),
+X-Men suit, Magneto's helmet and Sentinel parts (4 parts + 4 iron + 1 diamond = 1 adamantium ingot).
+
 ## Building it yourself
 
 GitHub builds the jar automatically on every push. To build locally you need Java 21: run `./gradlew build` and the jar lands in `build/libs/`.
