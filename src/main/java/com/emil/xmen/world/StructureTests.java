@@ -103,7 +103,18 @@ public class StructureTests {
             return;
         }
         if (level.getEntitiesOfClass(Blackbird.class, area).isEmpty()) {
-            helper.fail("The X-Jet isn't in its hangar");
+            String why;
+            try {
+                net.minecraft.nbt.CompoundTag tag = new net.minecraft.nbt.CompoundTag();
+                tag.putString("id", "xmen:blackbird");
+                why = net.minecraft.world.entity.EntityType.create(tag, level).map(e -> "creates fine as " + e)
+                        .orElse("can't be created");
+            } catch (Exception e) {
+                why = "throws " + e;
+            }
+            int stands = level.getEntitiesOfClass(net.minecraft.world.entity.decoration.ArmorStand.class, area)
+                    .size();
+            helper.fail("The X-Jet isn't in its hangar (" + why + ", armor stands: " + stands + ")");
             return;
         }
         XMenMod.LOGGER.info("Test: {} structure mobs set up, {} X-Men", people.size(), xmen.size());
