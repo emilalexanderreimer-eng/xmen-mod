@@ -39,7 +39,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.animal.horse.SkeletonHorse;
 import net.minecraft.world.entity.npc.WanderingTrader;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.SmallFireball;
@@ -73,7 +72,6 @@ public final class MutantMobs {
     private static final Map<UUID, ServerBossEvent> BARS = new HashMap<>();
 
     private static final DustParticleOptions RED_LASER = new DustParticleOptions(new Vector3f(1.0f, 0.1f, 0.1f), 1.2f);
-    private static final DustParticleOptions BLUE_BEAM = new DustParticleOptions(new Vector3f(0.3f, 0.5f, 1.0f), 1.5f);
 
     private MutantMobs() {
     }
@@ -234,20 +232,6 @@ public final class MutantMobs {
         // --- Genosha
         kind("scavenger", "Genoshan Scavenger").color(ChatFormatting.GRAY).health(26);
 
-        // --- Apocalypse
-        kind("apocalypse", "Apocalypse").color(ChatFormatting.BLUE).health(600).damage(14).scale(2.0).heavy()
-                .boss(BossEvent.BossBarColor.BLUE).ability("apocalypse")
-                .gear(mob -> hold(mob, Items.NETHERITE_AXE));
-        kind("horseman_war", "War").color(ChatFormatting.RED).health(120).damage(10).ability("war")
-                .gear(mob -> hold(mob, Items.NETHERITE_SWORD));
-        kind("horseman_famine", "Famine").color(ChatFormatting.YELLOW).health(120).ability("famine")
-                .gear(mob -> hold(mob, Items.GOLDEN_HOE));
-        kind("horseman_pestilence", "Pestilence").color(ChatFormatting.DARK_GREEN).health(120).ability("pestilence")
-                .gear(mob -> hold(mob, Items.STONE_SWORD));
-        kind("horseman_death", "Death").color(ChatFormatting.DARK_GRAY).health(150).ability("death")
-                .gear(mob -> hold(mob, Items.IRON_HOE));
-        kind("cultist", "Clan Akkaba Cultist").color(ChatFormatting.BLUE).health(30)
-                .gear(mob -> wear(mob, EquipmentSlot.HEAD, Items.GOLDEN_HELMET));
     }
 
     public static void register() {
@@ -317,9 +301,6 @@ public final class MutantMobs {
             setBase(mob, Attributes.KNOCKBACK_RESISTANCE, kind.knockbackResistance);
         }
         kind.gear.accept(mob);
-        if (kind.id.equals("apocalypse")) {
-            mob.setNoAi(true);  // asleep until someone comes close
-        }
         if (kind.id.equals("professor_x") && mob instanceof WanderingTrader trader) {
             trader.setDespawnDelay(0);
             MerchantOffers offers = trader.getOffers();
@@ -331,17 +312,6 @@ public final class MutantMobs {
             offers.add(offer(Items.EMERALD, 12, ModContent.ELEVATOR_ITEM.get(), 4, 99));
             offers.add(new MerchantOffer(new ItemCost(Items.EMERALD, 64), java.util.Optional.of(
                     new ItemCost(Items.DIAMOND, 8)), new ItemStack(ModContent.MUTANT_SERUM.get()), 3, 10, 0.0f));
-        }
-        if (kind.id.startsWith("horseman_") && mob.level() instanceof ServerLevel level) {
-            SkeletonHorse horse = EntityType.SKELETON_HORSE.create(level);
-            if (horse != null) {
-                horse.moveTo(mob.getX(), mob.getY(), mob.getZ(), mob.getYRot(), 0);
-                horse.setTamed(true);
-                horse.setPersistenceRequired();
-                horse.getPersistentData().putBoolean("xmen_no_loot", true);
-                level.addFreshEntity(horse);
-                mob.startRiding(horse, true);
-            }
         }
     }
 
@@ -392,17 +362,6 @@ public final class MutantMobs {
             updateBar(level, mob, kind);
         }
         if (kind.ability.isEmpty()) {
-            return;
-        }
-        if (kind.id.equals("apocalypse") && mob.isNoAi()) {
-            Player near = level.getNearestPlayer(mob, 14);
-            if (near != null && !near.isCreative() && !near.isSpectator()) {
-                mob.setNoAi(false);
-                mob.setTarget(near);
-                broadcast(level, mob, Component.literal("APOCALYPSE: \"Who dares wake En Sabah Nur? Only the strong "
-                        + "survive!\"").withStyle(ChatFormatting.BLUE, ChatFormatting.BOLD));
-                level.playSound(null, mob.blockPosition(), SoundEvents.WITHER_SPAWN, SoundSource.HOSTILE, 1.0f, 0.7f);
-            }
             return;
         }
         LivingEntity target = mob.getTarget();
@@ -525,58 +484,6 @@ public final class MutantMobs {
                 sound(level, mob, SoundEvents.ILLUSIONER_CAST_SPELL);
                 return 90;
             }
-            case "apocalypse" -> {
-                if (mob.getHealth() < mob.getMaxHealth() / 2) {
-                    mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 80, 1, true, false));
-                    mob.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 80, 1, true, false));
-                }
-                switch (step % 4) {
-                    case 0, 2 -> {
-                        if (distance > 30 || !sees) {
-                            return 0;
-                        }
-                        beam(level, mob, target, BLUE_BEAM);
-                        target.hurt(mob.damageSources().indirectMagic(mob, mob), 10);
-                        sound(level, mob, SoundEvents.WARDEN_SONIC_BOOM);
-                        return 50;
-                    }
-                    case 1 -> {
-                        for (LivingEntity victim : level.getEntitiesOfClass(LivingEntity.class,
-                                mob.getBoundingBox().inflate(7), e -> e != mob && kindOf(e) == null)) {
-                            victim.hurt(mob.damageSources().mobAttack(mob), 9);
-                            Vec3 push = victim.position().subtract(mob.position()).normalize().scale(1.8);
-                            victim.setDeltaMovement(push.x, 0.9, push.z);
-                            victim.hurtMarked = true;
-                        }
-                        level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, mob.getX(), mob.getY(), mob.getZ(), 1, 0,
-                                0, 0, 0);
-                        sound(level, mob, SoundEvents.GENERIC_EXPLODE.value());
-                        return 60;
-                    }
-                    default -> {
-                        int cultists = level.getEntitiesOfClass(Mob.class, mob.getBoundingBox().inflate(24),
-                                e -> kindOf(e) == KINDS.get("cultist")).size();
-                        if (cultists < 6) {
-                            summon(level, mob, EntityType.HUSK, "cultist", 2, target);
-                            say(level, mob, "Apocalypse: \"Rise, my servants!\"");
-                        }
-                        return 80;
-                    }
-                }
-            }
-            case "war" -> {
-                mob.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 120, 1));
-                return 100;
-            }
-            case "famine" -> {
-                return touch(level, mob, target, distance, MobEffects.HUNGER, 2, ParticleTypes.ASH);
-            }
-            case "pestilence" -> {
-                return touch(level, mob, target, distance, MobEffects.POISON, 1, ParticleTypes.ITEM_SLIME);
-            }
-            case "death" -> {
-                return touch(level, mob, target, distance, MobEffects.WITHER, 1, ParticleTypes.SOUL);
-            }
             case "regenerate" -> {
                 mob.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 60, 1, true, false));
                 return 40;
@@ -585,17 +492,6 @@ public final class MutantMobs {
                 return 0;
             }
         }
-    }
-
-    private static int touch(ServerLevel level, Mob mob, LivingEntity target, double distance,
-            Holder<MobEffect> effect, int amplifier, ParticleOptions particle) {
-        if (distance > 10) {
-            return 0;
-        }
-        target.addEffect(new MobEffectInstance(effect, 100, amplifier));
-        level.sendParticles(particle, target.getX(), target.getY() + 1, target.getZ(), 30, 0.5, 0.8, 0.5, 0.02);
-        sound(level, mob, SoundEvents.WITHER_SHOOT);
-        return 100;
     }
 
     private static void summon(ServerLevel level, Mob mob, EntityType<? extends Mob> type, String kind, int count,
@@ -645,9 +541,6 @@ public final class MutantMobs {
 
     // ------------------------------------------------------------------ boss bars
     private static void updateBar(ServerLevel level, Mob mob, Kind kind) {
-        if (mob.isNoAi() && kind.id.equals("apocalypse")) {
-            return;  // no bar while he sleeps
-        }
         ServerBossEvent bar = BARS.computeIfAbsent(mob.getUUID(), id -> new ServerBossEvent(
                 mob.getDisplayName(), kind.bar, BossEvent.BossBarOverlay.NOTCHED_10));
         bar.setProgress(Math.max(0, mob.getHealth() / mob.getMaxHealth()));
@@ -693,13 +586,6 @@ public final class MutantMobs {
         }
         removeBar(entity);
         switch (kind.id) {
-            case "apocalypse" -> {
-                drop(entity, new ItemStack(ModContent.CELESTIAL_ORB.get()));
-                drop(entity, new ItemStack(Items.DIAMOND, 8));
-                drop(entity, new ItemStack(Items.GOLD_BLOCK, 4));
-                broadcast(level, (Mob) entity, Component.literal("Apocalypse has fallen! He left behind a Celestial "
-                        + "Orb...").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
-            }
             case "giant_sentinel" -> {
                 drop(entity, new ItemStack(ModContent.SENTINEL_PART.get(), 6));
                 drop(entity, new ItemStack(Items.IRON_BLOCK, 4));
@@ -713,10 +599,6 @@ public final class MutantMobs {
                 if (entity.getRandom().nextBoolean()) {
                     drop(entity, new ItemStack(ModContent.SENTINEL_PART.get()));
                 }
-            }
-            case "horseman_war", "horseman_famine", "horseman_pestilence", "horseman_death" -> {
-                drop(entity, new ItemStack(Items.GOLD_INGOT, 4));
-                drop(entity, new ItemStack(Items.DIAMOND));
             }
             default -> {
             }
