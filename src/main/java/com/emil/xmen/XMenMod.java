@@ -11,6 +11,7 @@ import com.emil.xmen.network.ModNetwork;
 import com.emil.xmen.power.PlayerPowers;
 import com.emil.xmen.power.PowerCommand;
 import com.emil.xmen.power.Powers;
+import com.emil.xmen.sentinel.SentinelContent;
 import com.emil.xmen.world.XMenWorld;
 import com.mojang.logging.LogUtils;
 
@@ -35,6 +36,7 @@ public class XMenMod {
         ApocalypseContent.register(modEventBus);
         WeaponXEntities.register(modEventBus);
         com.emil.xmen.robot.RobotEntities.register(modEventBus);
+        SentinelContent.register(modEventBus);
         XMenWorld.register(modEventBus);
         modEventBus.addListener(ModNetwork::register);
         PowerEvents.register();

@@ -428,12 +428,24 @@ def sentinel_factory():
     for x in range(8, 57, 8):
         for z in (12, 25, 37):
             t.set(x, G + 15, z, "lantern[hanging=true]")
-    # guards, small Sentinels and the giant prototype
-    for x, z in ((20, 10), (42, 10), (32, 24), (10, 36), (54, 36)):
+    # the Mark X prototype's assembly cradle: hazard-striped pad, four pillars, chains from the ceiling
+    for x in range(28, 37):
+        for z in range(26, 33):
+            t.set(x, G, z, "yellow_concrete" if (x + z) % 2 == 0 else "black_concrete")
+    for x, z in ((28, 26), (36, 26), (28, 32), (36, 32)):
+        t.fill(x, G + 1, z, x, G + 9, z, "iron_block")
+        t.set(x, G + 10, z, "redstone_lamp[lit=true]")
+        t.fill(x, G + 11, z, x, G + 15, z, "chain[axis=y]")
+    for x in (29, 35):
+        t.fill(x, G + 9, 26, x, G + 9, 32, "iron_bars")
+    # guards, Mark I Sentinels (Java: robot/Sentinel) and the sleeping Mark X boss (sentinel/SentinelMarkX)
+    for x, z in ((20, 10), (42, 10), (32, 22), (10, 36), (54, 36)):
         t.mob(x, G + 1, z, "pillager", "trask_guard")
-    for x, z in ((24, 26), (38, 26), (30, 36)):
-        t.mob(x, G + 1, z, "iron_golem", "sentinel")
-    t.mob(32, G + 1, 30, "iron_golem", "giant_sentinel")
+    for x, z in ((22, 25), (42, 25), (24, 12), (40, 12)):
+        t.mob(x, G + 1, z, "xmen:sentinel", yaw=180.0)
+    for x, z in ((14, 3), (50, 3)):
+        t.mob(x, G + 1, z, "xmen:sentinel", yaw=0.0)
+    t.mob(32, G + 1, 29, "xmen:sentinel_mark_x", yaw=180.0)
     for x, z in ((20, 37), (44, 37)):
         t.mob(x, G + 7, z, "pillager", "trask_guard")
     return t

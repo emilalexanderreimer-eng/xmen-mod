@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "xmen:sentinel_part"
+    },
+    {
+      "item": "xmen:sentinel_part"
+    },
+    {
+      "item": "xmen:sentinel_part"
+    },
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "minecraft:redstone"
+    }
+  ],
+  "result": {
+    "id": "xmen:sentinel_blaster",
+    "count": 1
+  }
+}

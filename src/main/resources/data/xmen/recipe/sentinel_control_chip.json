@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "xmen:sentinel_core"
+    },
+    {
+      "item": "xmen:sentinel_part"
+    },
+    {
+      "item": "xmen:sentinel_part"
+    },
+    {
+      "item": "xmen:sentinel_part"
+    },
+    {
+      "item": "xmen:sentinel_part"
+    },
+    {
+      "item": "minecraft:redstone_block"
+    }
+  ],
+  "result": {
+    "id": "xmen:sentinel_control_chip",
+    "count": 1
+  }
+}

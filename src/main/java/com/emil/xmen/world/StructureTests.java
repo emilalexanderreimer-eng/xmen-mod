@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.emil.xmen.XMenMod;
+import com.emil.xmen.robot.Sentinel;
+import com.emil.xmen.sentinel.SentinelMarkX;
 import com.emil.xmen.apocalypse.ApocalypseBoss;
 import com.emil.xmen.apocalypse.ApocalypseServant;
 import com.emil.xmen.entity.MagnetoBoss;
@@ -80,7 +82,8 @@ public class StructureTests {
             XMenMod.LOGGER.info("Test: built {}", key.location());
         }
         List<Mob> people = level.getEntitiesOfClass(Mob.class, new AABB(2000 * 16 - 200, -64, 2000 * 16 - 200,
-                2064 * 16 + 200, 320, 2064 * 16 + 200), mob -> mob.getPersistentData().contains("xmen_kind"));
+                2064 * 16 + 200, 320, 2064 * 16 + 200), mob -> mob.getPersistentData().contains("xmen_kind")
+                        || mob instanceof Sentinel || mob instanceof SentinelMarkX);
         if (people.size() < 40) {
             helper.fail("Only " + people.size() + " structure mobs were set up");
             return;
@@ -114,6 +117,20 @@ public class StructureTests {
         int horsemen = level.getEntitiesOfClass(ApocalypseServant.class, area, s -> s.kind().horseman()).size();
         if (horsemen < 4) {
             helper.fail("Only " + horsemen + " of Apocalypse's Four Horsemen are in the pyramid");
+            return;
+        }
+        // the Sentinel factory: real Sentinels (no iron golems) and the Mark X boss asleep in its cradle
+        if (level.getEntitiesOfClass(SentinelMarkX.class, area, s -> s.isBoss() && !s.isAwake()).isEmpty()) {
+            helper.fail("The Sentinel Mark X isn't asleep in the factory");
+            return;
+        }
+        int sentinels = level.getEntitiesOfClass(Sentinel.class, area, s -> !s.isBoss()).size();
+        if (sentinels < 6) {
+            helper.fail("The Sentinel factory has only " + sentinels + " Sentinels");
+            return;
+        }
+        if (!level.getEntitiesOfClass(net.minecraft.world.entity.animal.IronGolem.class, area).isEmpty()) {
+            helper.fail("There are still iron golems in the structures");
             return;
         }
         XMenMod.LOGGER.info("Test: {} structure mobs set up, {} X-Men", people.size(), xmen.size());

@@ -85,5 +85,14 @@
   "item.xmen.adamantium_claws": "Adamantium-Krallen",
   "item.xmen.adamantium_skeleton": "Adamantium-Skelett",
   "item.xmen.healing_factor_serum": "Heilfaktor-Serum",
-  "item.xmen.inhibitor_collar": "Hemmhalsband"
+  "item.xmen.inhibitor_collar": "Hemmhalsband",
+  "entity.xmen.sentinel_mark_x": "Sentinel Mark X",
+  "item.xmen.sentinel_mark_x_spawn_egg": "Sentinel-Mark-X-Spawn-Ei",
+  "item.xmen.sentinel_core": "Sentinel-Kern",
+  "item.xmen.sentinel_blaster": "Sentinel-Blaster",
+  "item.xmen.sentinel_control_chip": "Sentinel-Steuerchip",
+  "item.xmen.sentinel_helmet": "Sentinel-Helm",
+  "item.xmen.sentinel_chestplate": "Sentinel-Brustplatte",
+  "item.xmen.sentinel_leggings": "Sentinel-Beinschutz",
+  "item.xmen.sentinel_boots": "Sentinel-Stiefel"
 }

@@ -109,6 +109,20 @@
           "weight": 2
         }
       ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "xmen:sentinel_blaster",
+          "weight": 15
+        },
+        {
+          "type": "minecraft:empty",
+          "weight": 85
+        }
+      ]
     }
   ]
 }
