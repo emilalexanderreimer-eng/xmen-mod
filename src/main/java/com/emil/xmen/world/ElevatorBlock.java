@@ -50,8 +50,17 @@ public class ElevatorBlock extends Block {
     /** Called when the player jumps (up) or sneaks (down) while standing on an elevator. */
     public static void ride(ServerPlayer player, boolean up) {
         ServerLevel level = player.serverLevel();
-        BlockPos start = BlockPos.containing(player.getX(), player.getY() - 0.2, player.getZ());
-        if (!level.getBlockState(start).is(ModContent.ELEVATOR.get())) {
+        // The player is already in the air when the jump reaches the server, so look a bit further down
+        // for the elevator they jumped off (this is why riding up used to do nothing).
+        BlockPos start = null;
+        for (double drop : new double[] {0.2, 0.8, 1.4}) {
+            BlockPos pos = BlockPos.containing(player.getX(), player.getY() - drop, player.getZ());
+            if (level.getBlockState(pos).is(ModContent.ELEVATOR.get())) {
+                start = pos;
+                break;
+            }
+        }
+        if (start == null) {
             return;
         }
         int step = up ? 1 : -1;

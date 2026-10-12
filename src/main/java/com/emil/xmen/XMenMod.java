@@ -34,6 +34,7 @@ public class XMenMod {
         SinisterEntities.register(modEventBus);
         ApocalypseContent.register(modEventBus);
         WeaponXEntities.register(modEventBus);
+        com.emil.xmen.robot.RobotEntities.register(modEventBus);
         XMenWorld.register(modEventBus);
         modEventBus.addListener(ModNetwork::register);
         PowerEvents.register();

@@ -71,5 +71,11 @@
   "entity.xmen.weapon_xi": "Weapon XI",
   "item.xmen.weapon_xi_spawn_egg": "Weapon XI Spawn Egg",
   "entity.xmen.weapon_x_logan": "Logan (Weapon X)",
-  "item.xmen.weapon_x_logan_spawn_egg": "Logan (Weapon X) Spawn Egg"
+  "item.xmen.weapon_x_logan_spawn_egg": "Logan (Weapon X) Spawn Egg",
+  "entity.xmen.sentinel": "Sentinel",
+  "entity.xmen.training_robot": "Training Robot",
+  "entity.xmen.laser_drone": "Laser Drone",
+  "item.xmen.sentinel_spawn_egg": "Sentinel Spawn Egg",
+  "item.xmen.training_robot_spawn_egg": "Training Robot Spawn Egg",
+  "item.xmen.laser_drone_spawn_egg": "Laser Drone Spawn Egg"
 }

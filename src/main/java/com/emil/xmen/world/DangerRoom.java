@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.emil.xmen.XMenMod;
+import com.emil.xmen.robot.LaserDrone;
+import com.emil.xmen.robot.RobotEntities;
+import com.emil.xmen.robot.RobotMob;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -22,7 +25,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootParams;
@@ -120,49 +122,54 @@ public final class DangerRoom {
         switch (s.wave) {
             case 1 -> {
                 for (int i = 0; i < 4; i++) {
-                    spawn(s, player, EntityType.ZOMBIE, "training_robot");
+                    spawn(s, player, RobotEntities.TRAINING_ROBOT.get());
                 }
             }
             case 2 -> {
-                for (int i = 0; i < 3; i++) {
-                    spawn(s, player, EntityType.ZOMBIE, "training_robot");
-                    spawn(s, player, EntityType.SKELETON, "laser_drone");
+                for (int i = 0; i < 2; i++) {
+                    spawn(s, player, RobotEntities.TRAINING_ROBOT.get());
+                }
+                for (int i = 0; i < 4; i++) {
+                    spawn(s, player, RobotEntities.LASER_DRONE.get());
                 }
             }
             default -> {
-                spawn(s, player, EntityType.IRON_GOLEM, "training_sentinel");
-                spawn(s, player, EntityType.SKELETON, "laser_drone");
-                spawn(s, player, EntityType.SKELETON, "laser_drone");
+                spawn(s, player, RobotEntities.SENTINEL.get());
+                spawn(s, player, RobotEntities.LASER_DRONE.get());
+                spawn(s, player, RobotEntities.LASER_DRONE.get());
             }
         }
     }
 
-    private static void spawn(Session s, ServerPlayer player, EntityType<? extends Mob> type, String kind) {
-        Mob mob = type.create(s.level);
+    private static void spawn(Session s, ServerPlayer player, EntityType<? extends RobotMob> type) {
+        RobotMob mob = type.create(s.level);
         if (mob == null) {
             return;
         }
-        BlockPos at = spot(s);
-        mob.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, s.level.random.nextFloat() * 360, 0);
-        mob.addTag("xmen." + kind);
+        BlockPos at = spot(s, (int) Math.ceil(type.getHeight()));
+        double y = at.getY() + (mob instanceof LaserDrone ? 2.5 : 0);
+        mob.moveTo(at.getX() + 0.5, y, at.getZ() + 0.5, s.level.random.nextFloat() * 360, 0);
+        mob.setTraining(true);
+        mob.setHealth(mob.getMaxHealth());
         mob.addTag("xmen.no_loot");
         s.level.addFreshEntity(mob);
         mob.setTarget(player);
         s.mobs.add(mob.getUUID());
-        s.level.sendParticles(ParticleTypes.ELECTRIC_SPARK, at.getX() + 0.5, at.getY() + 1, at.getZ() + 0.5, 30,
+        s.level.sendParticles(ParticleTypes.ELECTRIC_SPARK, at.getX() + 0.5, y + 1, at.getZ() + 0.5, 30,
                 0.4, 0.8, 0.4, 0.1);
     }
 
-    /** A free spot 4 to 11 blocks from the console, on the same floor. */
-    private static BlockPos spot(Session s) {
+    /** A free spot 4 to 11 blocks from the console, on the same floor, with room for something this tall. */
+    private static BlockPos spot(Session s, int height) {
         for (int i = 0; i < 40; i++) {
             double angle = s.level.random.nextDouble() * Math.PI * 2;
             double r = 4 + s.level.random.nextDouble() * 7;
             BlockPos p = s.console.offset((int) Math.round(Math.cos(angle) * r), 0, (int) Math.round(Math.sin(angle) * r));
-            if (s.level.getBlockState(p).getCollisionShape(s.level, p).isEmpty()
-                    && s.level.getBlockState(p.above()).getCollisionShape(s.level, p.above()).isEmpty()
-                    && s.level.getBlockState(p.above(2)).getCollisionShape(s.level, p.above(2)).isEmpty()
-                    && !s.level.getBlockState(p.below()).getCollisionShape(s.level, p.below()).isEmpty()) {
+            boolean free = !s.level.getBlockState(p.below()).getCollisionShape(s.level, p.below()).isEmpty();
+            for (int dy = 0; free && dy < Math.max(height, 3); dy++) {
+                free = s.level.getBlockState(p.above(dy)).getCollisionShape(s.level, p.above(dy)).isEmpty();
+            }
+            if (free) {
                 return p;
             }
         }
