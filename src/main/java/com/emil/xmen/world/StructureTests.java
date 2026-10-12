@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import com.emil.xmen.XMenMod;
+import com.emil.xmen.entity.Blackbird;
 import com.emil.xmen.entity.MagnetoBoss;
+import com.emil.xmen.entity.MutantNpc;
 import com.emil.xmen.entity.SinisterBoss;
 import com.emil.xmen.entity.SinisterClone;
 
@@ -86,7 +88,25 @@ public class StructureTests {
             helper.fail("Sinister's clones aren't asleep in their tanks");
             return;
         }
-        XMenMod.LOGGER.info("Test: {} structure mobs set up", people.size());
+        // the X-Mansion: the X-Men are real characters (no villagers), Professor X sits, the X-Jet is in the hangar
+        List<MutantNpc> xmen = level.getEntitiesOfClass(MutantNpc.class, area, npc -> !npc.isHostile());
+        if (xmen.stream().noneMatch(npc -> npc.getCharacter().equals("professor_x") && npc.isSitting())) {
+            helper.fail("Professor X isn't sitting in his study");
+            return;
+        }
+        if (xmen.stream().noneMatch(npc -> npc.getCharacter().equals("wolverine"))) {
+            helper.fail("Wolverine isn't in the mansion");
+            return;
+        }
+        if (!level.getEntitiesOfClass(net.minecraft.world.entity.npc.Villager.class, area).isEmpty()) {
+            helper.fail("There are still villagers in the structures");
+            return;
+        }
+        if (level.getEntitiesOfClass(Blackbird.class, area).isEmpty()) {
+            helper.fail("The X-Jet isn't in its hangar");
+            return;
+        }
+        XMenMod.LOGGER.info("Test: {} structure mobs set up, {} X-Men", people.size(), xmen.size());
         helper.succeed();
     }
 }

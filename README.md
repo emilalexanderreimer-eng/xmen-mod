@@ -407,7 +407,7 @@ The full list of powers is in [tools/powers.psv](tools/powers.psv).
 
 | Structure | Where | What's there |
 |---|---|---|
-| `x_mansion` | plains, meadows, forests (rare) | Xavier's School, students, Professor X. Elevator in the lounge goes down to Cerebro, the medical lab, the war room, the Danger Room and the X-Jet hangar. Krakoa gate in the garden. |
+| `x_mansion` | plains, meadows, forests (rare) | Movie-style castle with a round tower, fountain and basketball court. The X-Men live there with their own skins (Professor X in his wheelchair sells suits and the Mutant Serum). The elevator in the dining hall goes down to the silver level: X-doors that open by themselves, Cerebro (a giant sphere that lights up and shows mutants as red dots), the Danger Room, med lab, war room, suit room and the hangar with a flyable X-Jet. The court floor slides open with the Hangar Control. Krakoa gate in the corner garden. |
 | `apocalypse_pyramid` | desert (very rare) | The Four Horsemen, a sleeping Apocalypse (boss), a hidden lava vault. Apocalypse drops a Celestial Orb: a new power that is always Beta or better. |
 | `asteroid_m` | floating high over oceans | Magneto (boss). He floats, sends arrows back, throws ripped-out metal, lifts you by the iron in your blood, pulls metal weapons out of your hands and cages you in iron bars. He drops his helmet, which blocks mind powers and hides you from Cerebro. Spawn him anywhere with the Magneto Spawn Egg or `/summon xmen:magneto`. |
 | `sentinel_factory` | plains, savanna, desert | Trask guards, Sentinels that hunt mutants, and a giant Sentinel boss. |
@@ -426,7 +426,10 @@ The full list of powers is in [tools/powers.psv](tools/powers.psv).
 
 New blocks and items: Elevator (jump to go up, sneak to go down, craft 8 iron + 1 ender pearl), Cerebro,
 Danger Room Console, Krakoa Gate, Mutant Serum, Celestial Orb, Adamantium (ingot, sword, pickaxe, armor),
-X-Men suit, Magneto's helmet and Sentinel parts (4 parts + 4 iron + 1 diamond = 1 adamantium ingot).
+X-Men suit (black movie suit; the full set gives Resistance, Speed and Jump Boost), Magneto's helmet and Sentinel parts
+(4 parts + 4 iron + 1 diamond = 1 adamantium ingot). The X-Jet item (iron blocks, elytra, Sentinel parts, nether
+star, black dye, firework) places a jet: right-click to get in, look where you want to go, W faster, S slower,
+Shift to get out. Building blocks from the lower level: X-Door, Silver Wall Panel, Silver Floor, Silver Light.
 
 ## Building it yourself
 
