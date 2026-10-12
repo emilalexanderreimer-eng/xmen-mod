@@ -94,6 +94,11 @@ public abstract class WeaponXMob extends Monster {
     protected void greet(ServerLevel level, LivingEntity target) {
     }
 
+    /** False while an inhibitor collar has shut this character's powers off. */
+    protected boolean powersOn() {
+        return !WeaponXItems.isSuppressed(this);
+    }
+
     public boolean canAct() {
         return !contained;
     }
@@ -173,7 +178,7 @@ public abstract class WeaponXMob extends Monster {
 
     /** Heals a little every second (healing factor). */
     protected void regenerate(float perSecond) {
-        if (tickCount % 20 == 0 && getHealth() < getMaxHealth() && isAlive()) {
+        if (tickCount % 20 == 0 && getHealth() < getMaxHealth() && isAlive() && powersOn()) {
             heal(perSecond);
         }
     }

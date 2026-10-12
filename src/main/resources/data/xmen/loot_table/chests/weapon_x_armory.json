@@ -11,12 +11,42 @@
         {
           "type": "minecraft:item",
           "name": "xmen:weapon_x_rifle",
-          "weight": 3
+          "weight": 8
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:iron_helmet",
+          "name": "xmen:inhibitor_collar",
           "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "name": "xmen:adamantium_ingot",
+          "weight": 4,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 3
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "xmen:sentinel_part",
+          "weight": 3,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
@@ -26,42 +56,7 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:shield",
-          "weight": 4
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:arrow",
-          "weight": 6,
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "type": "minecraft:uniform",
-                "min": 8,
-                "max": 20
-              }
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:crossbow",
           "weight": 3
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_ingot",
-          "weight": 8,
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "type": "minecraft:uniform",
-                "min": 2,
-                "max": 5
-              }
-            }
-          ]
         },
         {
           "type": "minecraft:item",
@@ -77,6 +72,40 @@
               }
             }
           ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "xmen:xmen_mask",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "xmen:xmen_suit",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "xmen:xmen_pants",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "xmen:xmen_boots",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "xmen:adamantium_claws",
+          "weight": 10
+        },
+        {
+          "type": "minecraft:empty",
+          "weight": 90
         }
       ]
     }

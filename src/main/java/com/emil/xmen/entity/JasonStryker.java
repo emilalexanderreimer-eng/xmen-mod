@@ -87,7 +87,7 @@ public class JasonStryker extends WeaponXMob {
         super.customServerAiStep();
         setDeltaMovement(0, getDeltaMovement().y, 0);
         LivingEntity target = getTarget();
-        if (!(level() instanceof ServerLevel level) || !(target instanceof Player player)) {
+        if (!(level() instanceof ServerLevel level) || !(target instanceof Player player) || !powersOn()) {
             return;
         }
         getLookControl().setLookAt(target, 30.0f, 30.0f);

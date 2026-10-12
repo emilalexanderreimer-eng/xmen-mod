@@ -11,21 +11,6 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:iron_ingot",
-          "weight": 10,
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "type": "minecraft:uniform",
-                "min": 2,
-                "max": 6
-              }
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:bone",
           "weight": 8,
           "functions": [
             {
@@ -40,29 +25,37 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:potion",
-          "weight": 5,
-          "functions": [
-            {
-              "function": "minecraft:set_potion",
-              "id": "minecraft:healing"
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:potion",
+          "name": "xmen:adamantium_ingot",
           "weight": 4,
           "functions": [
             {
-              "function": "minecraft:set_potion",
-              "id": "minecraft:strength"
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
             }
           ]
         },
         {
           "type": "minecraft:item",
-          "name": "xmen:adamantium_ingot",
+          "name": "xmen:healing_factor_serum",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "xmen:weapon_x_rifle",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "xmen:inhibitor_collar",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "xmen:mutant_serum",
           "weight": 2
         },
         {
@@ -97,22 +90,33 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:paper",
-          "weight": 6,
+          "name": "minecraft:potion",
+          "weight": 4,
           "functions": [
             {
-              "function": "minecraft:set_count",
-              "count": {
-                "type": "minecraft:uniform",
-                "min": 2,
-                "max": 6
-              }
+              "function": "minecraft:set_potion",
+              "id": "minecraft:healing"
             }
           ]
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:compass",
+          "name": "xmen:xmen_mask",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "xmen:xmen_suit",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "xmen:xmen_pants",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "xmen:xmen_boots",
           "weight": 2
         }
       ]

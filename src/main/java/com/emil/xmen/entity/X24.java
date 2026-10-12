@@ -98,7 +98,7 @@ public class X24 extends WeaponXMob {
         }
         regenerate(berserk ? 3.0f : 2.0f);
         LivingEntity target = getTarget();
-        if (target == null) {
+        if (target == null || !powersOn()) {
             return;
         }
         if (!berserk && getHealth() < getMaxHealth() * 0.35f) {
@@ -165,6 +165,7 @@ public class X24 extends WeaponXMob {
             narrate(level, "X-24 falls. Even his healing factor couldn't save him", ChatFormatting.DARK_RED);
             spawnAtLocation(new ItemStack(ModContent.ADAMANTIUM_INGOT.get(), 5));
             spawnAtLocation(new ItemStack(Items.DIAMOND, 2));
+            spawnAtLocation(new ItemStack(WeaponXEntities.HEALING_SERUM.get(), 2));
         }
     }
 }

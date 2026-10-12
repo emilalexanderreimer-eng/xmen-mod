@@ -101,7 +101,7 @@ public class WilliamStryker extends WeaponXMob {
             return;
         }
         cooldown = 22 + random.nextInt(12);
-        if (++shots % 5 == 0 && distance < 12) {
+        if (++shots % 5 == 0 && distance < 12 && powersOn()) {
             serumDart(level, target);
         } else {
             shoot(level, target, 5.0f, 0.75f);
@@ -154,6 +154,7 @@ public class WilliamStryker extends WeaponXMob {
             say(level, NAME, "You have no idea what you've started...", ChatFormatting.DARK_GREEN);
             spawnAtLocation(new ItemStack(ModContent.ADAMANTIUM_INGOT.get(), 2));
             spawnAtLocation(new ItemStack(Items.EMERALD, 5));
+            spawnAtLocation(new ItemStack(WeaponXEntities.COLLAR.get()));
         }
     }
 

@@ -4,8 +4,8 @@
     {
       "rolls": {
         "type": "minecraft:uniform",
-        "min": 2,
-        "max": 4
+        "min": 3,
+        "max": 5
       },
       "entries": [
         {
@@ -18,7 +18,7 @@
               "count": {
                 "type": "minecraft:uniform",
                 "min": 2,
-                "max": 5
+                "max": 6
               }
             }
           ]
@@ -61,6 +61,49 @@
           "type": "minecraft:item",
           "name": "xmen:adamantium_boots",
           "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "xmen:adamantium_claws",
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "xmen:healing_factor_serum",
+          "weight": 40,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 3
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:empty",
+          "weight": 60
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "xmen:adamantium_skeleton",
+          "weight": 15
+        },
+        {
+          "type": "minecraft:empty",
+          "weight": 85
         }
       ]
     }

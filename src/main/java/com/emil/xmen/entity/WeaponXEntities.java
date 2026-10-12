@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import com.emil.xmen.XMenMod;
 import com.emil.xmen.world.ModContent;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -14,10 +15,14 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.component.Unbreakable;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
@@ -51,6 +56,16 @@ public final class WeaponXEntities {
 
     public static final DeferredItem<Item> RIFLE = ITEMS.register("weapon_x_rifle",
             () -> new WeaponXRifle(new Item.Properties().durability(300)));
+    public static final DeferredItem<Item> CLAWS = ITEMS.register("adamantium_claws",
+            () -> new WeaponXItems.Claws(ModContent.ADAMANTIUM_TIER, new Item.Properties().fireResistant()
+                    .component(DataComponents.UNBREAKABLE, new Unbreakable(true))
+                    .attributes(SwordItem.createAttributes(ModContent.ADAMANTIUM_TIER, 4, -1.6f))));
+    public static final DeferredItem<Item> SKELETON = ITEMS.register("adamantium_skeleton",
+            () -> new WeaponXItems.Skeleton(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC).fireResistant()));
+    public static final DeferredItem<Item> HEALING_SERUM = ITEMS.register("healing_factor_serum",
+            () -> new WeaponXItems.Serum(new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> COLLAR = ITEMS.register("inhibitor_collar",
+            () -> new WeaponXItems.Collar(new Item.Properties().durability(8).rarity(Rarity.RARE)));
     public static final DeferredBlock<TankConsoleBlock> TANK_CONSOLE = BLOCKS.register("weapon_x_tank_console",
             () -> new TankConsoleBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0f, 6.0f)
                     .sound(SoundType.METAL).lightLevel(state -> 7).requiresCorrectToolForDrops()));
@@ -75,6 +90,8 @@ public final class WeaponXEntities {
         ITEMS.register(modEventBus);
         modEventBus.addListener(WeaponXEntities::registerAttributes);
         modEventBus.addListener(WeaponXEntities::addToCreativeTabs);
+        NeoForge.EVENT_BUS.addListener(WeaponXItems::onClone);
+        NeoForge.EVENT_BUS.addListener(WeaponXItems::onIncomingDamage);
     }
 
     private static void registerAttributes(EntityAttributeCreationEvent event) {
@@ -100,8 +117,11 @@ public final class WeaponXEntities {
             }
         } else if (event.getTabKey() == CreativeModeTabs.COMBAT) {
             event.accept(RIFLE.get());
+            event.accept(CLAWS.get());
         } else if (event.getTabKey() == ModContent.TAB.getKey()) {
-            event.accept(RIFLE.get());
+            for (DeferredItem<Item> item : List.of(RIFLE, CLAWS, SKELETON, HEALING_SERUM, COLLAR)) {
+                event.accept(item.get());
+            }
             event.accept(TANK_CONSOLE_ITEM.get());
         }
     }

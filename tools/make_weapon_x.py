@@ -337,6 +337,67 @@ def console():
     save(front, "textures", "block", "weapon_x_tank_console_front.png")
 
 
+def item_icon(name, pixels):
+    img = Image.new("RGBA", (16, 16), CLEAR)
+    for (x, y), c in pixels.items():
+        if 0 <= x < 16 and 0 <= y < 16:
+            img.putpixel((x, y), noisy(c, 0.05))
+    save(img, "textures", "item", name + ".png")
+
+
+def mutant_items():
+    silver, light, dark = hexc("c8ced6"), hexc("f2f5f8"), hexc("6e757d")
+    skin, knuckle = hexc("c99670"), hexc("9a6e4e")
+    # Adamantium Claws: a fist with three long blades
+    px = {}
+    for i in range(3):
+        for j in range(9):
+            x, y = 5 + i * 3 + j // 3, 9 - j
+            px[(x, y)] = light if j % 3 == 0 else silver
+            px[(x + 1, y)] = dark
+    for x in range(3, 13):
+        for y in range(10, 15):
+            px[(x, y)] = skin if y > 10 else knuckle
+    item_icon("adamantium_claws", px)
+    # Adamantium Skeleton: a syringe full of liquid silver
+    px = {}
+    for i in range(10):
+        x, y = 3 + i, 12 - i
+        px[(x, y)] = hexc("e8eef4")
+        px[(x + 1, y)] = silver if i < 7 else hexc("e8eef4")
+        px[(x, y - 1)] = dark if i in (0, 9) else (light if i < 7 else hexc("e8eef4"))
+    for i in range(3):
+        px[(13 + i, 2 - i)] = dark
+    px[(1, 13)] = dark
+    px[(2, 14)] = dark
+    px[(2, 12)] = dark
+    px[(0, 14)] = dark
+    item_icon("adamantium_skeleton", px)
+    # Healing Factor Serum: a vial of glowing green
+    px = {}
+    for x in range(5, 11):
+        for y in range(5, 15):
+            edge = x in (5, 10) or y == 14
+            px[(x, y)] = hexc("d8e4e8") if edge else (hexc("6cf04a") if y > 7 else hexc("e8f4f8"))
+    for x in range(6, 10):
+        px[(x, 3)] = hexc("7a5230")
+        px[(x, 4)] = hexc("7a5230")
+    px[(7, 9)] = hexc("c8ffb0")
+    item_icon("healing_factor_serum", px)
+    # Inhibitor Collar: a metal ring with a red light
+    px = {}
+    for x in range(16):
+        for y in range(16):
+            d = ((x - 7.5) ** 2 + ((y - 8) * 1.3) ** 2) ** 0.5
+            if 4.5 <= d <= 7:
+                px[(x, y)] = silver if y < 8 else dark
+    px[(7, 13)] = hexc("ff2020")
+    px[(8, 13)] = hexc("ff2020")
+    px[(7, 12)] = hexc("801010")
+    px[(8, 12)] = hexc("801010")
+    item_icon("inhibitor_collar", px)
+
+
 # ============================================================================ models, names, data
 PEOPLE = {
     "weapon_x_soldier": ("Weapon X Soldier", "Weapon-X-Soldat"),
@@ -351,6 +412,19 @@ PEOPLE = {
 NAMES = {
     "item.xmen.weapon_x_rifle": ("Weapon X Rifle", "Weapon-X-Gewehr"),
     "block.xmen.weapon_x_tank_console": ("Weapon X Tank Console", "Weapon-X-Tankkonsole"),
+    "item.xmen.adamantium_claws": ("Adamantium Claws", "Adamantium-Krallen"),
+    "item.xmen.adamantium_skeleton": ("Adamantium Skeleton", "Adamantium-Skelett"),
+    "item.xmen.healing_factor_serum": ("Healing Factor Serum", "Heilfaktor-Serum"),
+    "item.xmen.inhibitor_collar": ("Inhibitor Collar", "Hemmhalsband"),
+}
+RECIPES = {
+    "adamantium_claws": {"type": "minecraft:crafting_shaped", "category": "equipment", "pattern": ["III", " L "],
+                         "key": {"I": {"item": "xmen:adamantium_ingot"}, "L": {"item": "minecraft:leather"}},
+                         "result": {"id": "xmen:adamantium_claws", "count": 1}},
+    "adamantium_skeleton": {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["III", "ISI", "III"],
+                            "key": {"I": {"item": "xmen:adamantium_ingot"},
+                                    "S": {"item": "xmen:healing_factor_serum"}},
+                            "result": {"id": "xmen:adamantium_skeleton", "count": 1}},
 }
 
 
@@ -366,6 +440,13 @@ def models_and_lang():
     for name in PEOPLE:
         write_json(os.path.join(models, "item", name + "_spawn_egg.json"),
                    {"parent": "minecraft:item/template_spawn_egg"})
+    for name in ("adamantium_skeleton", "healing_factor_serum", "inhibitor_collar"):
+        write_json(os.path.join(models, "item", name + ".json"),
+                   {"parent": "minecraft:item/generated", "textures": {"layer0": "xmen:item/" + name}})
+    write_json(os.path.join(models, "item", "adamantium_claws.json"),
+               {"parent": "minecraft:item/handheld", "textures": {"layer0": "xmen:item/adamantium_claws"}})
+    for name, recipe in RECIPES.items():
+        write_json(os.path.join(DATA, "xmen", "recipe", name + ".json"), recipe)
     write_json(os.path.join(models, "item", "weapon_x_rifle.json"),
                {"parent": "minecraft:item/handheld", "textures": {"layer0": "xmen:item/weapon_x_rifle"}})
     write_json(os.path.join(models, "block", "weapon_x_tank_console.json"),
@@ -436,6 +517,7 @@ if __name__ == "__main__":
     claws()
     rifle()
     console()
+    mutant_items()
     models_and_lang()
     if "--preview" in sys.argv:
         preview(images)

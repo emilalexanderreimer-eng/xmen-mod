@@ -114,6 +114,9 @@ public class WeaponXLogan extends WeaponXMob {
             narrate(level, "Logan calms down. The rage is gone from his eyes", ChatFormatting.GOLD);
         }
         LivingEntity target = getTarget();
+        if (!powersOn()) {
+            return;
+        }
         if (leapCooldown > 0) {
             leapCooldown--;
         }

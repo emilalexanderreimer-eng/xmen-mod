@@ -114,6 +114,13 @@ public class WeaponXI extends WeaponXMob {
             return;
         }
         regenerate(frenzy ? 2.0f : 1.0f);
+        if (!powersOn()) {
+            if (charge > 0) {
+                charge = 0;
+                entityData.set(CHARGING, false);
+            }
+            return;
+        }
         cutArrows(level);
         LivingEntity target = getTarget();
         if (charge > 0) {
@@ -285,6 +292,7 @@ public class WeaponXI extends WeaponXMob {
             spawnAtLocation(new ItemStack(ModContent.ADAMANTIUM_INGOT.get(), 8));
             spawnAtLocation(new ItemStack(Items.DIAMOND, 5));
             spawnAtLocation(new ItemStack(Items.NETHERITE_SCRAP, 2));
+            spawnAtLocation(new ItemStack(WeaponXEntities.CLAWS.get()));
         }
     }
 }

@@ -426,7 +426,11 @@ The full list of powers is in [tools/powers.psv](tools/powers.psv).
 
 New blocks and items: Elevator (jump to go up, sneak to go down, craft 8 iron + 1 ender pearl), Cerebro,
 Danger Room Console, Krakoa Gate, Mutant Serum, Celestial Orb, Adamantium (ingot, sword, pickaxe, armor),
-X-Men suit (black movie suit; the full set gives Resistance, Speed and Jump Boost), Magneto's helmet, the Weapon X Rifle (right-click to shoot), the Weapon X Tank Console
+X-Men suit (black movie suit; the full set gives Resistance, Speed and Jump Boost), Magneto's helmet, the Weapon X Rifle (right-click to shoot), the Weapon X Tank Console,
+Adamantium Claws (craft 3 adamantium + 1 leather: fast slashes that make enemies bleed, never break), Adamantium
+Skeleton (8 adamantium around a Healing Factor Serum: right-click to bond adamantium to your bones forever for more
+armor, toughness, punch damage and half fall damage), Healing Factor Serum and Inhibitor Collar (right-click a mob to
+shut off its powers for 30 seconds; both found in Weapon X)
 and Sentinel parts
 (4 parts + 4 iron + 1 diamond = 1 adamantium ingot). The X-Jet item (iron blocks, elytra, Sentinel parts, nether
 star, black dye, firework) places a jet: right-click to get in, look where you want to go, W faster, S slower,

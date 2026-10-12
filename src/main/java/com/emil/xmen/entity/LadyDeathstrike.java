@@ -87,7 +87,7 @@ public class LadyDeathstrike extends WeaponXMob {
         super.customServerAiStep();
         regenerate(1.0f);
         LivingEntity target = getTarget();
-        if (!(level() instanceof ServerLevel level) || target == null || !canAct()) {
+        if (!(level() instanceof ServerLevel level) || target == null || !canAct() || !powersOn()) {
             return;
         }
         if (lungeCooldown > 0) {
@@ -154,6 +154,7 @@ public class LadyDeathstrike extends WeaponXMob {
         if (first && level() instanceof ServerLevel level) {
             narrate(level, "The blue light fades from Lady Deathstrike's eyes", ChatFormatting.AQUA);
             spawnAtLocation(new ItemStack(ModContent.ADAMANTIUM_INGOT.get(), 4));
+            spawnAtLocation(new ItemStack(WeaponXEntities.HEALING_SERUM.get()));
         }
     }
 }
