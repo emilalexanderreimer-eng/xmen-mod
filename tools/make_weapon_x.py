@@ -425,6 +425,11 @@ RECIPES = {
                             "key": {"I": {"item": "xmen:adamantium_ingot"},
                                     "S": {"item": "xmen:healing_factor_serum"}},
                             "result": {"id": "xmen:adamantium_skeleton", "count": 1}},
+    "inhibitor_collar": {"type": "minecraft:crafting_shaped", "category": "equipment",
+                         "pattern": ["IRI", "I I", "IAI"],
+                         "key": {"I": {"item": "minecraft:iron_ingot"}, "R": {"item": "minecraft:redstone"},
+                                 "A": {"item": "xmen:adamantium_ingot"}},
+                         "result": {"id": "xmen:inhibitor_collar", "count": 1}},
 }
 
 
