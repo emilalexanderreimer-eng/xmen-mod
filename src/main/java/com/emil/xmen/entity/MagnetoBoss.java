@@ -129,6 +129,11 @@ public class MagnetoBoss extends Monster {
             setTarget(null);
             target = null;
         }
+        if (WeaponXItems.isSuppressed(this)) {
+            powerless(target);
+            return;
+        }
+        setNoGravity(true);
         hover(target);
         if (tickCount % 2 == 0) {
             level.sendParticles(MAGNET, getX(), getY() - 0.1, getZ(), 2, 0.25, 0.05, 0.25, 0);
@@ -164,6 +169,27 @@ public class MagnetoBoss extends Monster {
         attackCooldown = attack(level, target);
         if (enraged) {
             attackCooldown = attackCooldown * 2 / 3;
+        }
+    }
+
+    /**
+     * Wearing an inhibitor collar (like in his plastic prison in X2) he can't fly or bend metal: he drops to the
+     * ground and can only walk up and punch you.
+     */
+    private void powerless(LivingEntity target) {
+        setNoGravity(false);
+        entityData.set(CASTING, false);
+        lifted = null;
+        if (target == null) {
+            getNavigation().stop();
+            return;
+        }
+        getLookControl().setLookAt(target, 30.0f, 30.0f);
+        getNavigation().moveTo(target, 1.0);
+        if (--attackCooldown <= 0 && distanceToSqr(target) < 6.25) {
+            swing(InteractionHand.MAIN_HAND);
+            doHurtTarget(target);
+            attackCooldown = 20;
         }
     }
 
@@ -422,8 +448,9 @@ public class MagnetoBoss extends Monster {
     // ------------------------------------------------------------------ damage, death, boss bar
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (source.getDirectEntity() instanceof AbstractArrow || source.getDirectEntity() instanceof MagnetoDebris
-                || source.is(DamageTypeTags.IS_FALL) || source.is(DamageTypes.IN_WALL)) {
+        boolean powers = !WeaponXItems.isSuppressed(this);
+        if ((powers && source.getDirectEntity() instanceof AbstractArrow)
+                || source.getDirectEntity() instanceof MagnetoDebris || source.is(DamageTypeTags.IS_FALL) || source.is(DamageTypes.IN_WALL)) {
             return false;
         }
         return super.hurt(source, amount);

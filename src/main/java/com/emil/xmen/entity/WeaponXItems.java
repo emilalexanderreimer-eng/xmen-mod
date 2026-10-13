@@ -3,6 +3,7 @@ package com.emil.xmen.entity;
 import java.util.List;
 
 import com.emil.xmen.XMenMod;
+import com.emil.xmen.ability.PowerRuntime;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
@@ -35,6 +36,8 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
 /** The mutant items from the Weapon X program: claws, the adamantium skeleton, the healing serum, the collar. */
 public final class WeaponXItems {
@@ -199,41 +202,71 @@ public final class WeaponXItems {
     }
 
     // ------------------------------------------------------------------ Inhibitor Collar
-    /** The collar from the movies that shuts a mutant's powers off. Use it on any mob, even a boss. */
+    /**
+     * The collar from the movies that shuts a mutant's powers off. Works on every mutant in the mod: Magneto,
+     * Sinister, Apocalypse and his Horsemen, the X-Men, the Brotherhood, the Morlocks, Weapon X, and other players.
+     */
     public static class Collar extends Item {
         public Collar(Properties properties) {
             super(properties);
         }
 
         @Override
-        public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target,
-                InteractionHand hand) {
-            if (player.level() instanceof ServerLevel level) {
-                suppress(target, 20 * 30);
-                level.sendParticles(ParticleTypes.ELECTRIC_SPARK, target.getX(), target.getEyeY(), target.getZ(), 20,
-                        0.3, 0.2, 0.3, 0.05);
-                level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.CHAIN_PLACE,
-                        SoundSource.PLAYERS, 1.0f, 0.8f);
-                player.displayClientMessage(Component.literal("Powers suppressed for 30 seconds")
-                        .withStyle(ChatFormatting.RED), true);
-                stack.hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND
-                        : EquipmentSlot.OFFHAND);
-                player.getCooldowns().addCooldown(this, 40);
-            }
-            return InteractionResult.sidedSuccess(player.level().isClientSide());
-        }
-
-        @Override
         public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip,
                 TooltipFlag flag) {
-            lines(tooltip, "Right-click a mob to shut off its powers for 30 seconds",
-                    "Weapon X bosses can't use their special attacks while collared");
+            lines(tooltip, "Right-click a mutant to shut off its powers for 30 seconds",
+                    "Works on every mutant, even Magneto and Apocalypse");
         }
     }
 
     private static final String SUPPRESSED = "xmen_suppressed_until";
+    static final int COLLAR_TICKS = 20 * 30;
+    static final int PLAYER_COLLAR_TICKS = 20 * 15;
 
-    static void suppress(LivingEntity target, int ticks) {
+    /**
+     * Handled as an event (not in the item) so it runs before the mob's own right-click, otherwise heroes would open
+     * their trade screen or start talking instead of being collared.
+     */
+    static void onCollarInteract(PlayerInteractEvent.EntityInteract event) {
+        Player player = event.getEntity();
+        ItemStack stack = player.getItemInHand(event.getHand());
+        if (!stack.is(WeaponXEntities.COLLAR.get()) || !(event.getTarget() instanceof LivingEntity target)
+                || !target.isAlive() || player.getCooldowns().isOnCooldown(stack.getItem())) {
+            return;
+        }
+        event.setCanceled(true);
+        event.setCancellationResult(InteractionResult.sidedSuccess(player.level().isClientSide()));
+        if (!(player.level() instanceof ServerLevel level)) {
+            return;
+        }
+        int ticks = target instanceof Player ? PLAYER_COLLAR_TICKS : COLLAR_TICKS;
+        suppress(target, ticks);
+        if (target instanceof ServerPlayer other) {
+            PowerRuntime.suppress(other, ticks);
+            other.displayClientMessage(Component.literal("An inhibitor collar switched off your powers!")
+                    .withStyle(ChatFormatting.RED), true);
+        }
+        level.sendParticles(ParticleTypes.ELECTRIC_SPARK, target.getX(), target.getEyeY(), target.getZ(), 20,
+                0.3, 0.2, 0.3, 0.05);
+        level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.CHAIN_PLACE,
+                SoundSource.PLAYERS, 1.0f, 0.8f);
+        player.displayClientMessage(Component.literal(target.getDisplayName().getString() + "'s powers are off for "
+                + ticks / 20 + " seconds").withStyle(ChatFormatting.RED), true);
+        stack.hurtAndBreak(1, player, event.getHand() == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND
+                : EquipmentSlot.OFFHAND);
+        player.getCooldowns().addCooldown(stack.getItem(), 40);
+    }
+
+    /** Sparks around the neck of everything that wears a collar right now, so you can see it working. */
+    static void onCollaredTick(EntityTickEvent.Post event) {
+        if (event.getEntity().tickCount % 8 == 0 && event.getEntity() instanceof LivingEntity entity
+                && entity.level() instanceof ServerLevel level && isSuppressed(entity)) {
+            level.sendParticles(ParticleTypes.ELECTRIC_SPARK, entity.getX(), entity.getEyeY() - 0.25, entity.getZ(),
+                    2, 0.2, 0.05, 0.2, 0.01);
+        }
+    }
+
+    public static void suppress(LivingEntity target, int ticks) {
         target.getPersistentData().putLong(SUPPRESSED, target.level().getGameTime() + ticks);
         target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ticks, 2));
         target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, ticks, 1));

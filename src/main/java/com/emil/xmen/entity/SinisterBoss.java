@@ -146,8 +146,12 @@ public class SinisterBoss extends Monster implements SinisterLook {
             setTarget(null);
             target = null;
         }
+        boolean collared = WeaponXItems.isSuppressed(this);
+        if (collared && getDisguise() != null) {
+            dropDisguise(level);
+        }
         // healing factor: slowly closes his wounds all the time
-        if (tickCount % 30 == 0 && getHealth() < getMaxHealth()) {
+        if (!collared && tickCount % 30 == 0 && getHealth() < getMaxHealth()) {
             heal(1.0f);
         }
         if (tickCount % 3 == 0 && getDisguise() == null) {
@@ -158,8 +162,8 @@ public class SinisterBoss extends Monster implements SinisterLook {
         if (castTicks > 0 && --castTicks == 0) {
             entityData.set(CASTING, false);
         }
-        if (target == null) {
-            return;
+        if (target == null || collared) {
+            return;  // with a collar on he can only fight with his fists
         }
         if (!greeted) {
             greeted = true;

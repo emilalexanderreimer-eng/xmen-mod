@@ -138,7 +138,7 @@ public class SinisterClone extends Monster implements SinisterLook {
             setTarget(null);
             target = null;
         }
-        if (--blastCooldown > 0 || target == null) {
+        if (--blastCooldown > 0 || target == null || WeaponXItems.isSuppressed(this)) {
             return;
         }
         blastCooldown = 100 + random.nextInt(40);

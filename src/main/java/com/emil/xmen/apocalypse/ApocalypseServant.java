@@ -1,5 +1,6 @@
 package com.emil.xmen.apocalypse;
 
+import com.emil.xmen.entity.WeaponXItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -98,7 +99,8 @@ public class ApocalypseServant extends Monster {
         if (source.getEntity() != null && PyramidFx.ally(source.getEntity())) {
             return false;
         }
-        if (kind == ServantKind.MAGNETO && source.getDirectEntity() instanceof Projectile projectile) {
+        if (kind == ServantKind.MAGNETO && source.getDirectEntity() instanceof Projectile projectile
+                && !WeaponXItems.isSuppressed(this)) {
             // Magneto stops metal in the air
             if (level() instanceof ServerLevel level) {
                 level.sendParticles(PyramidFx.RED, projectile.getX(), projectile.getY(), projectile.getZ(), 10, 0.2,
@@ -125,14 +127,15 @@ public class ApocalypseServant extends Monster {
         }
         LivingEntity target = getTarget();
         boolean fighting = target != null && target.isAlive();
+        boolean collared = WeaponXItems.isSuppressed(this);
         if (kind == ServantKind.ARCHANGEL) {
-            fly(level, fighting ? target : null);
+            fly(level, fighting && !collared ? target : null);
         }
         if (bar != null && tickCount % 10 == 0) {
             bar.setName(PyramidFx.barTitle(this, ChatFormatting.WHITE));
             PyramidFx.updateBar(level, this, bar, 32, fighting || getHealth() < getMaxHealth());
         }
-        if (!fighting || --cooldown > 0) {
+        if (!fighting || collared || --cooldown > 0) {
             return;
         }
         cooldown = usePower(level, target);

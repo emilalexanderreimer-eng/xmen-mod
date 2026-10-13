@@ -189,6 +189,14 @@ public class StructureTests {
      * Builds the Weapon X lab by itself (the test world is too flat and low for its deep levels) and checks that
      * everybody is in it and the three in tanks are still locked up.
      */
+    @GameTest(template = "empty", timeoutTicks = 100)
+    public static void collarGroundsMagneto(GameTestHelper helper) {
+        com.emil.xmen.entity.MagnetoBoss magneto = helper.spawn(com.emil.xmen.entity.MagnetoEntities.MAGNETO.get(),
+                new BlockPos(1, 2, 1));
+        com.emil.xmen.entity.WeaponXItems.suppress(magneto, 20 * 30);
+        helper.succeedWhen(() -> helper.assertTrue(!magneto.isNoGravity(), "Collared Magneto is still flying"));
+    }
+
     @GameTest(template = "empty", timeoutTicks = 200)
     public static void weaponXHasItsPeople(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
