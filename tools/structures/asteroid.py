@@ -42,6 +42,7 @@ def build():
     machine_chamber(t)
     level_one(t)
     level_two(t)
+    stairs(t)   # last, so no room or corridor built later can cut into them
     t.connect_all()
     return t
 
@@ -250,23 +251,6 @@ def citadel(t):
     t.fill(C, top + 1, C, C, top + 8, C, "chain[axis=y]")
     t.set(C, top, C, LIGHT)
 
-    # stairs down to level 1 (south part of the hall): a hole in the floor with steps going east
-    z1, z2 = C + 12, C + 14
-    t.clear(C - 6, T, z1, C + 5, T, z2)
-    for i in range(11):
-        x, y = C - 6 + i, T - 1 - i
-        t.fill(x, y, z1, x, y, z2, "polished_deepslate_stairs[facing=west,half=bottom]")
-        t.clear(x, y + 1, z1, x, y + 4, z2)
-        t.fill(x, y - 1, z1, x, y - 1, z2, "polished_deepslate")
-        t.fill(x, y, z1 - 1, x, y + 3, z1 - 1, "polished_deepslate")
-        t.fill(x, y, z2 + 1, x, y + 3, z2 + 1, "polished_deepslate")
-    for x in range(C - 6, C + 6):
-        t.set(x, W, z1 - 1, "iron_bars")
-        t.set(x, W, z2 + 1, "iron_bars")
-    t.fill(C + 6, W, z1 - 1, C + 6, W, z2 + 1, "iron_bars")
-    t.set(C - 7, W, z1 - 1, "iron_bars")
-    t.set(C - 7, W, z2 + 1, "iron_bars")
-
 
 # =========================================================================== the mutation machine (X1)
 def machine_chamber(t):
@@ -315,16 +299,6 @@ def machine_chamber(t):
                 t.set(x, L1, z, "iron_block" if (x + z) % 2 else "polished_deepslate")
             elif 6.0 < d <= 6.7:
                 t.set(x, L1 + 1, z, "iron_bars")
-    # stairs from the balcony down to the chamber floor (east side, going south)
-    for i in range(10):
-        z, y = C - 5 + i, L1 - i
-        for x in (C + 7, C + 8):
-            t.set(x, y, z, "polished_deepslate_stairs[facing=north,half=bottom]")
-            t.clear(x, y + 1, z, x, y + 3, z)
-    t.clear(C + 7, L1, C - 5, C + 8, L1, C + 4)
-    for z in range(C - 5, C + 5):
-        t.set(C + 6, L1 + 1, z, AIR)
-
 
 # =========================================================================== level 1
 def level_one(t):
@@ -521,3 +495,42 @@ def level_two(t):
     t.fill(gx - 1, gy - 3, gz - 1, gx + 1, gy - 3, gz + 1, "amethyst_block")
     t.chest(gx, gy - 2, gz, "west", "asteroid_vault")
     t.set(gx + 2, gy - 2, gz + 1, "sea_lantern")
+
+
+# =========================================================================== stairs
+def steps(t, path, facing):
+    """A staircase along path: (x, y, z) of each step, with 4 blocks of air above every step."""
+    for x, y, z in path:
+        t.set(x, y, z, f"polished_deepslate_stairs[facing={facing},half=bottom]")
+        if not L1 < y - 1 <= L1 + 4:   # no support blocks inside the level 1 corridor, people walk there
+            t.set(x, y - 1, z, "polished_deepslate")
+        t.clear(x, y + 1, z, x, y + 4, z)
+
+
+def stairs(t):
+    W = T + 1
+    # 1) from the citadel floor down to the ring corridor of level 1: a hole in the hall floor (south side),
+    #    eleven steps going east, landing on the corridor floor
+    z1, z2 = C + 12, C + 14
+    t.clear(C - 6, T, z1, C + 5, T, z2)
+    path = [(C - 6 + i, T - 1 - i, z) for i in range(11) for z in range(z1, z2 + 1)]
+    steps(t, path, "west")
+    t.fill(C + 5, L1, z1, C + 7, L1, z2, "polished_deepslate")      # landing in the corridor
+    t.clear(C + 5, L1 + 1, z1, C + 7, L1 + 4, z2)
+    for x in range(C - 6, C + 6):                                    # railing around the hole
+        t.set(x, W, z1 - 1, "iron_bars")
+        t.set(x, W, z2 + 1, "iron_bars")
+    t.fill(C + 6, W, z1 - 1, C + 6, W, z2 + 1, "iron_bars")
+    t.set(C - 7, W, z1 - 1, "iron_bars")
+    t.set(C - 7, W, z2 + 1, "iron_bars")
+    t.set(C - 1, L1 + 5, C + 16, LIGHT)
+
+    # 2) inside the machine chamber, from the balcony down to the chamber floor (east side, going south)
+    path = [(x, L1 - 1 - i, C - 4 + i) for i in range(9) for x in (C + 7, C + 8)]
+    steps(t, path, "north")
+    t.fill(C + 7, L2, C + 5, C + 8, L2, C + 6, "deepslate_tiles")   # landing on the chamber floor
+    t.clear(C + 7, L2 + 1, C + 5, C + 8, L2 + 4, C + 6)
+    t.fill(C + 7, L1, C - 6, C + 8, L1, C - 5, "iron_block")          # balcony at the top of the stairs
+    t.clear(C + 7, L1 + 1, C - 6, C + 8, L1 + 3, C - 5)
+    for z in range(C - 4, C + 6):                                     # railing on the open side
+        t.set(C + 6, L1 + 1, z, "iron_bars")
