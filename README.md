@@ -431,7 +431,7 @@ Adamantium Claws (craft 3 adamantium + 1 leather: fast slashes that make enemies
 Skeleton (8 adamantium around a Healing Factor Serum: right-click to bond adamantium to your bones forever for more
 armor, toughness, punch damage and half fall damage), Healing Factor Serum and Inhibitor Collar (right-click any mutant to
 shut off its powers for 30 seconds: Magneto falls out of the air, Sinister and Apocalypse can only punch, the X-Men,
-Brotherhood and Morlocks lose their special moves, and other players lose their power for 15 seconds; craft it from 5 iron ingots, 1 redstone and 1 adamantium ingot,
+Brotherhood and Morlocks lose their special moves, and other players lose their power for 15 seconds; craft it from 6 iron ingots, 1 redstone and 1 adamantium ingot,
 or find it in Weapon X)
 and Sentinel parts
 (4 parts + 4 iron + 1 diamond = 1 adamantium ingot). The X-Jet item (iron blocks, elytra, Sentinel parts, nether
