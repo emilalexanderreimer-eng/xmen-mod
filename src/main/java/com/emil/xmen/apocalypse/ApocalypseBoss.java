@@ -1,5 +1,6 @@
 package com.emil.xmen.apocalypse;
 
+import com.emil.xmen.entity.WeaponXItems;
 import com.emil.xmen.ability.Scheduler;
 import com.emil.xmen.ability.TempBlocks;
 import com.emil.xmen.world.ModContent;
@@ -141,7 +142,11 @@ public class ApocalypseBoss extends Monster {
             setTarget(null);
             target = null;
         }
-        if (!reborn && getHealth() <= getMaxHealth() / 2) {
+        boolean collared = WeaponXItems.isSuppressed(this);
+        if (collared) {
+            stormTicks = 0;
+        }
+        if (!collared && !reborn && getHealth() <= getMaxHealth() / 2) {
             rebirth(level);
         }
         if (stormTicks > 0) {
@@ -152,7 +157,7 @@ public class ApocalypseBoss extends Monster {
                     getX(), getY() + 0.3, getZ(), 3, 1.2, 0.2, 1.2, 0.05);
         }
         sinceSpoke++;
-        if (target == null || --cooldown > 0) {
+        if (target == null || collared || --cooldown > 0) {
             return;
         }
         int wait = usePower(level, target);

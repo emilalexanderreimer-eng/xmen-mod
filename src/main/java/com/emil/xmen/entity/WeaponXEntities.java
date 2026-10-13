@@ -92,6 +92,8 @@ public final class WeaponXEntities {
         modEventBus.addListener(WeaponXEntities::addToCreativeTabs);
         NeoForge.EVENT_BUS.addListener(WeaponXItems::onClone);
         NeoForge.EVENT_BUS.addListener(WeaponXItems::onIncomingDamage);
+        NeoForge.EVENT_BUS.addListener(net.neoforged.bus.api.EventPriority.HIGHEST, WeaponXItems::onCollarInteract);
+        NeoForge.EVENT_BUS.addListener(WeaponXItems::onCollaredTick);
     }
 
     private static void registerAttributes(EntityAttributeCreationEvent event) {

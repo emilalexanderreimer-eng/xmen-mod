@@ -1,5 +1,6 @@
 package com.emil.xmen.world;
 
+import com.emil.xmen.entity.WeaponXItems;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -492,8 +493,8 @@ public final class MutantMobs {
                 removeBar(mob);    // Callisto only shows her bar once she's been challenged
             }
         }
-        if (kind.ability.isEmpty()) {
-            return;
+        if (kind.ability.isEmpty() || WeaponXItems.isSuppressed(mob)) {
+            return;  // an inhibitor collar switches the special moves (and the healing) off
         }
         LivingEntity target = mob.getTarget();
         if (target == null || !target.isAlive() || target.level() != level) {
