@@ -50,19 +50,38 @@ public class ElevatorBlock extends Block {
     /** Called when the player jumps (up) or sneaks (down) while standing on an elevator. */
     public static void ride(ServerPlayer player, boolean up) {
         ServerLevel level = player.serverLevel();
-        // The player is already in the air when the jump reaches the server, so look a bit further down
-        // for the elevator they jumped off (this is why riding up used to do nothing).
-        BlockPos start = null;
-        for (double drop : new double[] {0.2, 0.6, 1.0, 1.4, 1.8}) {
-            BlockPos pos = BlockPos.containing(player.getX(), player.getY() - drop, player.getZ());
-            if (level.getBlockState(pos).is(ModContent.ELEVATOR.get())) {
-                start = pos;
-                break;
-            }
-        }
+        BlockPos start = standingOn(level, player.getX(), player.getY(), player.getZ());
         if (start == null) {
             return;
         }
+        BlockPos target = destination(level, start, up);
+        if (target == null) {
+            player.displayClientMessage(Component.literal(up ? "No elevator above" : "No elevator below")
+                    .withStyle(ChatFormatting.GRAY), true);
+            return;
+        }
+        player.teleportTo(level, player.getX(), target.getY() + 1, player.getZ(), player.getYRot(), player.getXRot());
+        player.resetFallDistance();
+        level.playSound(null, target.above(), SoundEvents.NOTE_BLOCK_BELL.value(), SoundSource.BLOCKS, 0.8f,
+                up ? 1.6f : 1.2f);
+    }
+
+    /**
+     * The elevator under someone at this position. The player is already in the air when a jump reaches the
+     * server, so this looks a bit further down for the elevator they jumped off.
+     */
+    public static BlockPos standingOn(Level level, double x, double y, double z) {
+        for (double drop : new double[] {0.2, 0.6, 1.0, 1.4, 1.8}) {
+            BlockPos pos = BlockPos.containing(x, y - drop, z);
+            if (level.getBlockState(pos).is(ModContent.ELEVATOR.get())) {
+                return pos;
+            }
+        }
+        return null;
+    }
+
+    /** The next elevator straight above or below with room to stand on it, or null. */
+    public static BlockPos destination(Level level, BlockPos start, boolean up) {
         int step = up ? 1 : -1;
         for (int i = 2; i <= RANGE; i++) {
             BlockPos pos = start.offset(0, i * step, 0);
@@ -71,19 +90,13 @@ public class ElevatorBlock extends Block {
             }
             if (level.getBlockState(pos).is(ModContent.ELEVATOR.get()) && isFree(level, pos.above())
                     && isFree(level, pos.above(2))) {
-                player.teleportTo(level, player.getX(), pos.getY() + 1, player.getZ(), player.getYRot(),
-                        player.getXRot());
-                player.resetFallDistance();
-                level.playSound(null, pos.above(), SoundEvents.NOTE_BLOCK_BELL.value(), SoundSource.BLOCKS, 0.8f,
-                        up ? 1.6f : 1.2f);
-                return;
+                return pos;
             }
         }
-        player.displayClientMessage(Component.literal(up ? "No elevator above" : "No elevator below")
-                .withStyle(ChatFormatting.GRAY), true);
+        return null;
     }
 
-    private static boolean isFree(ServerLevel level, BlockPos pos) {
+    private static boolean isFree(Level level, BlockPos pos) {
         return level.getBlockState(pos).getCollisionShape(level, pos).isEmpty();
     }
 }

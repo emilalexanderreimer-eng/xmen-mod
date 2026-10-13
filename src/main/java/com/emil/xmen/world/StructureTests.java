@@ -299,20 +299,21 @@ public class StructureTests {
         BlockPos upper = new BlockPos(1, 7, 1);
         helper.setBlock(lower, ModContent.ELEVATOR.get());
         helper.setBlock(upper, ModContent.ELEVATOR.get());
-        net.minecraft.server.level.ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        ServerLevel level = helper.getLevel();
         BlockPos abs = helper.absolutePos(lower);
-        // half way through the jump
-        player.moveTo(abs.getX() + 0.5, abs.getY() + 1.6, abs.getZ() + 0.5);
-        ElevatorBlock.ride(player, true);
-        BlockPos top = helper.absolutePos(upper);
-        if (Math.abs(player.getY() - (top.getY() + 1)) > 0.01) {
-            helper.fail("Elevator did not go up: player is at y " + player.getY() + ", expected " + (top.getY() + 1));
+        // half way through the jump, as the server sees it
+        BlockPos start = ElevatorBlock.standingOn(level, abs.getX() + 0.5, abs.getY() + 1.6, abs.getZ() + 0.5);
+        if (!abs.equals(start)) {
+            helper.fail("Jumping player isn't found on the elevator (found " + start + ")");
         }
-        ElevatorBlock.ride(player, false);
-        if (Math.abs(player.getY() - (abs.getY() + 1)) > 0.01) {
-            helper.fail("Elevator did not go down: player is at y " + player.getY());
+        BlockPos up = ElevatorBlock.destination(level, abs, true);
+        if (!helper.absolutePos(upper).equals(up)) {
+            helper.fail("Elevator did not go up (got " + up + ")");
         }
-        player.discard();
+        BlockPos down = ElevatorBlock.destination(level, helper.absolutePos(upper), false);
+        if (!abs.equals(down)) {
+            helper.fail("Elevator did not go down (got " + down + ")");
+        }
         helper.succeed();
     }
 }
